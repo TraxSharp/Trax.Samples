@@ -7,17 +7,17 @@
 //   data-processing → data-science → reporting
 //
 // Pipeline logic, data catalog, and example datasets are from the
-// KedroSpaceflights.Pure example in the Flowthru project by @Spelkington:
+// KedroSpaceflights example in the Flowthru project by @Spelkington:
 //   https://github.com/chaoticgoodcomputing/flowthru
 //
 // Original dataset: Kedro Spaceflights tutorial (Apache 2.0)
 //   https://github.com/kedro-org/kedro-starters
 // ─────────────────────────────────────────────────────────────────────────────
 
-using KedroSpaceflights.Pure.Data;
-using KedroSpaceflights.Pure.Pipelines.DataProcessing;
-using KedroSpaceflights.Pure.Pipelines.DataScience;
-using KedroSpaceflights.Pure.Pipelines.Reporting;
+using KedroSpaceflights.Data;
+using KedroSpaceflights.Pipelines.DataProcessing;
+using KedroSpaceflights.Pipelines.DataScience;
+using KedroSpaceflights.Pipelines.Reporting;
 using Trax.Dashboard.Extensions;
 using Trax.Effect.Data.Extensions;
 using Trax.Effect.Data.Postgres.Extensions;

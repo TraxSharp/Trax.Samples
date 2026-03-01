@@ -26,10 +26,10 @@
     <PackageReference Include="Flowthru" Version="*" />
 
     <!--
-            KedroSpaceflights.Pure example — Catalog, Pipeline factories, Schemas
-            https://github.com/chaoticgoodcomputing/flowthru/tree/main/examples/KedroSpaceflights.Pure
+            KedroSpaceflights — Catalog, Pipeline factories, Schemas
+            Vendored from https://github.com/chaoticgoodcomputing/flowthru/tree/main/examples/starter/KedroSpaceflights
         -->
-    <ProjectReference Include="../../../flowthru/examples/KedroSpaceflights.Pure/KedroSpaceflights.Pure.csproj" />
+    <ProjectReference Include="../../lib/KedroSpaceflights/KedroSpaceflights.csproj" />
   </ItemGroup>
 
   <ItemGroup>

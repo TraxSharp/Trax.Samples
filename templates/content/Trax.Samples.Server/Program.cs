@@ -12,8 +12,8 @@ using Trax.Samples.Server.Workflows.HelloWorld;
 var builder = WebApplication.CreateBuilder(args);
 
 var connectionString =
-    builder.Configuration.GetConnectionString("Trax.CoreDatabase")
-    ?? throw new InvalidOperationException("Connection string 'Trax.CoreDatabase' not found.");
+    builder.Configuration.GetConnectionString("TraxDatabase")
+    ?? throw new InvalidOperationException("Connection string 'TraxDatabase' not found.");
 
 builder.Services.AddLogging(logging =>
 {
@@ -21,9 +21,9 @@ builder.Services.AddLogging(logging =>
     logging.SetMinimumLevel(LogLevel.Information);
 });
 
-builder.AddTrax.CoreDashboard();
+builder.AddTraxDashboard();
 
-builder.Services.AddTrax.CoreEffects(
+builder.Services.AddTraxEffects(
     options =>
         options
             .AddEffectWorkflowBus(
@@ -50,7 +50,7 @@ builder.Services.AddTrax.CoreEffects(
 
 var app = builder.Build();
 
-app.UseTrax.CoreDashboard();
+app.UseTraxDashboard();
 app.UseHangfireDashboard("/hangfire", new DashboardOptions { Authorization = [] });
 
 app.Run();

@@ -21,13 +21,13 @@ using Trax.Samples.Scheduler.Workflows.TransformLoad;
 var builder = WebApplication.CreateBuilder(args);
 
 var connectionString =
-    builder.Configuration.GetConnectionString("Trax.CoreDatabase")
-    ?? throw new InvalidOperationException("Connection string 'Trax.CoreDatabase' not found.");
+    builder.Configuration.GetConnectionString("TraxDatabase")
+    ?? throw new InvalidOperationException("Connection string 'TraxDatabase' not found.");
 
 builder.Services.AddLogging(logging => logging.AddConsole());
-builder.AddTrax.CoreDashboard();
+builder.AddTraxDashboard();
 
-builder.Services.AddTrax.CoreEffects(
+builder.Services.AddTraxEffects(
     options =>
         options
             .AddServiceTrainBus(
@@ -258,6 +258,6 @@ builder.Services.AddTrax.CoreEffects(
 
 var app = builder.Build();
 
-app.UseTrax.CoreDashboard();
+app.UseTraxDashboard();
 
 app.Run();

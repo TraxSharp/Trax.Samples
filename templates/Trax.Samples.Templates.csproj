@@ -7,7 +7,7 @@
         <PackageDescription>Project templates for Trax.Core - Railway Oriented Programming workflow engine for .NET</PackageDescription>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <RepositoryUrl>https://github.com/TraxSharp/Trax.Samples</RepositoryUrl>
-        <PackageTags>dotnet-new;templates;chainsharp;workflows;railway-oriented-programming;hangfire</PackageTags>
+        <PackageTags>dotnet-new;templates;trax;workflows;railway-oriented-programming;hangfire</PackageTags>
 
         <TargetFramework>net10.0</TargetFramework>
         <IncludeContentInPack>true</IncludeContentInPack>

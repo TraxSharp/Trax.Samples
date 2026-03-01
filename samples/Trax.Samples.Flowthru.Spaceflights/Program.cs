@@ -14,26 +14,26 @@
 //   https://github.com/kedro-org/kedro-starters
 // ─────────────────────────────────────────────────────────────────────────────
 
-using Trax.Dashboard.Extensions;
-using Trax.Effect.Data.Extensions;
-using Trax.Effect.Data.Postgres.Extensions;
-using Trax.Effect.Extensions;
-using Trax.Mediator.Extensions;
-using Trax.Scheduler.Configuration;
-using Trax.Scheduler.Extensions;
-using Trax.Scheduler.Services.Scheduling;
-using Trax.Scheduler.Workflows.ManifestManager;
-using Trax.Effect.Provider.Json.Extensions;
-using Trax.Effect.Provider.Parameter.Extensions;
-using Trax.Effect.StepProvider.Progress.Extensions;
-using Trax.Samples.Flowthru.Spaceflights;
-using Trax.Samples.Flowthru.Spaceflights.Workflows.DataProcessing;
-using Trax.Samples.Flowthru.Spaceflights.Workflows.DataScience;
-using Trax.Samples.Flowthru.Spaceflights.Workflows.Reporting;
 using KedroSpaceflights.Pure.Data;
 using KedroSpaceflights.Pure.Pipelines.DataProcessing;
 using KedroSpaceflights.Pure.Pipelines.DataScience;
 using KedroSpaceflights.Pure.Pipelines.Reporting;
+using Trax.Dashboard.Extensions;
+using Trax.Effect.Data.Extensions;
+using Trax.Effect.Data.Postgres.Extensions;
+using Trax.Effect.Extensions;
+using Trax.Effect.Provider.Json.Extensions;
+using Trax.Effect.Provider.Parameter.Extensions;
+using Trax.Effect.StepProvider.Progress.Extensions;
+using Trax.Mediator.Extensions;
+using Trax.Samples.Flowthru.Spaceflights;
+using Trax.Samples.Flowthru.Spaceflights.Workflows.DataProcessing;
+using Trax.Samples.Flowthru.Spaceflights.Workflows.DataScience;
+using Trax.Samples.Flowthru.Spaceflights.Workflows.Reporting;
+using Trax.Scheduler.Configuration;
+using Trax.Scheduler.Extensions;
+using Trax.Scheduler.Services.Scheduling;
+using Trax.Scheduler.Workflows.ManifestManager;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -73,48 +73,47 @@ builder.Services.AddFlowthru(flowthru =>
 });
 
 // ── Register Trax.Core Effect + Scheduler ──────────────────────────────────
-builder.Services.AddTraxEffects(
-    options =>
-        options
-            .AddServiceTrainBus(
-                assemblies: [typeof(Program).Assembly, typeof(ManifestManagerWorkflow).Assembly]
-            )
-            .AddPostgresEffect(connectionString)
-            .AddEffectDataContextLogging()
-            .AddJsonEffect()
-            .SaveWorkflowParameters()
-            .AddStepProgress()
-            .AddScheduler(scheduler =>
-            {
-                scheduler
-                    .AddMetadataCleanup(cleanup =>
-                    {
-                        cleanup.AddWorkflowType<IDataProcessingPipelineWorkflow>();
-                        cleanup.AddWorkflowType<IDataSciencePipelineWorkflow>();
-                        cleanup.AddWorkflowType<IReportingPipelineWorkflow>();
-                    })
-                    .JobDispatcherPollingInterval(TimeSpan.FromSeconds(2))
-                    .UsePostgresTaskServer();
+builder.Services.AddTraxEffects(options =>
+    options
+        .AddServiceTrainBus(
+            assemblies: [typeof(Program).Assembly, typeof(ManifestManagerWorkflow).Assembly]
+        )
+        .AddPostgresEffect(connectionString)
+        .AddEffectDataContextLogging()
+        .AddJsonEffect()
+        .SaveWorkflowParameters()
+        .AddStepProgress()
+        .AddScheduler(scheduler =>
+        {
+            scheduler
+                .AddMetadataCleanup(cleanup =>
+                {
+                    cleanup.AddWorkflowType<IDataProcessingPipelineWorkflow>();
+                    cleanup.AddWorkflowType<IDataSciencePipelineWorkflow>();
+                    cleanup.AddWorkflowType<IReportingPipelineWorkflow>();
+                })
+                .JobDispatcherPollingInterval(TimeSpan.FromSeconds(2))
+                .UsePostgresTaskServer();
 
-                // ── Spaceflights Pipeline Topology ──────────────────────────────
-                //    data-processing (root, every 5 min)
-                //      └── data-science   (ThenInclude — depends on data-processing)
-                //          └── reporting   (ThenInclude — depends on data-science)
-                scheduler
-                    .Schedule<IDataProcessingPipelineWorkflow>(
-                        ManifestNames.DataProcessing,
-                        new DataProcessingPipelineInput(),
-                        Every.Minutes(5)
-                    )
-                    .ThenInclude<IDataSciencePipelineWorkflow>(
-                        ManifestNames.DataScience,
-                        new DataSciencePipelineInput()
-                    )
-                    .ThenInclude<IReportingPipelineWorkflow>(
-                        ManifestNames.Reporting,
-                        new ReportingPipelineInput()
-                    );
-            })
+            // ── Spaceflights Pipeline Topology ──────────────────────────────
+            //    data-processing (root, every 5 min)
+            //      └── data-science   (ThenInclude — depends on data-processing)
+            //          └── reporting   (ThenInclude — depends on data-science)
+            scheduler
+                .Schedule<IDataProcessingPipelineWorkflow>(
+                    ManifestNames.DataProcessing,
+                    new DataProcessingPipelineInput(),
+                    Every.Minutes(5)
+                )
+                .ThenInclude<IDataSciencePipelineWorkflow>(
+                    ManifestNames.DataScience,
+                    new DataSciencePipelineInput()
+                )
+                .ThenInclude<IReportingPipelineWorkflow>(
+                    ManifestNames.Reporting,
+                    new ReportingPipelineInput()
+                );
+        })
 );
 
 var app = builder.Build();

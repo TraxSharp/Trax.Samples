@@ -55,7 +55,7 @@ builder.Services.AddTraxEffects(options =>
         {
             scheduler.JobDispatcherPollingInterval(TimeSpan.FromSeconds(2)).UsePostgresTaskServer();
 
-            // Schedule a recurring train so there's data to query
+            // Schedule a recurring train so the manifests/executions endpoints have data
             scheduler.Schedule<IGreetTrain>(
                 "greet-scheduled",
                 new GreetInput { Name = "Scheduler" },

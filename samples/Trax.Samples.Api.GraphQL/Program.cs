@@ -12,10 +12,10 @@
 //   3. Run:             dotnet run --project Trax.Samples/samples/Trax.Samples.Api.GraphQL
 //
 // Try it:
-//   Open http://localhost:5000/graphql in a browser for Banana Cake Pop (interactive IDE)
+//   Open http://localhost:5000/trax/graphql in a browser for Banana Cake Pop (interactive IDE)
 //
 //   Or via curl:
-//   curl -X POST http://localhost:5000/graphql \
+//   curl -X POST http://localhost:5000/trax/graphql \
 //        -H "Content-Type: application/json" \
 //        -d '{"query":"{ trains { serviceTypeName inputTypeName inputSchema { name typeName } } }"}'
 // ─────────────────────────────────────────────────────────────────────────────

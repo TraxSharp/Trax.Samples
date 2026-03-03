@@ -7,7 +7,7 @@
 //   - Run a train       POST /trax/api/trains/run
 //   - Scheduler ops     POST /trax/api/scheduler/trigger/{externalId}, etc.
 //   - Read-only queries GET  /trax/api/manifests, /trax/api/executions, etc.
-//   - Health check      GET  /health
+//   - Health check      GET  /trax/health
 //
 // Prerequisites:
 //   1. Start Postgres:  cd Trax.Samples && docker compose up -d
@@ -19,7 +19,7 @@
 //   curl -X POST http://localhost:5000/trax/api/trains/queue \
 //        -H "Content-Type: application/json" \
 //        -d '{"trainName":"Trax.Samples.Api.Rest.Trains.Greet.IGreetTrain","input":{"name":"Alice"}}'
-//   curl http://localhost:5000/health
+//   curl http://localhost:5000/trax/health
 // ─────────────────────────────────────────────────────────────────────────────
 
 using Trax.Api.Extensions;
@@ -72,6 +72,6 @@ var app = builder.Build();
 
 // ── Map endpoints ───────────────────────────────────────────────────────────
 app.UseTraxRestApi();
-app.MapHealthChecks("/health");
+app.MapHealthChecks("/trax/health");
 
 app.Run();

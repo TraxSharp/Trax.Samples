@@ -4,7 +4,7 @@
 // Demonstrates a standalone GraphQL API powered by HotChocolate that exposes:
 //   - Queries:   trains, manifests, manifestGroups, executions
 //   - Mutations: queueTrain, runTrain, triggerManifest, cancelManifest, etc.
-//   - Health:    GET /health
+//   - Health:    GET /trax/health
 //
 // Prerequisites:
 //   1. Start Postgres:  cd Trax.Samples && docker compose up -d
@@ -70,6 +70,6 @@ var app = builder.Build();
 
 // ── Map endpoints ───────────────────────────────────────────────────────────
 app.UseTraxGraphQL();
-app.MapHealthChecks("/health");
+app.MapHealthChecks("/trax/health");
 
 app.Run();

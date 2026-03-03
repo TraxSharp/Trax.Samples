@@ -2,11 +2,11 @@
 // Trax REST API Sample
 //
 // Demonstrates a standalone REST API that exposes:
-//   - Train discovery   GET  /api/trains
-//   - Queue a train     POST /api/trains/queue
-//   - Run a train       POST /api/trains/run
-//   - Scheduler ops     POST /api/scheduler/trigger/{externalId}, etc.
-//   - Read-only queries GET  /api/manifests, /api/executions, etc.
+//   - Train discovery   GET  /trax/api/trains
+//   - Queue a train     POST /trax/api/trains/queue
+//   - Run a train       POST /trax/api/trains/run
+//   - Scheduler ops     POST /trax/api/scheduler/trigger/{externalId}, etc.
+//   - Read-only queries GET  /trax/api/manifests, /trax/api/executions, etc.
 //   - Health check      GET  /health
 //
 // Prerequisites:
@@ -15,8 +15,8 @@
 //   3. Run:             dotnet run --project Trax.Samples/samples/Trax.Samples.Api.Rest
 //
 // Try it:
-//   curl http://localhost:5000/api/trains
-//   curl -X POST http://localhost:5000/api/trains/queue \
+//   curl http://localhost:5000/trax/api/trains
+//   curl -X POST http://localhost:5000/trax/api/trains/queue \
 //        -H "Content-Type: application/json" \
 //        -d '{"trainName":"Trax.Samples.Api.Rest.Trains.Greet.IGreetTrain","input":{"name":"Alice"}}'
 //   curl http://localhost:5000/health

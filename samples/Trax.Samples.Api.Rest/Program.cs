@@ -2,12 +2,13 @@
 // Trax REST API Sample
 //
 // Demonstrates a standalone REST API that exposes:
-//   - Train discovery   GET  /trax/api/trains
-//   - Queue a train     POST /trax/api/trains/queue
-//   - Run a train       POST /trax/api/trains/run
-//   - Scheduler ops     POST /trax/api/scheduler/trigger/{externalId}, etc.
-//   - Read-only queries GET  /trax/api/manifests, /trax/api/executions, etc.
-//   - Health check      GET  /trax/health
+//   - Train discovery     GET  /trax/api/trains
+//   - Queue a train       POST /trax/api/trains/queue
+//   - Run a train         POST /trax/api/trains/run
+//   - Per-train auth      [TraxAuthorize] on train classes
+//   - Scheduler ops       POST /trax/api/scheduler/trigger/{externalId}, etc.
+//   - Read-only queries   GET  /trax/api/manifests, /trax/api/executions, etc.
+//   - Health check        GET  /trax/health
 //
 // Prerequisites:
 //   1. Start Postgres:  cd Trax.Samples && docker compose up -d
@@ -16,9 +17,15 @@
 //
 // Try it:
 //   curl http://localhost:5000/trax/api/trains
-//   curl -X POST http://localhost:5000/trax/api/trains/queue \
+//   curl -X POST http://localhost:5000/trax/api/trains/run \
 //        -H "Content-Type: application/json" \
 //        -d '{"trainName":"Trax.Samples.Api.Rest.Trains.Greet.IGreetTrain","input":{"name":"Alice"}}'
+//
+//   # This returns 403 because AdminGreetTrain has [TraxAuthorize("Admin")]
+//   curl -X POST http://localhost:5000/trax/api/trains/run \
+//        -H "Content-Type: application/json" \
+//        -d '{"trainName":"Trax.Samples.Api.Rest.Trains.AdminGreet.IAdminGreetTrain","input":{"name":"Alice"}}'
+//
 //   curl http://localhost:5000/trax/health
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -42,6 +49,16 @@ var connectionString =
     ?? throw new InvalidOperationException("Connection string 'TraxDatabase' not found.");
 
 builder.Services.AddLogging(logging => logging.AddConsole());
+
+// ── Authorization policies ──────────────────────────────────────────────────
+// Trax per-train auth uses standard ASP.NET Core policies. The "Admin" policy
+// is checked at runtime when a train is decorated with [TraxAuthorize("Admin")].
+// Plug in your own authentication middleware (JWT, cookies, etc.) to populate
+// HttpContext.User — Trax evaluates the policy against that principal.
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
+});
 
 // ── Register Trax Effect + Mediator (trains, bus, discovery, execution) ─────
 builder.Services.AddTraxEffects(options =>

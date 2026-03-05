@@ -77,7 +77,7 @@ builder.Services.AddTraxEffects(options =>
                     cleanup.AddTrainType<ICorruptedDataRepairTrain>();
                 })
                 .JobDispatcherPollingInterval(TimeSpan.FromSeconds(2))
-                .UsePostgresTaskServer();
+                .UseLocalWorkers();
 
             // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
             // 1. INTERVAL + DEPENDENCY CHAIN

@@ -93,7 +93,7 @@ builder.Services.AddTraxEffects(options =>
                     cleanup.AddTrainType<IReportingTrain>();
                 })
                 .JobDispatcherPollingInterval(TimeSpan.FromSeconds(2))
-                .UsePostgresTaskServer();
+                .UseLocalWorkers();
 
             // ── Spaceflights Pipeline Topology ──────────────────────────────
             //    data-processing (root, every 5 min)

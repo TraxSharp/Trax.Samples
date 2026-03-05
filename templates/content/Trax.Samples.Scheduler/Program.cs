@@ -47,7 +47,7 @@ builder.Services.AddTraxEffects(options =>
         .AddStepProgress()
         .AddScheduler(scheduler =>
         {
-            scheduler.UsePostgresTaskServer();
+            scheduler.UseLocalWorkers();
 
             // Schedule the HelloWorld train to run every 20 seconds.
             // Replace this with your own trains and schedules.

@@ -1,13 +1,12 @@
-using LanguageExt;
 using Microsoft.Extensions.Logging;
 using Trax.Core.Step;
 
 namespace Trax.Samples.GameServer.Trains.Leaderboard.RecalculateLeaderboard.Steps;
 
 public class RankPlayersStep(ILogger<RankPlayersStep> logger)
-    : Step<RecalculateLeaderboardInput, Unit>
+    : Step<RecalculateLeaderboardInput, RecalculateLeaderboardOutput>
 {
-    public override async Task<Unit> Run(RecalculateLeaderboardInput input)
+    public override async Task<RecalculateLeaderboardOutput> Run(RecalculateLeaderboardInput input)
     {
         logger.LogInformation(
             "[{Region}] Ranking players and updating leaderboard positions",
@@ -21,6 +20,12 @@ public class RankPlayersStep(ILogger<RankPlayersStep> logger)
             input.Region
         );
 
-        return Unit.Default;
+        return new RecalculateLeaderboardOutput
+        {
+            Region = input.Region,
+            PlayersProcessed = 1247,
+            TopPlayer = "xXDragonSlayerXx",
+            TopRating = 2847,
+        };
     }
 }

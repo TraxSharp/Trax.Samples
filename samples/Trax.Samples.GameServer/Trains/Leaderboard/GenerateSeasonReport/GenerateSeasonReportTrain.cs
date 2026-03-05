@@ -9,10 +9,10 @@ namespace Trax.Samples.GameServer.Trains.Leaderboard.GenerateSeasonReport;
 /// the scheduler only fires this after leaderboard recalculation completes.
 /// </summary>
 public class GenerateSeasonReportTrain
-    : ServiceTrain<GenerateSeasonReportInput, Unit>,
+    : ServiceTrain<GenerateSeasonReportInput, SeasonReportOutput>,
         IGenerateSeasonReportTrain
 {
-    protected override async Task<Either<Exception, Unit>> RunInternal(
+    protected override async Task<Either<Exception, SeasonReportOutput>> RunInternal(
         GenerateSeasonReportInput input
     ) => Activate(input).Chain<CompileStatsStep>().Chain<FormatReportStep>().Resolve();
 }

@@ -4,9 +4,9 @@ using Trax.Core.Step;
 namespace Trax.Samples.GameServer.Trains.Players.LookupPlayer.Steps;
 
 public class FetchPlayerStep(ILogger<FetchPlayerStep> logger)
-    : Step<LookupPlayerInput, LookupPlayerOutput>
+    : Step<LookupPlayerInput, PlayerProfile>
 {
-    public override async Task<LookupPlayerOutput> Run(LookupPlayerInput input)
+    public override async Task<PlayerProfile> Run(LookupPlayerInput input)
     {
         logger.LogInformation(
             "Looking up player {PlayerId} — fetching profile from database",
@@ -15,7 +15,7 @@ public class FetchPlayerStep(ILogger<FetchPlayerStep> logger)
 
         await Task.Delay(50);
 
-        var output = new LookupPlayerOutput
+        var output = new PlayerProfile
         {
             PlayerId = input.PlayerId,
             Rank = 42,

@@ -6,7 +6,8 @@ public record ProcessMatchResultOutput
     public required string Region { get; init; }
     public required string WinnerId { get; init; }
     public required string LoserId { get; init; }
-    public required int WinnerNewRating { get; init; }
-    public required int LoserNewRating { get; init; }
-    public required bool AnomalyDetected { get; init; }
+    public int WinnerNewRating { get; init; }
+    public int LoserNewRating { get; init; }
+    public int AnomaliesDetected { get; init; }
+    public bool CheatDetectionTriggered { get; init; }
 }

@@ -12,10 +12,10 @@ namespace Trax.Samples.GameServer.Trains.Leaderboard.RecalculateLeaderboard;
 /// </summary>
 [TraxMutation(Operations = GraphQLOperation.Queue, Description = "Recalculates the leaderboard")]
 public class RecalculateLeaderboardTrain
-    : ServiceTrain<RecalculateLeaderboardInput, Unit>,
+    : ServiceTrain<RecalculateLeaderboardInput, RecalculateLeaderboardOutput>,
         IRecalculateLeaderboardTrain
 {
-    protected override async Task<Either<Exception, Unit>> RunInternal(
+    protected override async Task<Either<Exception, RecalculateLeaderboardOutput>> RunInternal(
         RecalculateLeaderboardInput input
     ) => Activate(input).Chain<AggregateScoresStep>().Chain<RankPlayersStep>().Resolve();
 }

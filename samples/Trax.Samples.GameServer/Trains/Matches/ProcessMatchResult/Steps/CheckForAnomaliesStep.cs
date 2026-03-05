@@ -1,3 +1,4 @@
+using LanguageExt;
 using Microsoft.Extensions.Logging;
 using Trax.Core.Step;
 using Trax.Samples.GameServer.Trains.Matches.DetectCheatPattern;
@@ -9,7 +10,6 @@ namespace Trax.Samples.GameServer.Trains.Matches.ProcessMatchResult.Steps;
 /// Checks for suspicious patterns in match results.
 /// When anomalies are detected, activates the dormant DetectCheatPattern train
 /// via IDormantDependentContext — demonstrating runtime-activated dependents.
-/// Returns a ProcessMatchResultOutput with the match processing summary.
 /// </summary>
 public class CheckForAnomaliesStep(
     IDormantDependentContext dormants,
@@ -21,9 +21,9 @@ public class CheckForAnomaliesStep(
         // Simulate anomaly detection — score differences > 50 are "suspicious"
         var scoreDiff = Math.Abs(input.WinnerScore - input.LoserScore);
         var anomalyCount = scoreDiff > 50 ? scoreDiff / 10 : 0;
-        var anomalyDetected = anomalyCount > 0;
+        var cheatDetectionTriggered = false;
 
-        if (anomalyDetected)
+        if (anomalyCount > 0)
         {
             logger.LogWarning(
                 "[{Region}] Detected {AnomalyCount} anomalies in match {MatchId} — activating cheat detection",
@@ -32,7 +32,7 @@ public class CheckForAnomaliesStep(
                 input.MatchId
             );
 
-            await dormants.ActivateAsync<IDetectCheatPatternTrain, DetectCheatPatternInput>(
+            await dormants.ActivateAsync<IDetectCheatPatternTrain, DetectCheatPatternInput, Unit>(
                 ManifestNames.WithIndex(ManifestNames.DetectCheat, input.Region),
                 new DetectCheatPatternInput
                 {
@@ -41,6 +41,8 @@ public class CheckForAnomaliesStep(
                     AnomalyCount = anomalyCount,
                 }
             );
+
+            cheatDetectionTriggered = true;
         }
         else
         {
@@ -52,8 +54,7 @@ public class CheckForAnomaliesStep(
         }
 
         // Simulate ELO rating changes
-        var winnerNewRating = 1500 + input.WinnerScore;
-        var loserNewRating = 1500 - input.LoserScore;
+        var ratingChange = Math.Max(10, 32 - scoreDiff / 5);
 
         return new ProcessMatchResultOutput
         {
@@ -61,9 +62,10 @@ public class CheckForAnomaliesStep(
             Region = input.Region,
             WinnerId = input.WinnerId,
             LoserId = input.LoserId,
-            WinnerNewRating = winnerNewRating,
-            LoserNewRating = loserNewRating,
-            AnomalyDetected = anomalyDetected,
+            WinnerNewRating = 1500 + ratingChange,
+            LoserNewRating = 1500 - ratingChange,
+            AnomaliesDetected = anomalyCount,
+            CheatDetectionTriggered = cheatDetectionTriggered,
         };
     }
 }

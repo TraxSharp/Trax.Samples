@@ -49,6 +49,7 @@
 using Trax.Api.Extensions;
 using Trax.Api.GraphQL.Extensions;
 using Trax.Dashboard.Extensions;
+using Trax.Effect.Broadcaster.RabbitMQ.Extensions;
 using Trax.Effect.Data.Extensions;
 using Trax.Effect.Data.Postgres.Extensions;
 using Trax.Effect.Extensions;
@@ -75,6 +76,10 @@ var connectionString =
     builder.Configuration.GetConnectionString("TraxDatabase")
     ?? throw new InvalidOperationException("Connection string 'TraxDatabase' not found.");
 
+var rabbitMqConnectionString =
+    builder.Configuration.GetConnectionString("RabbitMQ")
+    ?? throw new InvalidOperationException("Connection string 'RabbitMQ' not found.");
+
 builder.Services.AddLogging(logging => logging.AddConsole());
 
 builder.Services.AddTrax(trax =>
@@ -85,6 +90,7 @@ builder.Services.AddTrax(trax =>
                 .AddJson()
                 .SaveTrainParameters()
                 .AddStepProgress()
+                .UseBroadcaster(b => b.UseRabbitMq(rabbitMqConnectionString))
         )
         .AddMediator(typeof(ManifestNames).Assembly, typeof(ManifestManagerTrain).Assembly)
         .AddScheduler(scheduler =>
@@ -92,17 +98,15 @@ builder.Services.AddTrax(trax =>
             // ── Key: scheduling only, no local execution ──────────────────
             // PostgresJobSubmitter is the default — omit UseLocalWorkers() to schedule without executing locally
             // Jobs accumulate until the Worker process picks them up.
-            scheduler
-                .AddMetadataCleanup(cleanup =>
-                {
-                    cleanup.AddTrainType<IMonitorSolarProductionTrain>();
-                    cleanup.AddTrainType<IManageBatteryStorageTrain>();
-                    cleanup.AddTrainType<IProcessChargingSessionTrain>();
-                    cleanup.AddTrainType<IOptimizeMicrogridTrain>();
-                    cleanup.AddTrainType<ITradeGridEnergyTrain>();
-                    cleanup.AddTrainType<IGenerateSustainabilityReportTrain>();
-                })
-                .JobDispatcherPollingInterval(TimeSpan.FromSeconds(2));
+            scheduler.AddMetadataCleanup(cleanup =>
+            {
+                cleanup.AddTrainType<IMonitorSolarProductionTrain>();
+                cleanup.AddTrainType<IManageBatteryStorageTrain>();
+                cleanup.AddTrainType<IProcessChargingSessionTrain>();
+                cleanup.AddTrainType<IOptimizeMicrogridTrain>();
+                cleanup.AddTrainType<ITradeGridEnergyTrain>();
+                cleanup.AddTrainType<IGenerateSustainabilityReportTrain>();
+            });
 
             // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
             // 1. INTERVAL + DEPENDENCY CHAIN

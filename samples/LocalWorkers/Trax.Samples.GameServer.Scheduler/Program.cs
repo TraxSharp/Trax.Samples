@@ -75,7 +75,6 @@ builder.Services.AddTrax(trax =>
                     cleanup.AddTrainType<IDistributeDailyRewardsTrain>();
                     cleanup.AddTrainType<ICorruptedDataRepairTrain>();
                 })
-                .JobDispatcherPollingInterval(TimeSpan.FromSeconds(2))
                 .UseLocalWorkers();
 
             // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

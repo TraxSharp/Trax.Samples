@@ -19,5 +19,6 @@
     <PackageReference Include="Trax.Dashboard" Version="1.*" />
     <PackageReference Include="Trax.Api" Version="1.*" />
     <PackageReference Include="Trax.Api.GraphQL" Version="1.*" />
+    <PackageReference Include="Trax.Effect.Broadcaster.RabbitMQ" Version="1.*" />
   </ItemGroup>
 </Project>

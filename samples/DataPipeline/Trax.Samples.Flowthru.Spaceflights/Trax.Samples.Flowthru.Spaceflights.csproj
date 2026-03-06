@@ -11,10 +11,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Trax.Effect" Version="*" />
-    <PackageReference Include="Trax.Effect.Data.Postgres" Version="*" />
-    <PackageReference Include="Trax.Mediator" Version="*" />
-    <PackageReference Include="Trax.Scheduler" Version="*" />
+    <PackageReference Include="Trax.Effect" Version="1.*" />
+    <PackageReference Include="Trax.Effect.Data.Postgres" Version="1.*" />
+    <PackageReference Include="Trax.Mediator" Version="1.*" />
+    <PackageReference Include="Trax.Scheduler" Version="1.*" />
 
     <!--
             Flowthru — data pipeline framework by @Spelkington

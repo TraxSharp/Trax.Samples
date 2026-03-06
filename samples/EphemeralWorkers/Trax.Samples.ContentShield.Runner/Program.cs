@@ -1,26 +1,27 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// Somerset Energy Hub — Standalone Worker (execution only, no scheduling)
+// ContentShield — Ephemeral Runner (simulates Lambda/serverless execution)
 //
-// Polls the background_job table and executes energy hub trains: solar
-// monitoring, battery management, EV charging processing, microgrid
-// optimization, grid trading, and sustainability reporting.
+// A minimal HTTP endpoint that receives job requests from the API via HTTP POST
+// and executes trains to completion. This process has no scheduler, no polling,
+// no dashboard — it only runs trains that are dispatched to it.
 //
-// This process has no ManifestManager, no JobDispatcher, and no scheduling
-// logic — it only runs jobs that have already been dispatched by the Hub.
+// This demonstrates the ephemeral/serverless worker pattern:
+//   1. The API dispatches jobs via UseRemoteWorkers()
+//   2. HttpJobSubmitter POSTs a RemoteJobRequest to this endpoint
+//   3. This runner deserializes the input, runs JobRunnerTrain, and returns
+//   4. No background_job table — jobs arrive directly over HTTP
 //
-// This demonstrates Model #3 (Standalone Workers): the hub (GraphQL API +
-// scheduler + dashboard) and workers run as independent processes, connected
-// only through PostgreSQL. You can scale this worker horizontally by running
-// multiple instances.
+// In production, this would be an AWS Lambda, Azure Function, or Cloud Run
+// service that spins up on demand to handle each job request.
 //
 // Prerequisites:
 //   1. Start Postgres:  cd Trax.Samples && docker compose up -d
 //   2. Pack local:      ./pack-local.sh
-//   3. Start hub:       dotnet run --project samples/DistributedWorkers/Trax.Samples.EnergyHub.Hub
-//   4. Start worker:    dotnet run --project samples/DistributedWorkers/Trax.Samples.EnergyHub.Worker
+//   3. Start runner:    dotnet run --project samples/EphemeralWorkers/Trax.Samples.ContentShield.Runner
+//   4. Start API:       dotnet run --project samples/EphemeralWorkers/Trax.Samples.ContentShield.Api
 //
-// The worker picks up jobs atomically using PostgreSQL's FOR UPDATE SKIP LOCKED,
-// so multiple worker instances can run safely without duplicate execution.
+// Endpoint:
+//   POST http://localhost:5205/trax/execute  (receives RemoteJobRequest JSON)
 // ─────────────────────────────────────────────────────────────────────────────
 
 using Trax.Effect.Broadcaster.RabbitMQ.Extensions;
@@ -30,7 +31,7 @@ using Trax.Effect.Provider.Json.Extensions;
 using Trax.Effect.Provider.Parameter.Extensions;
 using Trax.Effect.StepProvider.Progress.Extensions;
 using Trax.Mediator.Extensions;
-using Trax.Samples.EnergyHub;
+using Trax.Samples.ContentShield.Trains.ContentReview.ReviewContent;
 using Trax.Scheduler.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -46,9 +47,9 @@ var rabbitMqConnectionString =
 builder.Services.AddLogging(logging => logging.AddConsole());
 
 // ── Register Trax Effect + Mediator (trains, bus, discovery, execution) ──
-// The worker must reference the same train assemblies as the scheduler so it
-// can resolve and execute any train type that gets dispatched.
-// UseBroadcaster() publishes lifecycle events to RabbitMQ so the Hub's
+// The runner must reference the same train assemblies as the API so it can
+// resolve and execute any train type that gets dispatched.
+// UseBroadcaster publishes lifecycle events to RabbitMQ so the API's
 // GraphQL subscriptions are notified when queued trains complete.
 builder.Services.AddTrax(trax =>
     trax.AddEffects(effects =>
@@ -59,18 +60,17 @@ builder.Services.AddTrax(trax =>
                 .AddStepProgress()
                 .UseBroadcaster(b => b.UseRabbitMq(rabbitMqConnectionString))
         )
-        .AddMediator(typeof(ManifestNames).Assembly)
+        .AddMediator(typeof(ReviewContentTrain).Assembly)
 );
 
-// ── Register standalone worker ───────────────────────────────────────────
-// AddTraxWorker registers the job execution pipeline (JobRunnerTrain) and
-// LocalWorkerService as a hosted service that polls background_job.
-builder.Services.AddTraxWorker(opts =>
-{
-    opts.WorkerCount = 4;
-    opts.PollingInterval = TimeSpan.FromSeconds(1);
-});
+// ── Register job runner endpoint ──────────────────────────────────────────
+// AddTraxJobRunner() registers JobRunnerTrain and minimal supporting services.
+// No scheduler, no polling, no dashboard — just the execution pipeline.
+builder.Services.AddTraxJobRunner();
 
 var app = builder.Build();
+
+// Maps POST /trax/execute — receives RemoteJobRequest, runs JobRunnerTrain
+app.UseTraxJobRunner();
 
 app.Run();

@@ -68,7 +68,6 @@ using Trax.Samples.EnergyHub.Trains.Sustainability.GenerateSustainabilityReport;
 using Trax.Scheduler.Configuration;
 using Trax.Scheduler.Extensions;
 using Trax.Scheduler.Services.Scheduling;
-using Trax.Scheduler.Trains.ManifestManager;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -92,7 +91,7 @@ builder.Services.AddTrax(trax =>
                 .AddStepProgress()
                 .UseBroadcaster(b => b.UseRabbitMq(rabbitMqConnectionString))
         )
-        .AddMediator(typeof(ManifestNames).Assembly, typeof(ManifestManagerTrain).Assembly)
+        .AddMediator(typeof(ManifestNames).Assembly)
         .AddScheduler(scheduler =>
         {
             // ── Key: scheduling only, no local execution ──────────────────

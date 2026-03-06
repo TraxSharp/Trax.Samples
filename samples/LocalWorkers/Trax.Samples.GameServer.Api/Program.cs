@@ -17,25 +17,25 @@
 //   4. Start API:       dotnet run --project samples/Trax.Samples.GameServer.Api
 //
 // Try it:
-//   Open http://localhost:5002/trax/graphql in a browser for Banana Cake Pop IDE
+//   Open http://localhost:5200/trax/graphql in a browser for Banana Cake Pop IDE
 //
 //   Or via curl (include API key header):
 //
 //   # Discover trains
 //   curl -H "X-Api-Key: player-key-do-not-use-in-production" \
-//        -X POST http://localhost:5002/trax/graphql \
+//        -X POST http://localhost:5200/trax/graphql \
 //        -H "Content-Type: application/json" \
 //        -d '{"query":"{ trains { serviceTypeName inputTypeName requiredPolicies requiredRoles inputSchema { name typeName } } }"}'
 //
 //   # Query a train directly (typed query from [TraxQuery])
 //   curl -H "X-Api-Key: player-key-do-not-use-in-production" \
-//        -X POST http://localhost:5002/trax/graphql \
+//        -X POST http://localhost:5200/trax/graphql \
 //        -H "Content-Type: application/json" \
 //        -d '{"query":"{ discover { lookupPlayer(input: {playerId: \"player-42\"}) { playerId rank wins losses rating } } }"}'
 //
 //   # Queue a heavy train for the scheduler (typed mutation from [TraxMutation])
 //   curl -H "X-Api-Key: player-key-do-not-use-in-production" \
-//        -X POST http://localhost:5002/trax/graphql \
+//        -X POST http://localhost:5200/trax/graphql \
 //        -H "Content-Type: application/json" \
 //        -d '{"query":"mutation { dispatch { queueProcessMatchResult(input: {region: \"na\", matchId: \"match-999\", winnerId: \"player-1\", loserId: \"player-2\", winnerScore: 100, loserScore: 30}, priority: 10) { workQueueId externalId } } }"}'
 //
@@ -45,7 +45,7 @@
 //   #   subscription { onTrainFailed { metadataId trainName failureStep failureReason } }
 //
 //   # Health check (no auth required)
-//   curl http://localhost:5002/trax/health
+//   curl http://localhost:5200/trax/health
 // ─────────────────────────────────────────────────────────────────────────────
 
 using Microsoft.AspNetCore.Authentication;

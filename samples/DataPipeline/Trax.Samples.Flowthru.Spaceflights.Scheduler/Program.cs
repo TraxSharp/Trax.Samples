@@ -42,7 +42,6 @@ var connectionString =
     ?? throw new InvalidOperationException("Connection string 'TraxDatabase' not found.");
 
 builder.Services.AddLogging(logging => logging.AddConsole());
-builder.AddTraxDashboard();
 
 // ── Register Flowthru services ──────────────────────────────────────────────
 // Pipeline logic by @Spelkington — https://github.com/chaoticgoodcomputing/flowthru
@@ -114,6 +113,8 @@ builder.Services.AddTrax(trax =>
                 );
         })
 );
+
+builder.AddTraxDashboard();
 
 var app = builder.Build();
 

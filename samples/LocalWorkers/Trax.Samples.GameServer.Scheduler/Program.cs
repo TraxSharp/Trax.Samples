@@ -6,7 +6,7 @@
 // and anti-cheat detection. Run alongside the REST or GraphQL API process —
 // the API queues work, the scheduler executes it.
 //
-// Includes the Trax Dashboard at http://localhost:5001/trax for monitoring.
+// Includes the Trax Dashboard at http://localhost:5201/trax for monitoring.
 //
 // Prerequisites:
 //   1. Start Postgres:  cd Trax.Samples && docker compose up -d
@@ -48,7 +48,6 @@ var connectionString =
     ?? throw new InvalidOperationException("Connection string 'TraxDatabase' not found.");
 
 builder.Services.AddLogging(logging => logging.AddConsole());
-builder.AddTraxDashboard();
 
 builder.Services.AddTrax(trax =>
     trax.AddEffects(effects =>
@@ -221,6 +220,8 @@ builder.Services.AddTrax(trax =>
             );
         })
 );
+
+builder.AddTraxDashboard();
 
 var app = builder.Build();
 

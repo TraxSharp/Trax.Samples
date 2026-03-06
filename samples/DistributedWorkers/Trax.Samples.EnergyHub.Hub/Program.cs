@@ -26,22 +26,22 @@
 //   4. Start worker:    dotnet run --project samples/DistributedWorkers/Trax.Samples.EnergyHub.Worker
 //
 // Endpoints:
-//   Dashboard:   http://localhost:5003/trax
-//   GraphQL IDE: http://localhost:5003/trax/graphql  (Banana Cake Pop)
+//   Dashboard:   http://localhost:5202/trax
+//   GraphQL IDE: http://localhost:5202/trax/graphql  (Banana Cake Pop)
 //
 // Try it:
 //   # Query live solar production
-//   curl -X POST http://localhost:5003/trax/graphql \
+//   curl -X POST http://localhost:5202/trax/graphql \
 //        -H "Content-Type: application/json" \
 //        -d '{"query":"{ discover { monitorSolarProduction(input: {arrayId: \"SPA-001\", region: \"somerset\"}) { currentOutputKw peakOutputKw efficiencyPercent } } }"}'
 //
 //   # Queue a grid energy trade
-//   curl -X POST http://localhost:5003/trax/graphql \
+//   curl -X POST http://localhost:5202/trax/graphql \
 //        -H "Content-Type: application/json" \
 //        -d '{"query":"mutation { dispatch { queueTradeGridEnergy(input: {ratePerKwh: 0.14, maxSellPercent: 80}) { workQueueId externalId } } }"}'
 //
 //   # Generate a sustainability report (runs synchronously on the hub)
-//   curl -X POST http://localhost:5003/trax/graphql \
+//   curl -X POST http://localhost:5202/trax/graphql \
 //        -H "Content-Type: application/json" \
 //        -d '{"query":"mutation { dispatch { runGenerateSustainabilityReport(input: {reportPeriod: \"Daily\"}) { carbonOffsetKg renewablePercent totalGenerationKwh revenueUsd } } }"}'
 // ─────────────────────────────────────────────────────────────────────────────
@@ -76,7 +76,6 @@ var connectionString =
     ?? throw new InvalidOperationException("Connection string 'TraxDatabase' not found.");
 
 builder.Services.AddLogging(logging => logging.AddConsole());
-builder.AddTraxDashboard();
 
 builder.Services.AddTrax(trax =>
     trax.AddEffects(effects =>
@@ -184,6 +183,7 @@ builder.Services.AddTrax(trax =>
 // ── Register GraphQL API ────────────────────────────────────────────────
 // Trains annotated with [TraxQuery] or [TraxMutation] get typed GraphQL
 // fields auto-generated. [TraxBroadcast] trains emit subscription events.
+builder.AddTraxDashboard();
 builder.Services.AddTraxGraphQL();
 builder.Services.AddHealthChecks().AddTraxHealthCheck();
 

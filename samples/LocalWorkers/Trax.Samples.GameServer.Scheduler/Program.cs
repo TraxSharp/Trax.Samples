@@ -50,16 +50,16 @@ var connectionString =
 builder.Services.AddLogging(logging => logging.AddConsole());
 builder.AddTraxDashboard();
 
-builder.Services.AddTraxEffects(options =>
-    options
-        .AddServiceTrainBus(
-            assemblies: [typeof(ManifestNames).Assembly, typeof(ManifestManagerTrain).Assembly]
+builder.Services.AddTrax(trax =>
+    trax.AddEffects(effects =>
+            effects
+                .UsePostgres(connectionString)
+                .AddDataContextLogging()
+                .AddJson()
+                .SaveTrainParameters()
+                .AddStepProgress()
         )
-        .AddPostgresEffect(connectionString)
-        .AddEffectDataContextLogging()
-        .AddJsonEffect()
-        .SaveTrainParameters()
-        .AddStepProgress()
+        .AddMediator(typeof(ManifestNames).Assembly, typeof(ManifestManagerTrain).Assembly)
         .AddScheduler(scheduler =>
         {
             // ── Global Configuration ────────────────────────────────────────

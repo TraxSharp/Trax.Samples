@@ -36,15 +36,11 @@ builder.Services.AddLogging(logging => logging.AddConsole());
 builder.AddTraxDashboard();
 
 // ── Register Trax Effect + Scheduler ────────────────────────────────────
-builder.Services.AddTraxEffects(options =>
-    options
-        .AddServiceTrainBus(
-            assemblies: [typeof(Program).Assembly, typeof(ManifestManagerTrain).Assembly]
+builder.Services.AddTrax(trax =>
+    trax.AddEffects(effects =>
+            effects.UsePostgres(connectionString).AddJson().SaveTrainParameters().AddStepProgress()
         )
-        .AddPostgresEffect(connectionString)
-        .AddJsonEffect()
-        .SaveTrainParameters()
-        .AddStepProgress()
+        .AddMediator(typeof(Program).Assembly, typeof(ManifestManagerTrain).Assembly)
         .AddScheduler(scheduler =>
         {
             scheduler.UseLocalWorkers();

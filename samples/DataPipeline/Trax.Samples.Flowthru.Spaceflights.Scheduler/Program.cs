@@ -73,16 +73,16 @@ builder.Services.AddFlowthru(flowthru =>
 });
 
 // ── Register Trax.Core Effect + Scheduler ──────────────────────────────────
-builder.Services.AddTraxEffects(options =>
-    options
-        .AddServiceTrainBus(
-            assemblies: [typeof(Program).Assembly, typeof(ManifestManagerTrain).Assembly]
+builder.Services.AddTrax(trax =>
+    trax.AddEffects(effects =>
+            effects
+                .UsePostgres(connectionString)
+                .AddDataContextLogging()
+                .AddJson()
+                .SaveTrainParameters()
+                .AddStepProgress()
         )
-        .AddPostgresEffect(connectionString)
-        .AddEffectDataContextLogging()
-        .AddJsonEffect()
-        .SaveTrainParameters()
-        .AddStepProgress()
+        .AddMediator(typeof(ManifestNames).Assembly, typeof(ManifestManagerTrain).Assembly)
         .AddScheduler(scheduler =>
         {
             scheduler
@@ -92,7 +92,6 @@ builder.Services.AddTraxEffects(options =>
                     cleanup.AddTrainType<IDataScienceTrain>();
                     cleanup.AddTrainType<IReportingTrain>();
                 })
-                .JobDispatcherPollingInterval(TimeSpan.FromSeconds(2))
                 .UseLocalWorkers();
 
             // ── Spaceflights Pipeline Topology ──────────────────────────────

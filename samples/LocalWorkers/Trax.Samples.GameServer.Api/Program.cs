@@ -14,7 +14,7 @@
 //   1. Start Postgres:  cd Trax.Samples && docker compose up -d
 //   2. Pack local:      ./pack-local.sh
 //   3. Start scheduler: dotnet run --project samples/Trax.Samples.GameServer.Scheduler
-//   4. Start API:       dotnet run --project samples/Trax.Samples.GameServer.GraphQL
+//   4. Start API:       dotnet run --project samples/Trax.Samples.GameServer.Api
 //
 // Try it:
 //   Open http://localhost:5002/trax/graphql in a browser for Banana Cake Pop IDE
@@ -85,13 +85,15 @@ builder.Services.AddAuthorization(options =>
 // ── Register Trax Effect + Mediator (trains, bus, discovery, execution) ──
 // No AddScheduler() — the scheduler is a separate process.
 // All trains (API + scheduler) are registered so queueTrain can discover them.
-builder.Services.AddTraxEffects(options =>
-    options
-        .AddServiceTrainBus(assemblies: [typeof(ManifestNames).Assembly])
-        .AddPostgresEffect(connectionString)
-        .AddEffectDataContextLogging()
-        .AddJsonEffect()
-        .SaveTrainParameters()
+builder.Services.AddTrax(trax =>
+    trax.AddEffects(effects =>
+            effects
+                .UsePostgres(connectionString)
+                .AddDataContextLogging()
+                .AddJson()
+                .SaveTrainParameters()
+        )
+        .AddMediator(typeof(ManifestNames).Assembly)
 );
 
 // ── Register GraphQL API ────────────────────────────────────────────────

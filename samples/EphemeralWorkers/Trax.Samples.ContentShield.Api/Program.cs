@@ -10,7 +10,8 @@
 //   - Query trains (LookupModerationResult) run synchronously on this process
 //   - Queued trains (ReviewContent, SendViolationNotice, GenerateModerationReport)
 //     are POSTed to the Runner via HTTP — no background_job table, no DB polling
-//   - Run mutations (GenerateModerationReport) execute synchronously on this process
+//   - Run mutations (GenerateModerationReport) are also offloaded to the Runner
+//     via UseRemoteRun() — the API blocks until the Runner returns the output
 //
 // GraphQL schema (auto-generated from train attributes):
 //   Queries:    lookupModerationResult                — [TraxQuery]
@@ -41,7 +42,7 @@
 //        -H "Content-Type: application/json" \
 //        -d '{"query":"mutation { dispatch { queueReviewContent(input: {contentId: \"test-002\", contentType: \"video\", contentBody: \"suspicious video content\"}) { workQueueId externalId } } }"}'
 //
-//   # Generate a moderation report (runs synchronously on API)
+//   # Generate a moderation report (offloaded to Runner via UseRemoteRun, blocks until done)
 //   curl -X POST http://localhost:5204/trax/graphql \
 //        -H "Content-Type: application/json" \
 //        -d '{"query":"mutation { dispatch { runGenerateModerationReport(input: {reportPeriod: \"Daily\"}) { totalReviewed totalFlagged topViolationTypes falsePositiveRate } } }"}'
@@ -94,6 +95,13 @@ builder.Services.AddTrax(trax =>
             scheduler.UseRemoteWorkers(remote =>
                 remote.BaseUrl = "http://localhost:5205/trax/execute"
             );
+
+            // ── Remote run offloading ────────────────────────────────────────
+            // UseRemoteRun replaces the default LocalRunExecutor with
+            // HttpRunExecutor. When a GraphQL run* mutation is called, the
+            // request is POSTed to the Runner and blocks until the train
+            // completes. Without this, runs execute in-process on this API.
+            scheduler.UseRemoteRun(remote => remote.BaseUrl = "http://localhost:5205/trax/run");
         })
 );
 

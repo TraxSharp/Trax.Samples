@@ -20,8 +20,9 @@
 //   3. Start runner:    dotnet run --project samples/EphemeralWorkers/Trax.Samples.ContentShield.Runner
 //   4. Start API:       dotnet run --project samples/EphemeralWorkers/Trax.Samples.ContentShield.Api
 //
-// Endpoint:
-//   POST http://localhost:5205/trax/execute  (receives RemoteJobRequest JSON)
+// Endpoints:
+//   POST http://localhost:5205/trax/execute  (receives RemoteJobRequest JSON — queue path)
+//   POST http://localhost:5205/trax/run      (receives RemoteRunRequest JSON — synchronous run path)
 // ─────────────────────────────────────────────────────────────────────────────
 
 using Trax.Effect.Broadcaster.RabbitMQ.Extensions;
@@ -70,7 +71,10 @@ builder.Services.AddTraxJobRunner();
 
 var app = builder.Build();
 
-// Maps POST /trax/execute — receives RemoteJobRequest, runs JobRunnerTrain
+// Maps POST /trax/execute — receives RemoteJobRequest, runs JobRunnerTrain (queue path)
 app.UseTraxJobRunner();
+
+// Maps POST /trax/run — receives RemoteRunRequest, runs train synchronously and returns output
+app.UseTraxRunEndpoint();
 
 app.Run();

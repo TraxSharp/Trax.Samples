@@ -47,7 +47,8 @@ public class Function
 
     public async Task FunctionHandler(SQSEvent sqsEvent, ILambdaContext context)
     {
-        await _handler.HandleAsync(sqsEvent, CancellationToken.None);
+        using var cts = new CancellationTokenSource(context.RemainingTime);
+        await _handler.HandleAsync(sqsEvent, cts.Token);
     }
 
     private static IServiceProvider BuildServiceProvider()

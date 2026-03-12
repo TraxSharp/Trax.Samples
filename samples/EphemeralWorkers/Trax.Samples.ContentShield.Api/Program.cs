@@ -59,6 +59,8 @@ using Trax.Effect.Provider.Parameter.Extensions;
 using Trax.Effect.StepProvider.Progress.Extensions;
 using Trax.Mediator.Extensions;
 using Trax.Samples.ContentShield.Trains.ContentReview.ReviewContent;
+using Trax.Samples.ContentShield.Trains.Notices.SendViolationNotice;
+using Trax.Samples.ContentShield.Trains.Reports.GenerateModerationReport;
 using Trax.Scheduler.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -84,11 +86,18 @@ builder.Services.AddTrax(trax =>
         .AddScheduler(scheduler =>
             scheduler
                 // ── Ephemeral dispatch only — no scheduled jobs ──────────────────
-                // UseRemoteWorkers replaces the default PostgresJobSubmitter with
-                // HttpJobSubmitter. When a GraphQL mutation is called with mode: QUEUE,
+                // UseRemoteWorkers routes the specified trains to HttpJobSubmitter.
+                // When a GraphQL mutation is called with mode: QUEUE for a routed train,
                 // the JobDispatcher POSTs the job directly to the Runner via HTTP.
                 // No cron schedules, no intervals, no manifests — purely on-demand.
-                .UseRemoteWorkers(remote => remote.BaseUrl = "http://localhost:5205/trax/execute")
+                .UseRemoteWorkers(
+                    remote => remote.BaseUrl = "http://localhost:5205/trax/execute",
+                    routing =>
+                        routing
+                            .ForTrain<IReviewContentTrain>()
+                            .ForTrain<ISendViolationNoticeTrain>()
+                            .ForTrain<IGenerateModerationReportTrain>()
+                )
                 // ── Remote run offloading ────────────────────────────────────────
                 // UseRemoteRun replaces the default LocalRunExecutor with
                 // HttpRunExecutor. When a GraphQL mutation runs (mode: RUN), the

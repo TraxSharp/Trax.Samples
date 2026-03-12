@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Trax.Effect.Broadcaster.RabbitMQ" Version="1.*" />
     <PackageReference Include="Trax.Runner.Lambda" Version="1.*" />
   </ItemGroup>
 

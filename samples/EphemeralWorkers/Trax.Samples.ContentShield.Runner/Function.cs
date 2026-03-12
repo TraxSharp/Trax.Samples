@@ -10,6 +10,8 @@
 //   2. API Gateway routes /trax/execute and /trax/run to this Lambda
 //   3. TraxLambdaFunction handles deserialization, execution, and response
 //   4. Results are persisted to the shared Postgres database
+//   5. Lifecycle events are broadcast via RabbitMQ so the API can push
+//      real-time GraphQL subscription updates
 //
 // Local development:
 //   dotnet run --project samples/EphemeralWorkers/Trax.Samples.ContentShield.Runner
@@ -25,6 +27,7 @@ using Amazon.Lambda.Core;
 using Amazon.Lambda.Serialization.SystemTextJson;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Trax.Effect.Broadcaster.RabbitMQ.Extensions;
 using Trax.Effect.Data.Postgres.Extensions;
 using Trax.Effect.Extensions;
 using Trax.Mediator.Extensions;
@@ -46,8 +49,16 @@ public class Function : TraxLambdaFunction
             configuration.GetConnectionString("TraxDatabase")
             ?? throw new InvalidOperationException("Connection string 'TraxDatabase' not found.");
 
+        var rabbitMqConnectionString =
+            configuration.GetConnectionString("RabbitMQ")
+            ?? throw new InvalidOperationException("Connection string 'RabbitMQ' not found.");
+
         services.AddTrax(trax =>
-            trax.AddEffects(effects => effects.UsePostgres(connectionString))
+            trax.AddEffects(effects =>
+                    effects
+                        .UsePostgres(connectionString)
+                        .UseBroadcaster(b => b.UseRabbitMq(rabbitMqConnectionString))
+                )
                 .AddMediator(typeof(ReviewContentTrain).Assembly)
         );
     }

@@ -8,7 +8,10 @@ namespace Trax.Samples.GameServer.Data.Models;
 /// A player profile stored in the game database. Automatically exposed as a
 /// paginated, filterable, sortable GraphQL query via [TraxQueryModel].
 /// </summary>
-[TraxQueryModel(Description = "Player profiles with rank, wins, losses, and rating")]
+[TraxQueryModel(
+    Namespace = GraphQLNamespaces.Players,
+    Description = "Player profiles with rank, wins, losses, and rating"
+)]
 [Table("player_records", Schema = "game")]
 public class PlayerRecord
 {

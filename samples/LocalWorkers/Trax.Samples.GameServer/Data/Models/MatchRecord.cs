@@ -8,7 +8,11 @@ namespace Trax.Samples.GameServer.Data.Models;
 /// A completed match record. Exposed as a GraphQL query with pagination and
 /// filtering but without sorting (demonstrates per-model feature configuration).
 /// </summary>
-[TraxQueryModel(Description = "Match history", Sorting = false)]
+[TraxQueryModel(
+    Namespace = GraphQLNamespaces.Matches,
+    Description = "Match history",
+    Sorting = false
+)]
 [Table("match_records", Schema = "game")]
 public class MatchRecord
 {

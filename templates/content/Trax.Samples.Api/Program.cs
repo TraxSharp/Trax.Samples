@@ -42,8 +42,7 @@ builder.Services.AddLogging(logging => logging.AddConsole());
 
 // ── Register Trax Effect + Mediator ─────────────────────────────────────
 builder.Services.AddTrax(trax =>
-    trax.AddEffects(effects => effects.UseInMemory())
-    .AddMediator(typeof(Program).Assembly)
+    trax.AddEffects(effects => effects.UseInMemory()).AddMediator(typeof(Program).Assembly)
 );
 
 // ── Register GraphQL API ────────────────────────────────────────────────

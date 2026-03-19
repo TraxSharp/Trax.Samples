@@ -28,7 +28,6 @@ public class TestProjectRegistry
     private static List<TestProject> ScanProjects(string root, ILogger logger)
     {
         var projects = new List<TestProject>();
-        var repoName = Path.GetFileName(root);
         var testsDir = Path.Combine(root, "tests");
 
         if (!Directory.Exists(testsDir))
@@ -51,14 +50,7 @@ public class TestProjectRegistry
             if (!IsNUnitProject(csprojPath))
                 continue;
 
-            projects.Add(
-                new TestProject
-                {
-                    Name = projectName,
-                    ProjectPath = csprojPath,
-                    RepoName = repoName,
-                }
-            );
+            projects.Add(new TestProject { Name = projectName, ProjectPath = csprojPath });
 
             logger.LogDebug("Discovered test project {Name}", projectName);
         }

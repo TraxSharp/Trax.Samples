@@ -22,10 +22,10 @@
 //
 // Try it:
 //   # List all test projects
-//   { discover { discoverTestProjects(input: {}) { projects { name repoName requiresPostgres } } } }
+//   { discover { discoverTestProjects { projects { name projectPath } } } }
 //
 //   # Queue a test run
-//   mutation { dispatch { runTests(input: { projectName: "Trax.Core.Tests.Unit", projectPath: "/path/to/Trax.Core.Tests.Unit.csproj" }) { externalId workQueueId } } }
+//   mutation { dispatch { runTests(input: { projectName: "Trax.Samples.ChatService.Tests", projectPath: "/path/to/Trax.Samples.ChatService.Tests.csproj" }) { externalId } } }
 //
 //   # Subscribe to results
 //   subscription { onTrainCompleted { externalId trainName output } }

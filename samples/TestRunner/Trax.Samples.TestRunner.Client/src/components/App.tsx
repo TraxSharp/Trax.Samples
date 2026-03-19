@@ -93,7 +93,7 @@ export function App() {
       <header className="app-header">
         <h1>Trax Test Runner</h1>
         <p className="app-subtitle">
-          Run NUnit tests across the Trax monorepo
+          Run NUnit tests across Trax.Samples
         </p>
         <label className="build-toggle">
           <input

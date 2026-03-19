@@ -1,7 +1,6 @@
 export interface TestProject {
   name: string;
   projectPath: string;
-  repoName: string;
 }
 
 export interface TestCaseResult {

@@ -72,7 +72,6 @@ export function TestProjectList({
         <thead>
           <tr>
             <th>Project</th>
-            <th>Repository</th>
             <th></th>
           </tr>
         </thead>
@@ -80,7 +79,6 @@ export function TestProjectList({
           {projects.map((project) => (
             <tr key={project.name}>
               <td className="project-name">{project.name}</td>
-              <td className="project-repo">{project.repoName}</td>
               <td>
                 <button
                   className="run-button"

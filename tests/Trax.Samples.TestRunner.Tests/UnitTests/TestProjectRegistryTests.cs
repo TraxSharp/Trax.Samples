@@ -64,17 +64,6 @@ public class TestProjectRegistryTests
     }
 
     [Test]
-    public void Projects_SetsRepoNameFromRoot()
-    {
-        CreateFakeProject("Trax.Core.Tests.Unit", nunit: true);
-
-        var registry = CreateRegistry();
-
-        var project = registry.Projects.Single();
-        project.RepoName.Should().Be(Path.GetFileName(_tempDir));
-    }
-
-    [Test]
     public void Projects_AreSortedByName()
     {
         CreateFakeProject("Trax.Effect.Tests.Unit", nunit: true);

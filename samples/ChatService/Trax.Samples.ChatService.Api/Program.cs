@@ -82,9 +82,9 @@ builder.Services.AddTrax(trax =>
                 .UsePostgres(traxConnectionString)
                 .AddJson()
                 .SaveTrainParameters()
-                .AddLifecycleHook<ChatLifecycleHookFactory>()
+                .AddLifecycleHook<ChatLifecycleHook>()
         )
-        .AddMediator(typeof(ChatLifecycleHookFactory).Assembly)
+        .AddMediator(typeof(ChatLifecycleHook).Assembly)
 );
 
 // ── Register GraphQL API + chat subscriptions ───────────────────────────────

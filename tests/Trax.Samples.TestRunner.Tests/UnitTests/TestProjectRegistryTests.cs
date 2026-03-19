@@ -30,8 +30,8 @@ public class TestProjectRegistryTests
     [Test]
     public void Projects_ExcludesArrayLoggerProjects()
     {
-        CreateFakeProject("Trax.Core", "Trax.Core.Tests.Unit", nunit: true);
-        CreateFakeProject("Trax.Core", "Trax.Core.Tests.ArrayLogger", nunit: true);
+        CreateFakeProject("Trax.Core.Tests.Unit", nunit: true);
+        CreateFakeProject("Trax.Core.Tests.ArrayLogger", nunit: true);
 
         var registry = CreateRegistry();
 
@@ -42,8 +42,8 @@ public class TestProjectRegistryTests
     [Test]
     public void Projects_ExcludesBenchmarkProjects()
     {
-        CreateFakeProject("Trax.Core", "Trax.Core.Tests.Unit", nunit: true);
-        CreateFakeProject("Trax.Core", "Trax.Core.Benchmarks", nunit: true);
+        CreateFakeProject("Trax.Core.Tests.Unit", nunit: true);
+        CreateFakeProject("Trax.Core.Benchmarks", nunit: true);
 
         var registry = CreateRegistry();
 
@@ -54,8 +54,8 @@ public class TestProjectRegistryTests
     [Test]
     public void Projects_FlagsPostgresProjectsCorrectly()
     {
-        CreateFakeProject("Trax.Effect", "Trax.Effect.Tests.Integration", nunit: true);
-        CreateFakeProject("Trax.Effect", "Trax.Effect.Tests.Unit", nunit: true);
+        CreateFakeProject("Trax.Effect.Tests.Integration", nunit: true);
+        CreateFakeProject("Trax.Effect.Tests.Unit", nunit: true);
 
         var registry = CreateRegistry();
 
@@ -71,8 +71,8 @@ public class TestProjectRegistryTests
     [Test]
     public void Projects_OnlyIncludesNUnitProjects()
     {
-        CreateFakeProject("Trax.Core", "Trax.Core.Tests.Unit", nunit: true);
-        CreateFakeProject("Trax.Core", "Trax.Core.Tests.Other", nunit: false);
+        CreateFakeProject("Trax.Core.Tests.Unit", nunit: true);
+        CreateFakeProject("Trax.Core.Tests.Other", nunit: false);
 
         var registry = CreateRegistry();
 
@@ -81,30 +81,26 @@ public class TestProjectRegistryTests
     }
 
     [Test]
-    public void Projects_SetsRepoNameFromDirectoryStructure()
+    public void Projects_SetsRepoNameFromRoot()
     {
-        CreateFakeProject("Trax.Core", "Trax.Core.Tests.Unit", nunit: true);
-        CreateFakeProject("Trax.Effect", "Trax.Effect.Tests.Unit", nunit: true);
+        CreateFakeProject("Trax.Core.Tests.Unit", nunit: true);
 
         var registry = CreateRegistry();
 
-        var coreProject = registry.Projects.Single(p => p.Name == "Trax.Core.Tests.Unit");
-        coreProject.RepoName.Should().Be("Trax.Core");
-
-        var effectProject = registry.Projects.Single(p => p.Name == "Trax.Effect.Tests.Unit");
-        effectProject.RepoName.Should().Be("Trax.Effect");
+        var project = registry.Projects.Single();
+        project.RepoName.Should().Be(Path.GetFileName(_tempDir));
     }
 
     [Test]
-    public void Projects_AreSortedByRepoThenName()
+    public void Projects_AreSortedByName()
     {
-        CreateFakeProject("Trax.Effect", "Trax.Effect.Tests.Unit", nunit: true);
-        CreateFakeProject("Trax.Core", "Trax.Core.Tests.Unit", nunit: true);
-        CreateFakeProject("Trax.Core", "Trax.Core.Tests.Integration", nunit: true);
+        CreateFakeProject("Trax.Effect.Tests.Unit", nunit: true);
+        CreateFakeProject("Trax.Core.Tests.Unit", nunit: true);
+        CreateFakeProject("Trax.Core.Tests.Integration", nunit: true);
 
         var registry = CreateRegistry();
 
-        var names = registry.Projects.Select(p => $"{p.RepoName}/{p.Name}").ToList();
+        var names = registry.Projects.Select(p => p.Name).ToList();
         names.Should().BeInAscendingOrder();
     }
 
@@ -128,16 +124,16 @@ public class TestProjectRegistryTests
     {
         var config = new ConfigurationBuilder()
             .AddInMemoryCollection(
-                new Dictionary<string, string?> { ["TestRunner:MonorepoRoot"] = _tempDir }
+                new Dictionary<string, string?> { ["TestRunner:Root"] = _tempDir }
             )
             .Build();
 
         return new TestProjectRegistry(config, NullLogger<TestProjectRegistry>.Instance);
     }
 
-    private void CreateFakeProject(string repoName, string projectName, bool nunit)
+    private void CreateFakeProject(string projectName, bool nunit)
     {
-        var projectDir = Path.Combine(_tempDir, repoName, "tests", projectName);
+        var projectDir = Path.Combine(_tempDir, "tests", projectName);
         Directory.CreateDirectory(projectDir);
 
         var nunitRef = nunit

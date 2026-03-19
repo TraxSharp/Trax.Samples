@@ -21,14 +21,12 @@ public class TestProjectRegistry
 
     public TestProjectRegistry(IConfiguration configuration, ILogger<TestProjectRegistry> logger)
     {
-        var monorepoRoot =
-            configuration["TestRunner:MonorepoRoot"]
-            ?? throw new InvalidOperationException(
-                "TestRunner:MonorepoRoot configuration is required."
-            );
+        var root =
+            configuration["TestRunner:Root"]
+            ?? throw new InvalidOperationException("TestRunner:Root configuration is required.");
 
-        var resolvedRoot = Path.GetFullPath(monorepoRoot);
-        logger.LogInformation("TestProjectRegistry scanning monorepo at {Root}", resolvedRoot);
+        var resolvedRoot = Path.GetFullPath(root);
+        logger.LogInformation("TestProjectRegistry scanning {Root}", resolvedRoot);
 
         _projects = new Lazy<IReadOnlyList<TestProject>>(() => ScanProjects(resolvedRoot, logger));
     }
@@ -38,45 +36,44 @@ public class TestProjectRegistry
     private static List<TestProject> ScanProjects(string root, ILogger logger)
     {
         var projects = new List<TestProject>();
+        var repoName = Path.GetFileName(root);
+        var testsDir = Path.Combine(root, "tests");
 
-        foreach (var repoDir in Directory.GetDirectories(root))
+        if (!Directory.Exists(testsDir))
         {
-            var repoName = Path.GetFileName(repoDir);
-            var testsDir = Path.Combine(repoDir, "tests");
+            logger.LogWarning("No tests/ directory found at {Root}", root);
+            return projects;
+        }
 
-            if (!Directory.Exists(testsDir))
+        foreach (var projectDir in Directory.GetDirectories(testsDir))
+        {
+            var projectName = Path.GetFileName(projectDir);
+
+            if (ExcludedSuffixes.Any(suffix => projectName.EndsWith(suffix)))
                 continue;
 
-            foreach (var projectDir in Directory.GetDirectories(testsDir))
-            {
-                var projectName = Path.GetFileName(projectDir);
+            var csprojPath = Path.Combine(projectDir, $"{projectName}.csproj");
+            if (!File.Exists(csprojPath))
+                continue;
 
-                if (ExcludedSuffixes.Any(suffix => projectName.EndsWith(suffix)))
-                    continue;
+            if (!IsNUnitProject(csprojPath))
+                continue;
 
-                var csprojPath = Path.Combine(projectDir, $"{projectName}.csproj");
-                if (!File.Exists(csprojPath))
-                    continue;
+            projects.Add(
+                new TestProject
+                {
+                    Name = projectName,
+                    ProjectPath = csprojPath,
+                    RepoName = repoName,
+                    RequiresPostgres = PostgresProjects.Contains(projectName),
+                }
+            );
 
-                if (!IsNUnitProject(csprojPath))
-                    continue;
-
-                projects.Add(
-                    new TestProject
-                    {
-                        Name = projectName,
-                        ProjectPath = csprojPath,
-                        RepoName = repoName,
-                        RequiresPostgres = PostgresProjects.Contains(projectName),
-                    }
-                );
-
-                logger.LogDebug("Discovered test project {Name} in {Repo}", projectName, repoName);
-            }
+            logger.LogDebug("Discovered test project {Name}", projectName);
         }
 
         logger.LogInformation("Discovered {Count} test projects", projects.Count);
-        return projects.OrderBy(p => p.RepoName).ThenBy(p => p.Name).ToList();
+        return projects.OrderBy(p => p.Name).ToList();
     }
 
     private static bool IsNUnitProject(string csprojPath)

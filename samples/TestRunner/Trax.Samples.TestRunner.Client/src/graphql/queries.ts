@@ -8,7 +8,6 @@ export const DISCOVER_TEST_PROJECTS = gql`
           name
           projectPath
           repoName
-          requiresPostgres
         }
       }
     }

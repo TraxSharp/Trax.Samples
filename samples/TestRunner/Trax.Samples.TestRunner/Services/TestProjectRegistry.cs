@@ -7,14 +7,6 @@ namespace Trax.Samples.TestRunner.Services;
 
 public class TestProjectRegistry
 {
-    private static readonly HashSet<string> PostgresProjects =
-    [
-        "Trax.Effect.Tests.Integration",
-        "Trax.Mediator.Tests.Postgres.Integration",
-        "Trax.Scheduler.Tests.Integration",
-        "Trax.Scheduler.Tests.Stress",
-    ];
-
     private static readonly HashSet<string> ExcludedSuffixes = ["ArrayLogger", "Benchmarks"];
 
     private readonly Lazy<IReadOnlyList<TestProject>> _projects;
@@ -65,7 +57,6 @@ public class TestProjectRegistry
                     Name = projectName,
                     ProjectPath = csprojPath,
                     RepoName = repoName,
-                    RequiresPostgres = PostgresProjects.Contains(projectName),
                 }
             );
 

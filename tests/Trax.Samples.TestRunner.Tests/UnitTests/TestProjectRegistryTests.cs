@@ -52,23 +52,6 @@ public class TestProjectRegistryTests
     }
 
     [Test]
-    public void Projects_FlagsPostgresProjectsCorrectly()
-    {
-        CreateFakeProject("Trax.Effect.Tests.Integration", nunit: true);
-        CreateFakeProject("Trax.Effect.Tests.Unit", nunit: true);
-
-        var registry = CreateRegistry();
-
-        var postgresProject = registry.Projects.Single(p =>
-            p.Name == "Trax.Effect.Tests.Integration"
-        );
-        postgresProject.RequiresPostgres.Should().BeTrue();
-
-        var unitProject = registry.Projects.Single(p => p.Name == "Trax.Effect.Tests.Unit");
-        unitProject.RequiresPostgres.Should().BeFalse();
-    }
-
-    [Test]
     public void Projects_OnlyIncludesNUnitProjects()
     {
         CreateFakeProject("Trax.Core.Tests.Unit", nunit: true);

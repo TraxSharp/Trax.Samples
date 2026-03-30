@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Trax.Effect.Data.Services.DataContext;
 using Trax.Effect.Data.Services.IDataContextFactory;
 using Trax.Samples.GameServer.Auth;
-using Trax.Samples.GameServer.E2E.Factories;
+using Trax.Samples.GameServer.E2E.ApiTests;
 using Trax.Samples.GameServer.E2E.Utilities;
 
 namespace Trax.Samples.GameServer.E2E.Fixtures;
@@ -11,8 +11,6 @@ namespace Trax.Samples.GameServer.E2E.Fixtures;
 [TestFixture]
 public abstract class ApiTestFixture
 {
-    private GameServerApiFactory Factory { get; set; } = null!;
-
     protected HttpClient HttpClient { get; private set; } = null!;
 
     protected GraphQLClient GraphQL { get; private set; } = null!;
@@ -24,22 +22,20 @@ public abstract class ApiTestFixture
     [OneTimeSetUp]
     public void OneTimeSetUp()
     {
-        Factory = new GameServerApiFactory();
-        HttpClient = Factory.CreateClient();
+        HttpClient = SharedApiSetup.Factory.CreateClient();
         GraphQL = new GraphQLClient(HttpClient);
     }
 
     [OneTimeTearDown]
-    public async Task OneTimeTearDown()
+    public void OneTimeTearDown()
     {
         HttpClient.Dispose();
-        await Factory.DisposeAsync();
     }
 
     [SetUp]
     public virtual async Task SetUp()
     {
-        Scope = Factory.Services.CreateScope();
+        Scope = SharedApiSetup.Factory.Services.CreateScope();
         var dataContextFactory =
             Scope.ServiceProvider.GetRequiredService<IDataContextProviderFactory>();
         DataContext = (IDataContext)dataContextFactory.Create();

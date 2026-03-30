@@ -1,4 +1,7 @@
+using Microsoft.EntityFrameworkCore;
+using Trax.Effect.Enums;
 using Trax.Samples.GameServer.E2E.Fixtures;
+using Trax.Samples.GameServer.E2E.Utilities;
 
 namespace Trax.Samples.GameServer.E2E.ApiTests;
 
@@ -34,6 +37,17 @@ public class GraphQLMutationTests : ApiTestFixture
             .GetProperty("externalId")
             .GetString();
         externalId.Should().NotBeNullOrEmpty();
+
+        // Verify the train actually executed and metadata was persisted.
+        var metadata = await TrainStatePoller.WaitForMetadataByTrainName(
+            DataContext,
+            "BanPlayer",
+            TrainState.Completed,
+            TimeSpan.FromSeconds(5)
+        );
+
+        metadata.Should().NotBeNull();
+        metadata.ExternalId.Should().Be(externalId);
     }
 
     [Test]
@@ -71,7 +85,20 @@ public class GraphQLMutationTests : ApiTestFixture
             .BeFalse($"GraphQL error: {result.FirstErrorMessage} (HTTP {result.StatusCode})");
 
         var dispatch = result.GetData("dispatch", "matches", "processMatchResult");
-        dispatch.GetProperty("externalId").GetString().Should().NotBeNullOrEmpty();
-        dispatch.GetProperty("workQueueId").GetInt64().Should().BeGreaterThan(0);
+        var externalId = dispatch.GetProperty("externalId").GetString();
+        var workQueueId = dispatch.GetProperty("workQueueId").GetInt64();
+
+        externalId.Should().NotBeNullOrEmpty();
+        workQueueId.Should().BeGreaterThan(0);
+
+        // Verify the work queue entry actually exists in the database.
+        DataContext.Reset();
+        var workQueueEntry = await DataContext
+            .WorkQueues.AsNoTracking()
+            .FirstOrDefaultAsync(wq => wq.Id == workQueueId);
+
+        workQueueEntry.Should().NotBeNull("the work queue entry should exist in the database");
+        workQueueEntry!.TrainName.Should().Contain("ProcessMatchResult");
+        workQueueEntry.Input.Should().Contain("e2e-queue-001");
     }
 }

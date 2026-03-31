@@ -27,7 +27,15 @@ public class SharedHubSetup
     [OneTimeTearDown]
     public async Task OneTimeTearDown()
     {
-        await Factory.DisposeAsync();
+        try
+        {
+            await Factory.DisposeAsync();
+        }
+        catch (RabbitMQ.Client.Exceptions.AlreadyClosedException)
+        {
+            // RabbitMQ connection may already be closed during shutdown — safe to ignore.
+        }
+
         Npgsql.NpgsqlConnection.ClearAllPools();
     }
 

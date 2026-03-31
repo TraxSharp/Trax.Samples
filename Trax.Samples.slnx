@@ -31,6 +31,8 @@
     <Project Path="tests/Trax.Samples.ChatService.Tests/Trax.Samples.ChatService.Tests.csproj" />
     <Project Path="tests/Trax.Samples.TestRunner.Tests/Trax.Samples.TestRunner.Tests.csproj" />
     <Project Path="tests/Trax.Samples.GameServer.E2E/Trax.Samples.GameServer.E2E.csproj" />
+    <Project Path="tests/Trax.Samples.ChatService.E2E/Trax.Samples.ChatService.E2E.csproj" />
+    <Project Path="tests/Trax.Samples.EnergyHub.E2E/Trax.Samples.EnergyHub.E2E.csproj" />
   </Folder>
   <Folder Name="/templates/">
     <Project Path="templates/Trax.Samples.Templates.csproj" />

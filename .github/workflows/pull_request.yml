@@ -19,5 +19,5 @@ jobs:
           dotnet-quality: preview
       - run: dotnet tool restore
       - run: dotnet csharpier check .
-      - run: dotnet build --configuration Release
-      - run: dotnet test --configuration Release --no-build
+      - run: dotnet build Trax.Samples.slnx --configuration Release
+      - run: dotnet test Trax.Samples.slnx --configuration Release --no-build

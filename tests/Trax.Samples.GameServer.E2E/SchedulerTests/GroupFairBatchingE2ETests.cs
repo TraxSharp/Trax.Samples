@@ -23,6 +23,8 @@ namespace Trax.Samples.GameServer.E2E.SchedulerTests;
 public class GroupFairBatchingE2ETests : SchedulerTestFixture
 {
     [Test]
+    [Category("RequiresSchedulerFix")]
+    [Ignore("Requires Trax.Scheduler with group-fair batching (TraxSharp/Trax.Scheduler#44)")]
     public async Task ManifestManager_GroupFairBatching_SmallGroupNotStarved()
     {
         // Arrange — disable ALL pre-seeded GameServer manifest groups so only our

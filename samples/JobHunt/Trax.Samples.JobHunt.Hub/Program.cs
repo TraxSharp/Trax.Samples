@@ -37,6 +37,7 @@ using Trax.Effect.Provider.Parameter.Extensions;
 using Trax.Mediator.Extensions;
 using Trax.Samples.JobHunt.Auth;
 using Trax.Samples.JobHunt.Data;
+using Trax.Samples.JobHunt.Providers.Llm;
 using Trax.Samples.JobHunt.Providers.Scraper;
 using Trax.Samples.JobHunt.Trains.AddJob;
 
@@ -77,6 +78,8 @@ builder.Services.AddTrax(trax =>
 );
 
 // ── Pluggable providers ─────────────────────────────────────────────────────
+builder.Services.Configure<OllamaOptions>(builder.Configuration.GetSection("Ollama"));
+builder.Services.AddHttpClient<ILlmProvider, OllamaLlmProvider>();
 builder.Services.AddHttpClient<IJobScraper, GenericHtmlScraper>();
 
 // ── GraphQL API (no type extensions until Phase 5 adds subscriptions) ───────

@@ -8,6 +8,7 @@ public class JobHuntDbContext(DbContextOptions<JobHuntDbContext> options) : DbCo
     public DbSet<User> Users => Set<User>();
     public DbSet<Job> Jobs => Set<Job>();
     public DbSet<Profile> Profiles => Set<Profile>();
+    public DbSet<Artifact> Artifacts => Set<Artifact>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -36,6 +37,16 @@ public class JobHuntDbContext(DbContextOptions<JobHuntDbContext> options) : DbCo
             entity.HasKey(e => e.Id);
             entity.Property(e => e.UserId).IsRequired();
             entity.HasIndex(e => e.UserId).IsUnique();
+        });
+
+        modelBuilder.Entity<Artifact>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.UserId).IsRequired();
+            entity.Property(e => e.Content).IsRequired();
+            entity.Property(e => e.ModelUsed).IsRequired();
+            entity.Property(e => e.Type).HasConversion<string>();
+            entity.HasIndex(e => new { e.JobId, e.UserId });
         });
     }
 }

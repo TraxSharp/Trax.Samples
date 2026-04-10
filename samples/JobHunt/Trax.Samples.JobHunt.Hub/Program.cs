@@ -37,8 +37,10 @@ using Trax.Effect.Provider.Parameter.Extensions;
 using Trax.Mediator.Extensions;
 using Trax.Samples.JobHunt.Auth;
 using Trax.Samples.JobHunt.Data;
+using Trax.Samples.JobHunt.Hooks;
 using Trax.Samples.JobHunt.Providers.Llm;
 using Trax.Samples.JobHunt.Providers.Scraper;
+using Trax.Samples.JobHunt.Subscriptions;
 using Trax.Samples.JobHunt.Trains.AddJob;
 using Trax.Samples.JobHunt.Trains.MonitorAllActiveJobs;
 using Trax.Samples.JobHunt.Trains.MonitorJob;
@@ -77,6 +79,7 @@ builder.Services.AddTrax(trax =>
                 .SaveTrainParameters()
                 .AddJunctionProgress()
                 .AddDataContextLogging()
+                .AddLifecycleHook<JobHuntLifecycleHookFactory>()
         )
         .AddMediator(typeof(IAddJobTrain).Assembly)
         .AddScheduler(scheduler =>
@@ -99,8 +102,8 @@ builder.Services.Configure<OllamaOptions>(builder.Configuration.GetSection("Olla
 builder.Services.AddHttpClient<ILlmProvider, OllamaLlmProvider>();
 builder.Services.AddHttpClient<IJobScraper, GenericHtmlScraper>();
 
-// ── GraphQL API (no type extensions until Phase 5 adds subscriptions) ───────
-builder.Services.AddTraxGraphQL();
+// ── GraphQL API + subscriptions ─────────────────────────────────────────────
+builder.Services.AddTraxGraphQL(graphql => graphql.AddTypeExtension<JobHuntSubscriptions>());
 
 builder.Services.AddHealthChecks().AddTraxHealthCheck();
 

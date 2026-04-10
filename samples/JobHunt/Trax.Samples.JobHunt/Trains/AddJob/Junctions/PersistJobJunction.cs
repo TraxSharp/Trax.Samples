@@ -39,6 +39,7 @@ public class PersistJobJunction(JobHuntDbContext db, ILogger<PersistJobJunction>
         return new AddJobOutput
         {
             JobId = job.Id,
+            UserId = input.UserId,
             Title = job.Title,
             Company = job.Company,
         };

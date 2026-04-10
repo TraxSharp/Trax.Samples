@@ -37,6 +37,7 @@ using Trax.Effect.Provider.Parameter.Extensions;
 using Trax.Mediator.Extensions;
 using Trax.Samples.JobHunt.Auth;
 using Trax.Samples.JobHunt.Data;
+using Trax.Samples.JobHunt.Trains.AddJob;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -71,7 +72,7 @@ builder.Services.AddTrax(trax =>
                 .AddJunctionProgress()
                 .AddDataContextLogging()
         )
-        .AddMediator(typeof(ApiKeyAuthHandler).Assembly)
+        .AddMediator(typeof(IAddJobTrain).Assembly)
 );
 
 // ── GraphQL API (no type extensions until Phase 5 adds subscriptions) ───────

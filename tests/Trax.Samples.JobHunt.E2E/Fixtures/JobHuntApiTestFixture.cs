@@ -66,7 +66,8 @@ public abstract class JobHuntApiTestFixture
 
     private async Task CleanData()
     {
-        // Clean JobHunt domain data first (in dependency order as more entities are added).
+        // Clean JobHunt domain data (in FK dependency order).
+        await JobHuntDb.Jobs.ExecuteDeleteAsync();
         await JobHuntDb.Users.ExecuteDeleteAsync();
 
         // Clean Trax execution data.

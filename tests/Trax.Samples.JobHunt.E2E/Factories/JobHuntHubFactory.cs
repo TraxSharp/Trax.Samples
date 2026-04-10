@@ -2,7 +2,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Trax.Samples.JobHunt.Providers.Llm;
+using Trax.Scheduler.Configuration;
 
 namespace Trax.Samples.JobHunt.E2E.Factories;
 
@@ -22,6 +24,23 @@ public class JobHuntHubFactory : WebApplicationFactory<Hub.Program>
             if (descriptor is not null)
                 services.Remove(descriptor);
             services.AddSingleton<ILlmProvider, StubLlmProvider>();
+
+            // Configure scheduler for fast test execution.
+            services.AddHostedService<ConfigureSchedulerForTestsService>();
         });
+    }
+
+    private sealed class ConfigureSchedulerForTestsService(SchedulerConfiguration config)
+        : IHostedService
+    {
+        public Task StartAsync(CancellationToken cancellationToken)
+        {
+            config.ManifestManagerPollingInterval = TimeSpan.FromSeconds(1);
+            config.JobDispatcherPollingInterval = TimeSpan.FromSeconds(1);
+            config.MaxActiveJobs = 100;
+            return Task.CompletedTask;
+        }
+
+        public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
     }
 }

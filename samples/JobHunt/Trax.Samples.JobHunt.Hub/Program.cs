@@ -40,6 +40,10 @@ using Trax.Samples.JobHunt.Data;
 using Trax.Samples.JobHunt.Providers.Llm;
 using Trax.Samples.JobHunt.Providers.Scraper;
 using Trax.Samples.JobHunt.Trains.AddJob;
+using Trax.Samples.JobHunt.Trains.MonitorAllActiveJobs;
+using Trax.Samples.JobHunt.Trains.MonitorJob;
+using Trax.Scheduler.Extensions;
+using Trax.Scheduler.Services.Scheduling;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -64,7 +68,7 @@ builder
 
 builder.Services.AddAuthorization();
 
-// ── Trax: Effects + Mediator (no scheduler yet, no trains yet) ──────────────
+// ── Trax: Effects + Mediator + Scheduler ────────────────────────────────────
 builder.Services.AddTrax(trax =>
     trax.AddEffects(effects =>
             effects
@@ -75,6 +79,19 @@ builder.Services.AddTrax(trax =>
                 .AddDataContextLogging()
         )
         .AddMediator(typeof(IAddJobTrain).Assembly)
+        .AddScheduler(scheduler =>
+            scheduler
+                .AddMetadataCleanup(cleanup =>
+                {
+                    cleanup.AddTrainType<IMonitorJobTrain>();
+                    cleanup.AddTrainType<IMonitorAllActiveJobsTrain>();
+                })
+                .Schedule<
+                    IMonitorAllActiveJobsTrain,
+                    MonitorAllActiveJobsInput,
+                    MonitorAllActiveJobsOutput
+                >("MonitorAllActiveJobs", new MonitorAllActiveJobsInput(), Every.Hours(24))
+        )
 );
 
 // ── Pluggable providers ─────────────────────────────────────────────────────

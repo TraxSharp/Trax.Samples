@@ -10,6 +10,10 @@ public class JobHuntDbContext(DbContextOptions<JobHuntDbContext> options) : DbCo
     public DbSet<Profile> Profiles => Set<Profile>();
     public DbSet<Artifact> Artifacts => Set<Artifact>();
     public DbSet<JobSnapshot> JobSnapshots => Set<JobSnapshot>();
+    public DbSet<Contact> Contacts => Set<Contact>();
+    public DbSet<Application> Applications => Set<Application>();
+    public DbSet<EmailDraft> EmailDrafts => Set<EmailDraft>();
+    public DbSet<EmailSent> EmailsSent => Set<EmailSent>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -56,6 +60,37 @@ public class JobHuntDbContext(DbContextOptions<JobHuntDbContext> options) : DbCo
             entity.Property(e => e.ModelUsed).IsRequired();
             entity.Property(e => e.Type).HasConversion<string>();
             entity.HasIndex(e => new { e.JobId, e.UserId });
+        });
+
+        modelBuilder.Entity<Contact>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Name).IsRequired();
+            entity.Property(e => e.Email).IsRequired();
+            entity.Property(e => e.Source).IsRequired();
+            entity.HasIndex(e => e.JobId);
+        });
+
+        modelBuilder.Entity<Application>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.UserId).IsRequired();
+            entity.Property(e => e.Status).HasConversion<string>();
+            entity.HasIndex(e => new { e.UserId, e.Status });
+        });
+
+        modelBuilder.Entity<EmailDraft>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Subject).IsRequired();
+            entity.Property(e => e.Body).IsRequired();
+        });
+
+        modelBuilder.Entity<EmailSent>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Provider).IsRequired();
+            entity.Property(e => e.MessageId).IsRequired();
         });
     }
 }

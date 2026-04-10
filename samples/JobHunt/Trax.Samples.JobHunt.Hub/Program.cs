@@ -38,6 +38,8 @@ using Trax.Mediator.Extensions;
 using Trax.Samples.JobHunt.Auth;
 using Trax.Samples.JobHunt.Data;
 using Trax.Samples.JobHunt.Hooks;
+using Trax.Samples.JobHunt.Providers.Contact;
+using Trax.Samples.JobHunt.Providers.Email;
 using Trax.Samples.JobHunt.Providers.Llm;
 using Trax.Samples.JobHunt.Providers.Scraper;
 using Trax.Samples.JobHunt.Subscriptions;
@@ -101,6 +103,8 @@ builder.Services.AddTrax(trax =>
 builder.Services.Configure<OllamaOptions>(builder.Configuration.GetSection("Ollama"));
 builder.Services.AddHttpClient<ILlmProvider, OllamaLlmProvider>();
 builder.Services.AddHttpClient<IJobScraper, GenericHtmlScraper>();
+builder.Services.AddSingleton<IContactEnrichmentProvider, ManualContactProvider>();
+builder.Services.AddSingleton<IEmailSender, StubEmailSender>();
 
 // ── GraphQL API + subscriptions ─────────────────────────────────────────────
 builder.Services.AddTraxGraphQL(graphql => graphql.AddTypeExtension<JobHuntSubscriptions>());

@@ -45,6 +45,7 @@ using Trax.Samples.JobHunt.Providers.Scraper;
 using Trax.Samples.JobHunt.Subscriptions;
 using Trax.Samples.JobHunt.Trains.AddJob;
 using Trax.Samples.JobHunt.Trains.MonitorAllActiveJobs;
+using Trax.Samples.JobHunt.Trains.MonitorAllWatchedCompanies;
 using Trax.Samples.JobHunt.Trains.MonitorJob;
 using Trax.Scheduler.Extensions;
 using Trax.Scheduler.Services.Scheduling;
@@ -90,12 +91,22 @@ builder.Services.AddTrax(trax =>
                 {
                     cleanup.AddTrainType<IMonitorJobTrain>();
                     cleanup.AddTrainType<IMonitorAllActiveJobsTrain>();
+                    cleanup.AddTrainType<IMonitorAllWatchedCompaniesTrain>();
                 })
                 .Schedule<
                     IMonitorAllActiveJobsTrain,
                     MonitorAllActiveJobsInput,
                     MonitorAllActiveJobsOutput
                 >("MonitorAllActiveJobs", new MonitorAllActiveJobsInput(), Every.Hours(24))
+                .Schedule<
+                    IMonitorAllWatchedCompaniesTrain,
+                    MonitorAllWatchedCompaniesInput,
+                    MonitorAllWatchedCompaniesOutput
+                >(
+                    "MonitorAllWatchedCompanies",
+                    new MonitorAllWatchedCompaniesInput(),
+                    Every.Hours(6)
+                )
         )
 );
 

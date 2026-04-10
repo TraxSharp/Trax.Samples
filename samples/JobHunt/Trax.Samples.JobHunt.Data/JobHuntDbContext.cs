@@ -14,6 +14,7 @@ public class JobHuntDbContext(DbContextOptions<JobHuntDbContext> options) : DbCo
     public DbSet<Application> Applications => Set<Application>();
     public DbSet<EmailDraft> EmailDrafts => Set<EmailDraft>();
     public DbSet<EmailSent> EmailsSent => Set<EmailSent>();
+    public DbSet<WatchedCompany> WatchedCompanies => Set<WatchedCompany>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -91,6 +92,15 @@ public class JobHuntDbContext(DbContextOptions<JobHuntDbContext> options) : DbCo
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Provider).IsRequired();
             entity.Property(e => e.MessageId).IsRequired();
+        });
+
+        modelBuilder.Entity<WatchedCompany>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.UserId).IsRequired();
+            entity.Property(e => e.CompanyName).IsRequired();
+            entity.Property(e => e.CareersUrl).IsRequired();
+            entity.HasIndex(e => e.UserId);
         });
     }
 }

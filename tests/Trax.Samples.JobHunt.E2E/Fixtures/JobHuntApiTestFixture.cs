@@ -73,6 +73,7 @@ public abstract class JobHuntApiTestFixture
         await JobHuntDb.Applications.ExecuteDeleteAsync();
         await JobHuntDb.JobSnapshots.ExecuteDeleteAsync();
         await JobHuntDb.Artifacts.ExecuteDeleteAsync();
+        await JobHuntDb.WatchedCompanies.ExecuteDeleteAsync();
         await JobHuntDb.Jobs.ExecuteDeleteAsync();
         await JobHuntDb.Profiles.ExecuteDeleteAsync();
         await JobHuntDb.Users.ExecuteDeleteAsync();

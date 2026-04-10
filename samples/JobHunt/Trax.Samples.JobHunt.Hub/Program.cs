@@ -37,6 +37,7 @@ using Trax.Effect.Provider.Parameter.Extensions;
 using Trax.Mediator.Extensions;
 using Trax.Samples.JobHunt.Auth;
 using Trax.Samples.JobHunt.Data;
+using Trax.Samples.JobHunt.Providers.Scraper;
 using Trax.Samples.JobHunt.Trains.AddJob;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -74,6 +75,9 @@ builder.Services.AddTrax(trax =>
         )
         .AddMediator(typeof(IAddJobTrain).Assembly)
 );
+
+// ── Pluggable providers ─────────────────────────────────────────────────────
+builder.Services.AddHttpClient<IJobScraper, GenericHtmlScraper>();
 
 // ── GraphQL API (no type extensions until Phase 5 adds subscriptions) ───────
 builder.Services.AddTraxGraphQL();

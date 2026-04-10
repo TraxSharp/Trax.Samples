@@ -7,6 +7,7 @@ public class JobHuntDbContext(DbContextOptions<JobHuntDbContext> options) : DbCo
 {
     public DbSet<User> Users => Set<User>();
     public DbSet<Job> Jobs => Set<Job>();
+    public DbSet<Profile> Profiles => Set<Profile>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -28,6 +29,13 @@ public class JobHuntDbContext(DbContextOptions<JobHuntDbContext> options) : DbCo
             entity.Property(e => e.Status).HasConversion<string>();
             entity.HasIndex(e => e.UserId);
             entity.HasIndex(e => new { e.UserId, e.Status });
+        });
+
+        modelBuilder.Entity<Profile>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.UserId).IsRequired();
+            entity.HasIndex(e => e.UserId).IsUnique();
         });
     }
 }

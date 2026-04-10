@@ -9,5 +9,7 @@ namespace Trax.Samples.JobHunt.Trains.AddJob;
 public class AddJobTrain : ServiceTrain<AddJobInput, AddJobOutput>, IAddJobTrain
 {
     protected override AddJobOutput Junctions() =>
-        Chain<ValidateAddJobInputJunction>().Chain<PersistJobJunction>();
+        Chain<ValidateAddJobInputJunction>()
+            .Chain<FetchJobPostingJunction>()
+            .Chain<PersistJobJunction>();
 }

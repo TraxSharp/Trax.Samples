@@ -125,8 +125,15 @@ builder.Services.AddTrax(trax =>
 builder.Services.AddDbContextFactory<GameDbContext>(options => options.UseNpgsql(connectionString));
 
 // ── Register GraphQL API with model query discovery ─────────────────────
+// Depth 6 accommodates the sample's model-query chain:
+// dispatch → mutation → output → nested type → field → scalar.
+// The Trax default of 4 is the conservative production choice; raise it
+// deliberately when your schema needs it.
 builder.Services.AddTraxGraphQL(graphql =>
-    graphql.AddDbContext<GameDbContext>().AddTypeExtensions(typeof(Program).Assembly)
+    graphql
+        .MaxExecutionDepth(6)
+        .AddDbContext<GameDbContext>()
+        .AddTypeExtensions(typeof(Program).Assembly)
 );
 builder.Services.AddHealthChecks().AddTraxHealthCheck();
 

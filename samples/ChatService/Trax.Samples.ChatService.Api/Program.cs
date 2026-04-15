@@ -8,9 +8,9 @@
 // to that room receives the event via WebSocket.
 //
 // Authentication: fake API key via X-Api-Key header (for demonstration only)
-//   alice-key   → user "alice"   (display name: Alice)
-//   bob-key     → user "bob"     (display name: Bob)
-//   charlie-key → user "charlie" (display name: Charlie)
+//   alice-key   → user "alice"
+//   bob-key     → user "bob"
+//   charlie-key → user "charlie"
 //
 // Prerequisites:
 //   1. Pack local:      ./pack-local.sh
@@ -38,7 +38,6 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 using Microsoft.EntityFrameworkCore;
-using Trax.Api.Auth;
 using Trax.Api.Auth.ApiKey;
 using Trax.Api.Extensions;
 using Trax.Api.GraphQL.Extensions;
@@ -67,34 +66,10 @@ builder.Services.AddLogging(logging => logging.AddConsole());
 builder.Services.AddDbContext<ChatDbContext>(options => options.UseSqlite(chatConnectionString));
 
 // ── Authentication, fake API key for demonstration (NO WARRANTY, see SECURITY-DISCLAIMER.md) ──
-// Uses the Func<TraxPrincipal> overload because chat messages render the
-// display name ("Alice said X"), which differs from the principal id ("alice").
-// For cases where id == display name, keys.Add(key, id, roles) is simpler.
 builder.Services.AddTraxApiKeyAuth(keys =>
-    keys.Add(
-            SampleKeys.AliceKey,
-            () =>
-                new TraxPrincipal(
-                    "alice",
-                    "Alice",
-                    [nameof(ChatRole.User)],
-                    PrincipalType: "apikey"
-                )
-        )
-        .Add(
-            SampleKeys.BobKey,
-            () => new TraxPrincipal("bob", "Bob", [nameof(ChatRole.User)], PrincipalType: "apikey")
-        )
-        .Add(
-            SampleKeys.CharlieKey,
-            () =>
-                new TraxPrincipal(
-                    "charlie",
-                    "Charlie",
-                    [nameof(ChatRole.User)],
-                    PrincipalType: "apikey"
-                )
-        )
+    keys.Add(SampleKeys.AliceKey, id: "alice", nameof(ChatRole.User))
+        .Add(SampleKeys.BobKey, id: "bob", nameof(ChatRole.User))
+        .Add(SampleKeys.CharlieKey, id: "charlie", nameof(ChatRole.User))
 );
 
 builder.Services.AddAuthorization();

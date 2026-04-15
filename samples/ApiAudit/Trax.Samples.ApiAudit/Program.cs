@@ -16,7 +16,6 @@
 //        http://localhost:5220/trax/graphql
 // ─────────────────────────────────────────────────────────────────────────────
 
-using Trax.Api.Auth;
 using Trax.Api.Auth.ApiKey;
 using Trax.Api.Extensions;
 using Trax.Api.GraphQL.Audit;
@@ -38,24 +37,9 @@ var traxConnectionString =
 builder.Services.AddLogging(logging => logging.AddConsole());
 
 // ── Authentication, fake API key for demonstration (NO WARRANTY) ──
-// Audit log renders display names distinct from ids ("Alice" vs "alice"), so
-// these use the Func<TraxPrincipal> overload. The simpler keys.Add(key, id, roles)
-// form fits cases where id == display name.
 builder.Services.AddTraxApiKeyAuth(keys =>
-    keys.Add(
-            SampleKeys.AliceKey,
-            () =>
-                new TraxPrincipal(
-                    "alice",
-                    "Alice",
-                    [nameof(AuditRole.User)],
-                    PrincipalType: "apikey"
-                )
-        )
-        .Add(
-            SampleKeys.BobKey,
-            () => new TraxPrincipal("bob", "Bob", [nameof(AuditRole.User)], PrincipalType: "apikey")
-        )
+    keys.Add(SampleKeys.AliceKey, id: "alice", nameof(AuditRole.User))
+        .Add(SampleKeys.BobKey, id: "bob", nameof(AuditRole.User))
 );
 builder.Services.AddAuthorization();
 

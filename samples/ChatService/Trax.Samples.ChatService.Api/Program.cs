@@ -37,8 +37,9 @@
 //   { discover { getChatHistory(input: { chatRoomId: "<id>" }) { messages { senderDisplayName content sentAt } } } }
 // ─────────────────────────────────────────────────────────────────────────────
 
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
+using Trax.Api.Auth;
+using Trax.Api.Auth.ApiKey;
 using Trax.Api.Extensions;
 using Trax.Api.GraphQL.Extensions;
 using Trax.Effect.Data.Sqlite.Extensions;
@@ -50,6 +51,7 @@ using Trax.Samples.ChatService.Auth;
 using Trax.Samples.ChatService.Data;
 using Trax.Samples.ChatService.Hooks;
 using Trax.Samples.ChatService.Subscriptions;
+using SampleKeys = Trax.Samples.ChatService.Auth.ApiKeyDefaults;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -64,13 +66,36 @@ builder.Services.AddLogging(logging => logging.AddConsole());
 // ── Chat data layer ─────────────────────────────────────────────────────────
 builder.Services.AddDbContext<ChatDbContext>(options => options.UseSqlite(chatConnectionString));
 
-// ── Authentication — fake API key for demonstration ─────────────────────────
-builder
-    .Services.AddAuthentication(ApiKeyDefaults.AuthenticationScheme)
-    .AddScheme<AuthenticationSchemeOptions, ApiKeyAuthHandler>(
-        ApiKeyDefaults.AuthenticationScheme,
-        null
-    );
+// ── Authentication, fake API key for demonstration (NO WARRANTY, see SECURITY-DISCLAIMER.md) ──
+// Uses the Func<TraxPrincipal> overload because chat messages render the
+// display name ("Alice said X"), which differs from the principal id ("alice").
+// For cases where id == display name, keys.Add(key, id, roles) is simpler.
+builder.Services.AddTraxApiKeyAuth(keys =>
+    keys.Add(
+            SampleKeys.AliceKey,
+            () =>
+                new TraxPrincipal(
+                    "alice",
+                    "Alice",
+                    [nameof(ChatRole.User)],
+                    PrincipalType: "apikey"
+                )
+        )
+        .Add(
+            SampleKeys.BobKey,
+            () => new TraxPrincipal("bob", "Bob", [nameof(ChatRole.User)], PrincipalType: "apikey")
+        )
+        .Add(
+            SampleKeys.CharlieKey,
+            () =>
+                new TraxPrincipal(
+                    "charlie",
+                    "Charlie",
+                    [nameof(ChatRole.User)],
+                    PrincipalType: "apikey"
+                )
+        )
+);
 
 builder.Services.AddAuthorization();
 

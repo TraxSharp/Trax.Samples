@@ -83,8 +83,7 @@ public class AdditionalCoverageTests : ApiTestBase
         doc.RootElement.TryGetProperty("errors", out _)
             .Should()
             .BeFalse(doc.RootElement.GetRawText());
-        doc.RootElement
-            .GetProperty("data")
+        doc.RootElement.GetProperty("data")
             .GetProperty("discover")
             .GetProperty("greeting")
             .GetProperty("greet")
@@ -108,8 +107,7 @@ public class AdditionalCoverageTests : ApiTestBase
         ((int)resp.StatusCode).Should().Be(200);
 
         var body = await resp.Content.ReadAsStringAsync();
-        body
-            .Should()
+        body.Should()
             .Contain(
                 "\"greeting\":\"Hello, Charset.\"",
                 "the request must reach the train and the train output must round-trip"
@@ -149,8 +147,7 @@ public class AdditionalCoverageTests : ApiTestBase
         var resp = await Http.PostAsync("/trax/graphql/", content);
         var body = await resp.Content.ReadAsStringAsync();
 
-        body
-            .Should()
+        body.Should()
             .NotContain(
                 "PERSISTED_OPERATION_REQUIRED",
                 "the middleware must not reject batches whose entries are all persisted"

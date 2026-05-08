@@ -112,12 +112,7 @@ public class HotFixFlowTests : ApiTestBase
         // written.
         const string id = "history_check_v1";
         await Store.UpsertAsync(id, GreetDoc, null, CancellationToken.None);
-        await Store.UpsertAsync(
-            id,
-            GreetDoc + " # rewrite",
-            null,
-            CancellationToken.None
-        );
+        await Store.UpsertAsync(id, GreetDoc + " # rewrite", null, CancellationToken.None);
         await Store.DeactivateAsync(id, null, "test cleanup", CancellationToken.None);
         await Store.RestoreAsync(id, null, CancellationToken.None);
 
@@ -132,13 +127,7 @@ public class HotFixFlowTests : ApiTestBase
             .Select(h => h.ChangeType)
             .ToListAsync();
 
-        rows.Should()
-            .Equal(
-                "Upsert",
-                "Upsert",
-                "Deactivate",
-                "Restore"
-            );
+        rows.Should().Equal("Upsert", "Upsert", "Deactivate", "Restore");
 
         var deactivateRow = await ctx.PersistedOperationHistories.FirstAsync(h =>
             h.Id == id && h.ChangeType == "Deactivate"

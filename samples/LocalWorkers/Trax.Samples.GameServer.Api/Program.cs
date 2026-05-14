@@ -128,15 +128,6 @@ builder.Services.AddTraxApiKeyAuth(keys =>
         .Add(SampleKeys.PlayerKey, id: "player", nameof(GameRole.Player))
 );
 
-// Force the API key scheme as the default. ASP.NET Core auto-uses a single
-// registered scheme as the default, but once a second scheme exists (the
-// JWT registration below, conditionally), no default is picked and HC's
-// @authorize directive on [TraxQueryModel] entities sees an anonymous
-// principal — model queries gated with [TraxAuthorize] would reject every
-// caller, including the Admin. Pin the default explicitly so the behavior
-// is deterministic regardless of which schemes are present.
-builder.Services.AddAuthentication(Trax.Api.Auth.ApiKey.ApiKeyDefaults.SchemeName);
-
 // 2. JWT bearer: accept Google-issued id-tokens. The Next.js frontend obtains
 //    them via NextAuth and sends them as Authorization: Bearer <id-token>.
 //    Signature validation happens against Google's published JWKS; only tokens

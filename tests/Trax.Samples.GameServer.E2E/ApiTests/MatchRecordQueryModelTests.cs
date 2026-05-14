@@ -28,12 +28,14 @@ public class MatchRecordQueryModelTests : ApiTestFixture
                 }
             }
             """,
-            apiKey: PlayerKey
+            apiKey: AdminKey
         );
 
         result
             .HasErrors.Should()
-            .BeFalse($"GraphQL error: {result.FirstErrorMessage} (HTTP {result.StatusCode})");
+            .BeFalse(
+                $"GraphQL error: {result.FirstErrorMessage} (HTTP {result.StatusCode}) — raw: {result.Root.GetRawText()}"
+            );
 
         var nodes = result.GetData("discover", "matches", "matchRecords", "nodes");
         nodes.GetArrayLength().Should().Be(3);
@@ -64,7 +66,7 @@ public class MatchRecordQueryModelTests : ApiTestFixture
                 }
             }
             """,
-            apiKey: PlayerKey
+            apiKey: AdminKey
         );
 
         result
@@ -98,7 +100,7 @@ public class MatchRecordQueryModelTests : ApiTestFixture
                 }
             }
             """,
-            apiKey: PlayerKey
+            apiKey: AdminKey
         );
 
         result
@@ -136,7 +138,7 @@ public class MatchRecordQueryModelTests : ApiTestFixture
                 }
             }
             """,
-            apiKey: PlayerKey
+            apiKey: AdminKey
         );
 
         page1
@@ -168,7 +170,7 @@ public class MatchRecordQueryModelTests : ApiTestFixture
                 }
             }
             """,
-            apiKey: PlayerKey
+            apiKey: AdminKey
         );
 
         page2
@@ -189,5 +191,56 @@ public class MatchRecordQueryModelTests : ApiTestFixture
             var matchId = node.GetProperty("matchId").GetString();
             page1Ids.Should().NotContain(matchId, "page 2 should not overlap with page 1");
         }
+    }
+
+    // ── [TraxAuthorize(Roles = "Admin")] enforcement ────────────────────
+    //
+    // MatchRecord is gated with [TraxAuthorize(Roles = nameof(GameRole.Admin))].
+    // The directive attaches at both the entry field (discover.matches.matchRecords)
+    // and the ObjectType level. The tests below pin the security contract: a
+    // Player API key — or no key at all — cannot read match history, and cannot
+    // even enumerate cardinality through Connection scalars like totalCount.
+
+    [Test]
+    public async Task MatchRecords_AsPlayer_ReturnsAuthorizationError()
+    {
+        var result = await GraphQL.SendAsync(
+            "{ discover { matches { matchRecords(first: 1) { nodes { matchId } } } } }",
+            apiKey: PlayerKey
+        );
+
+        result.HasErrors.Should().BeTrue();
+        result.FirstErrorMessage.Should().Be("Not authorized.");
+    }
+
+    [Test]
+    public async Task MatchRecords_Anonymous_ReturnsAuthorizationError()
+    {
+        var result = await GraphQL.SendAsync(
+            "{ discover { matches { matchRecords(first: 1) { nodes { matchId } } } } }",
+            apiKey: null
+        );
+
+        result.HasErrors.Should().BeTrue();
+        result.FirstErrorMessage.Should().Be("Not authorized.");
+    }
+
+    /// <summary>
+    /// The Connection-scalar side-channel test. Without the field-level gate,
+    /// a totalCount-only query would never materialise a MatchRecord node and
+    /// would slip past the type-level @authorize directive. The field-level
+    /// gate Trax attaches alongside the type-level gate must catch this.
+    /// </summary>
+    [Test]
+    public async Task MatchRecords_TotalCountOnly_AsPlayer_StillBlocked()
+    {
+        var result = await GraphQL.SendAsync(
+            "{ discover { matches { matchRecords { totalCount } } } }",
+            apiKey: PlayerKey
+        );
+
+        result.HasErrors.Should().BeTrue();
+        result.FirstErrorMessage.Should().Be("Not authorized.");
+        result.Root.GetRawText().Should().NotContain("\"totalCount\":");
     }
 }

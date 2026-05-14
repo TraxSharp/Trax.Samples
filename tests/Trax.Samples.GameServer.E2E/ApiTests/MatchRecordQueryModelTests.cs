@@ -6,6 +6,76 @@ namespace Trax.Samples.GameServer.E2E.ApiTests;
 [TestFixture]
 public class MatchRecordQueryModelTests : ApiTestFixture
 {
+    // Probe queries identical in shape to the assertions below. We warm up
+    // both shapes because HotChocolate caches validated operations per
+    // document, and the [TraxAuthorize] gate must be active in each cached
+    // entry before the assertions fire. Running these as the host's first
+    // requests against the gated entity guarantees a steady-state cache.
+    private const string NodesProbe =
+        "{ discover { matches { matchRecords(first: 1) { nodes { matchId } } } } }";
+    private const string TotalCountProbe =
+        "{ discover { matches { matchRecords { totalCount } } } }";
+
+    /// <summary>
+    /// Hammers the gated query shapes with an anonymous caller until both
+    /// return <c>"Not authorized."</c>. Eliminates the first-request race
+    /// observed in CI where the [TraxAuthorize] directive was attached on
+    /// the schema but the operation cache had not yet captured a validated
+    /// entry that enforced it. Once each shape returns the expected error
+    /// once, every later request against the same document reuses the
+    /// cached validation result, so the assertions in the [Test] methods
+    /// run against a known-good cache state.
+    ///
+    /// <para>
+    /// Polls the actual condition rather than sleeping. Bounded by a
+    /// generous timeout so a real regression (directive never attaches,
+    /// host stays unhealthy, etc.) fails the fixture loudly instead of
+    /// silently degrading the assertions further down.
+    /// </para>
+    /// </summary>
+    [OneTimeSetUp]
+    public async Task WarmupAuthorizationCache()
+    {
+        var timeout = TimeSpan.FromSeconds(30);
+        await WaitForAuthorizationRejection(NodesProbe, timeout);
+        await WaitForAuthorizationRejection(TotalCountProbe, timeout);
+    }
+
+    private async Task WaitForAuthorizationRejection(string query, TimeSpan timeout)
+    {
+        var deadline = DateTime.UtcNow + timeout;
+        Exception? lastFailure = null;
+
+        while (DateTime.UtcNow < deadline)
+        {
+            try
+            {
+                var result = await GraphQL.SendAsync(query, apiKey: null);
+                if (result.HasErrors && result.FirstErrorMessage == "Not authorized.")
+                    return;
+
+                lastFailure = new InvalidOperationException(
+                    $"Probe returned unexpected response (HTTP {result.StatusCode}, "
+                        + $"hasErrors={result.HasErrors}, firstError='{result.FirstErrorMessage}'). "
+                        + $"Raw: {result.Root.GetRawText()}"
+                );
+            }
+            catch (Exception ex)
+            {
+                lastFailure = ex;
+            }
+
+            await Task.Delay(50);
+        }
+
+        throw new TimeoutException(
+            $"WarmupAuthorizationCache: probe '{query}' never produced a "
+                + $"'Not authorized.' response within {timeout.TotalSeconds:F0}s. "
+                + $"The [TraxAuthorize] directive on MatchRecord may not be wired. "
+                + $"Last response: {lastFailure?.Message ?? "(none)"}"
+        );
+    }
+
     [Test]
     public async Task MatchRecords_ReturnsPaginatedData()
     {

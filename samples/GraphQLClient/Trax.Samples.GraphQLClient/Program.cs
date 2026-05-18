@@ -35,8 +35,9 @@ await Task.Delay(500);
 // the same PlayerSchemaConfiguration.Configure delegate the server runs, so the client
 // validates queries against the exact schema the server will execute.
 var clientServices = new ServiceCollection();
-clientServices.AddGraphQLClient(new Uri($"http://localhost:{port}/graphql"));
-clientServices.AddTraxGraphQLClient(PlayerSchemaConfiguration.Configure);
+clientServices
+    .AddTraxGraphQLClient(new Uri($"http://localhost:{port}/graphql"))
+    .UseAssemblySchema(PlayerSchemaConfiguration.Configure);
 
 // Sample uses a separate DI container for the client to keep the example self-contained;
 // production code would normally consume the executor through the host's container instead.

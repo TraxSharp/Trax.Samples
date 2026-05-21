@@ -1,6 +1,9 @@
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Trax.Api.GraphQL.PersistedOperations.Storage;
 using Trax.Samples.PersistedOperations.E2E.Fixtures;
+using Trax.Samples.PersistedOperations.Models;
 
 namespace Trax.Samples.PersistedOperations.E2E.ApiTests;
 
@@ -105,6 +108,46 @@ public class AuthorizedSchemaUpsertTests : ApiTestBase
 
         var stored = await Store.GetAsync("auth_mut_notes_v1", null, CancellationToken.None);
         stored.Should().NotBeNull();
+    }
+
+    [Test]
+    public async Task UserNote_RoundTripThroughEf_PreservesEveryColumn()
+    {
+        // The model's properties are only meaningful when they survive an EF
+        // round-trip against the real Postgres schema created by the API
+        // bootstrap. This case writes one row through the DbContext factory
+        // (the same registration the GraphQL query model resolves through),
+        // reads it back via LINQ, and asserts every column made it.
+        var factory = SharedApiSetup.Factory!.Services.GetRequiredService<
+            IDbContextFactory<UserNotesDbContext>
+        >();
+
+        await using (var write = await factory.CreateDbContextAsync())
+        {
+            await write.Database.ExecuteSqlRawAsync(
+                "TRUNCATE TABLE notes.user_notes RESTART IDENTITY;"
+            );
+
+            var created = new DateTime(2026, 5, 21, 12, 30, 45, DateTimeKind.Utc);
+            write.Notes.Add(
+                new UserNote
+                {
+                    Title = "first note",
+                    Body = "hello, gated world",
+                    CreatedAt = created,
+                }
+            );
+            await write.SaveChangesAsync();
+        }
+
+        await using var read = await factory.CreateDbContextAsync();
+        var row = await read.Notes.AsNoTracking().SingleAsync();
+
+        row.Id.Should().BeGreaterThan(0);
+        row.Title.Should().Be("first note");
+        row.Body.Should().Be("hello, gated world");
+        row.CreatedAt.Should()
+            .Be(new DateTime(2026, 5, 21, 12, 30, 45, DateTimeKind.Utc).ToUniversalTime());
     }
 
     [Test]

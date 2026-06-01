@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using Trax.Effect.Data.Services.DomainContext;
 using Trax.Samples.Bookworm.Lending.Models.Loans;
 using Trax.Samples.Bookworm.Lending.Models.Members;
-using Trax.Samples.Shared.Data;
 
 namespace Trax.Samples.Bookworm.Lending.Context;
 
@@ -11,7 +11,7 @@ namespace Trax.Samples.Bookworm.Lending.Context;
 /// catalog book is resolved at the GraphQL layer by the cross-schema edge project.
 /// </summary>
 public class LendingDbContext(DbContextOptions<LendingDbContext> options)
-    : SampleDataContext<LendingDbContext>(options),
+    : DomainDataContext<LendingDbContext>(options),
         ILendingDbContext
 {
     public DbSet<Member> Members => Set<Member>();

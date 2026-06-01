@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using Trax.Effect.Data.Services.DomainContext;
 using Trax.Samples.Bookworm.Catalog.Models.Authors;
 using Trax.Samples.Bookworm.Catalog.Models.Books;
-using Trax.Samples.Shared.Data;
 
 namespace Trax.Samples.Bookworm.Catalog.Context;
 
@@ -10,7 +10,7 @@ namespace Trax.Samples.Bookworm.Catalog.Context;
 /// <see cref="Book"/> / <see cref="Author"/> tables.
 /// </summary>
 public class CatalogDbContext(DbContextOptions<CatalogDbContext> options)
-    : SampleDataContext<CatalogDbContext>(options),
+    : DomainDataContext<CatalogDbContext>(options),
         ICatalogDbContext
 {
     public DbSet<Author> Authors => Set<Author>();

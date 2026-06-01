@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\lib\Trax.Samples.Shared.Data\Trax.Samples.Shared.Data.csproj" />
+    <PackageReference Include="Trax.Effect.Data" Version="1.*" />
   </ItemGroup>
 
   <ItemGroup>

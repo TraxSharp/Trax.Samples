@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Trax.Effect.Data.Services.DomainContext;
 using Trax.Samples.Bookworm.Catalog.Context;
-using Trax.Samples.Shared.Data.Extensions;
 
 namespace Trax.Samples.Bookworm.Catalog.Extensions;
 
@@ -13,7 +13,7 @@ public static class CatalogServiceCollectionExtensions
         this IServiceCollection services,
         string connectionString
     ) =>
-        services.AddSampleDataContext<ICatalogDbContext, CatalogDbContext>(options =>
+        services.AddDomainDataContext<ICatalogDbContext, CatalogDbContext>(options =>
             options.UseNpgsql(connectionString)
         );
 }

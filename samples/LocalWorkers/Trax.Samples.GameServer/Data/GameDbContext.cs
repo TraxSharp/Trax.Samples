@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using Trax.Effect.Data.Services.DomainContext;
 using Trax.Samples.GameServer.Data.Models;
-using Trax.Samples.Shared.Data;
 
 namespace Trax.Samples.GameServer.Data;
 
@@ -10,7 +10,7 @@ namespace Trax.Samples.GameServer.Data;
 /// registered via AddTraxGraphQL(g => g.AddDbContext&lt;GameDbContext&gt;()).
 /// </summary>
 public class GameDbContext(DbContextOptions<GameDbContext> options)
-    : SampleDataContext<GameDbContext>(options),
+    : DomainDataContext<GameDbContext>(options),
         IGameDbContext
 {
     public DbSet<PlayerRecord> Players { get; set; } = null!;

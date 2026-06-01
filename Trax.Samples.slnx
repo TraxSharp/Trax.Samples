@@ -57,12 +57,9 @@
     <Project Path="samples/Bookworm/Trax.Samples.Bookworm.Api/Trax.Samples.Bookworm.Api.csproj" />
   </Folder>
   <Folder Name="/lib/">
-    <Project Path="lib/Trax.Samples.Shared.Data/Trax.Samples.Shared.Data.csproj" />
-    <Project Path="lib/Trax.Samples.Shared.Api/Trax.Samples.Shared.Api.csproj" />
     <Project Path="lib/Trax.Samples.Shared.Testing/Trax.Samples.Shared.Testing.csproj" />
   </Folder>
   <Folder Name="/tests/">
-    <Project Path="tests/Trax.Samples.Shared.Data.Tests/Trax.Samples.Shared.Data.Tests.csproj" />
     <Project Path="tests/Trax.Samples.Bookworm.E2E/Trax.Samples.Bookworm.E2E.csproj" />
     <Project Path="tests/Trax.Samples.Tests.Reflection/Trax.Samples.Tests.Reflection.csproj" />
     <Project Path="tests/Trax.Samples.ChatService.Tests/Trax.Samples.ChatService.Tests.csproj" />

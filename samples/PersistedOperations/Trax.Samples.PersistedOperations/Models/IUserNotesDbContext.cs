@@ -1,10 +1,10 @@
 using Microsoft.EntityFrameworkCore;
-using Trax.Samples.Shared.Data;
+using Trax.Effect.Data.Services.DomainContext;
 
 namespace Trax.Samples.PersistedOperations.Models;
 
 /// <summary>Companion interface for <see cref="UserNotesDbContext"/>.</summary>
-public interface IUserNotesDbContext : ISampleDataContext
+public interface IUserNotesDbContext : IDomainDataContext
 {
     DbSet<UserNote> Notes { get; }
 }

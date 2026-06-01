@@ -1,11 +1,11 @@
 using Microsoft.EntityFrameworkCore;
+using Trax.Effect.Data.Services.DomainContext;
 using Trax.Samples.ChatService.Data.Entities;
-using Trax.Samples.Shared.Data;
 
 namespace Trax.Samples.ChatService.Data;
 
 /// <summary>Companion interface for <see cref="ChatDbContext"/>.</summary>
-public interface IChatDbContext : ISampleDataContext
+public interface IChatDbContext : IDomainDataContext
 {
     DbSet<ChatRoom> ChatRooms { get; }
     DbSet<ChatParticipant> ChatParticipants { get; }

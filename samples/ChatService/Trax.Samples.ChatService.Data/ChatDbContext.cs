@@ -1,15 +1,22 @@
 using Microsoft.EntityFrameworkCore;
 using Trax.Samples.ChatService.Data.Entities;
+using Trax.Samples.Shared.Data;
 
 namespace Trax.Samples.ChatService.Data;
 
-public class ChatDbContext(DbContextOptions<ChatDbContext> options) : DbContext(options)
+public class ChatDbContext(DbContextOptions<ChatDbContext> options)
+    : SampleDataContext<ChatDbContext>(options),
+        IChatDbContext
 {
     public DbSet<ChatRoom> ChatRooms => Set<ChatRoom>();
     public DbSet<ChatParticipant> ChatParticipants => Set<ChatParticipant>();
     public DbSet<ChatMessage> ChatMessages => Set<ChatMessage>();
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    // This sample runs on SQLite, which has no schema concept, so the base skips the default schema.
+    // The name is declared anyway so switching the provider to PostgreSQL isolates the tables.
+    protected override string Schema => "chat";
+
+    protected override void ConfigureModel(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<ChatRoom>(entity =>
         {

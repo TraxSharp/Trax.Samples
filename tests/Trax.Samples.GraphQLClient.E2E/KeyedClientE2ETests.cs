@@ -57,6 +57,28 @@ public class KeyedClientE2ETests
     }
 
     [Test]
+    public async Task InventoryKey_UnknownSku_ReturnsNotFoundFallback()
+    {
+        var product = await Executor("serverB")
+            .Run(new GetProductRequest { Input = new GetProductInput("SKU-MISSING") });
+
+        product.Sku.Should().Be("SKU-MISSING");
+        product.Name.Should().Be("Unknown");
+        product.QuantityOnHand.Should().Be(0);
+    }
+
+    [Test]
+    public async Task BillingKey_UnknownInvoiceId_ReturnsNotFoundFallback()
+    {
+        var invoice = await Executor("serverC")
+            .Run(new GetInvoiceRequest { Input = new GetInvoiceInput("INV-MISSING") });
+
+        invoice.InvoiceId.Should().Be("INV-MISSING");
+        invoice.AmountCents.Should().Be(0);
+        invoice.Status.Should().Be("Unknown");
+    }
+
+    [Test]
     public void BothKeys_ResolveDistinctExecutors_FromSameContainer()
     {
         Executor("serverB").Should().NotBeSameAs(Executor("serverC"));

@@ -19,9 +19,9 @@ public class JobHuntDbContext(DbContextOptions<JobHuntDbContext> options)
     public DbSet<EmailSent> EmailsSent => Set<EmailSent>();
     public DbSet<WatchedCompany> WatchedCompanies => Set<WatchedCompany>();
 
-    // The domain tables stay in the default "public" schema; the Trax framework tables live in
-    // their own "trax" schema, so the two never collide.
-    protected override string Schema => "public";
+    // One project : one schema : one context. The domain owns the "jobhunt" schema; the Trax
+    // framework tables live in their own "trax" schema, so the two never collide.
+    protected override string Schema => "jobhunt";
 
     protected override void ConfigureModel(ModelBuilder modelBuilder)
     {

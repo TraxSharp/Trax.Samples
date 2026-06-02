@@ -30,6 +30,13 @@ public class SharedBookwormSetup
         catch (Exception ex)
         {
             DatabaseAvailable = false;
+
+            // In CI the database is provisioned, so an unreachable one is a real failure, not an
+            // environment we should quietly skip. Skipping there would let every HTTP test silently
+            // drop out and report 0% coverage while the build stays green. Fail loud instead.
+            if (Environment.GetEnvironmentVariable("CI") is not null)
+                throw;
+
             TestContext.Progress.WriteLine(
                 $"Bookworm E2E database unavailable, HTTP tests will be skipped: {ex.Message}"
             );

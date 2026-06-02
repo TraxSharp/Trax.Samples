@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using Trax.Samples.Shared.Data;
+using Trax.Effect.Data.Services.DomainContext;
 
 namespace Trax.Samples.PersistedOperations.Models;
 
@@ -8,7 +8,7 @@ namespace Trax.Samples.PersistedOperations.Models;
 /// kept separate from any Trax-managed context so the sample's data model is self-contained.
 /// </summary>
 public class UserNotesDbContext(DbContextOptions<UserNotesDbContext> options)
-    : SampleDataContext<UserNotesDbContext>(options),
+    : DomainDataContext<UserNotesDbContext>(options),
         IUserNotesDbContext
 {
     public DbSet<UserNote> Notes { get; set; } = null!;

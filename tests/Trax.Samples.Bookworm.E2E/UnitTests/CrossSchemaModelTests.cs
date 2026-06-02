@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using Trax.Effect.Data.Services.DomainContext;
 using Trax.Samples.Bookworm.Catalog;
 using Trax.Samples.Bookworm.Catalog.Models.Books;
-using Trax.Samples.Shared.Data;
 
 namespace Trax.Samples.Bookworm.E2E.UnitTests;
 
@@ -17,7 +17,7 @@ public class CrossSchemaModelTests
 {
     /// <summary>A test-only context that reads <see cref="Book"/> from the catalog schema cross-schema.</summary>
     private sealed class CrossSchemaProbeContext(DbContextOptions<CrossSchemaProbeContext> options)
-        : SampleDataContext<CrossSchemaProbeContext>(options)
+        : DomainDataContext<CrossSchemaProbeContext>(options)
     {
         protected override string Schema => "probe";
 

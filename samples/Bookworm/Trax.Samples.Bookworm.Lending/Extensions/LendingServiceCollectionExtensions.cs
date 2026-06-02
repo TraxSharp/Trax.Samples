@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Trax.Effect.Data.Services.DomainContext;
 using Trax.Samples.Bookworm.Lending.Context;
-using Trax.Samples.Shared.Data.Extensions;
 
 namespace Trax.Samples.Bookworm.Lending.Extensions;
 
@@ -13,7 +13,7 @@ public static class LendingServiceCollectionExtensions
         this IServiceCollection services,
         string connectionString
     ) =>
-        services.AddSampleDataContext<ILendingDbContext, LendingDbContext>(options =>
+        services.AddDomainDataContext<ILendingDbContext, LendingDbContext>(options =>
             options.UseNpgsql(connectionString)
         );
 }

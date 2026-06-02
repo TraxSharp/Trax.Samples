@@ -1,7 +1,7 @@
+using Trax.Api.GraphQL.DataLoaders.CrossSchema;
 using Trax.Samples.Bookworm.Catalog.Context;
 using Trax.Samples.Bookworm.Catalog.Models.Books;
 using Trax.Samples.Bookworm.Lending.Models.Loans;
-using Trax.Samples.Shared.Api.CrossSchema;
 
 namespace Trax.Samples.Bookworm.CrossSchema;
 

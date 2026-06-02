@@ -10,7 +10,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Trax.Samples.Bookworm\Trax.Samples.Bookworm.csproj" />
     <ProjectReference Include="..\Trax.Samples.Bookworm.CrossSchema\Trax.Samples.Bookworm.CrossSchema.csproj" />
-    <ProjectReference Include="..\..\..\lib\Trax.Samples.Shared.Api\Trax.Samples.Shared.Api.csproj" />
   </ItemGroup>
 
   <ItemGroup>

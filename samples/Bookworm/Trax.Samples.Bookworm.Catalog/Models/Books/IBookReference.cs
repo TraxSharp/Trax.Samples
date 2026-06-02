@@ -1,4 +1,4 @@
-using Trax.Samples.Shared.Data;
+using Trax.Effect.Data.Models;
 
 namespace Trax.Samples.Bookworm.Catalog.Models.Books;
 

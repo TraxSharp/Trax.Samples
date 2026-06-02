@@ -25,10 +25,12 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 using Microsoft.EntityFrameworkCore;
+using Trax.Api.Auth.ApiKey;
 using Trax.Api.Extensions;
 using Trax.Api.GraphQL.Extensions;
 using Trax.Effect.Data.Extensions;
 using Trax.Effect.Data.Postgres.Extensions;
+using Trax.Effect.Data.Services.DomainContext;
 using Trax.Effect.Extensions;
 using Trax.Effect.Provider.Json.Extensions;
 using Trax.Mediator.Extensions;
@@ -44,9 +46,8 @@ using Trax.Samples.Bookworm.Lending.Extensions;
 using Trax.Samples.Bookworm.Lending.Models.Loans;
 using Trax.Samples.Bookworm.Lending.Models.Members;
 using Trax.Samples.Bookworm.Services;
-using Trax.Samples.Shared.Api.Auth;
-using Trax.Samples.Shared.Data.Extensions;
 using CrossSchemaMarker = Trax.Samples.Bookworm.CrossSchema.Extensions.BookwormCrossSchemaServiceCollectionExtensions;
+using SampleKeys = Trax.Samples.Bookworm.Auth.ApiKeyDefaults;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -56,16 +57,17 @@ var connectionString =
 
 builder.Services.AddLogging(logging => logging.AddConsole());
 
-// ── Auth: shared sample API-key wiring (NO WARRANTY, demo keys) ──────────
-builder.Services.AddSampleApiKeyAuth(keys =>
-    keys.Add(ApiKeyDefaults.MemberKey, id: "member", BookwormRoles.Member)
+// ── Auth: API-key wiring (NO WARRANTY, demo keys) ────────────────────────
+builder.Services.AddTraxApiKeyAuth(keys =>
+    keys.Add(SampleKeys.MemberKey, id: "member", BookwormRoles.Member)
         .Add(
-            ApiKeyDefaults.LibrarianKey,
+            SampleKeys.LibrarianKey,
             id: "librarian",
             BookwormRoles.Librarian,
             BookwormRoles.Member
         )
 );
+builder.Services.AddAuthorization();
 
 // ── Trax effect + mediator (trains, bus, execution) ──────────────────────
 builder.Services.AddTrax(trax =>
@@ -100,8 +102,8 @@ builder.Services.AddHealthChecks().AddTraxHealthCheck();
 var app = builder.Build();
 
 // ── Create each domain's schema + tables, then seed demo data ────────────
-await app.Services.EnsureSampleSchemaAsync<CatalogDbContext>();
-await app.Services.EnsureSampleSchemaAsync<LendingDbContext>();
+await app.Services.EnsureSchemaCreatedAsync<CatalogDbContext>();
+await app.Services.EnsureSchemaCreatedAsync<LendingDbContext>();
 await SeedAsync(app.Services);
 
 app.UseAuthentication();

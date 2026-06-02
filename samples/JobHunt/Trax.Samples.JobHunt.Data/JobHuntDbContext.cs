@@ -1,11 +1,11 @@
 using Microsoft.EntityFrameworkCore;
+using Trax.Effect.Data.Services.DomainContext;
 using Trax.Samples.JobHunt.Data.Entities;
-using Trax.Samples.Shared.Data;
 
 namespace Trax.Samples.JobHunt.Data;
 
 public class JobHuntDbContext(DbContextOptions<JobHuntDbContext> options)
-    : SampleDataContext<JobHuntDbContext>(options),
+    : DomainDataContext<JobHuntDbContext>(options),
         IJobHuntDbContext
 {
     public DbSet<User> Users => Set<User>();

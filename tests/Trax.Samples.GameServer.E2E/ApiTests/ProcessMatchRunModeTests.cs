@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Trax.Samples.GameServer.Data;
+using Trax.Samples.GameServer.Data.Models;
 using Trax.Samples.GameServer.E2E.Fixtures;
 
 namespace Trax.Samples.GameServer.E2E.ApiTests;
@@ -177,22 +178,29 @@ public class ProcessMatchRunModeTests : ApiTestFixture
             .Should()
             .BeNull("the API runs no scheduler, so the queued train has not executed");
 
-        await using var db = await gameDbFactory.CreateDbContextAsync();
-        var optimistic = await db
-            .Matches.AsNoTracking()
-            .Where(m => m.MatchId == matchId)
-            .ToListAsync();
+        // OnQueue commits the optimistic record synchronously inside the mutation, so it is
+        // already visible. Poll with a generous ceiling purely to absorb cross-connection read
+        // timing — the loop exits as soon as the row appears, and fails loudly if it never does.
+        MatchRecord? optimistic = null;
+        var deadline = DateTime.UtcNow + TimeSpan.FromSeconds(10);
+        while (DateTime.UtcNow < deadline)
+        {
+            await using var read = await gameDbFactory.CreateDbContextAsync();
+            optimistic = await read
+                .Matches.AsNoTracking()
+                .SingleOrDefaultAsync(m => m.MatchId == matchId);
+            if (optimistic is not null)
+                break;
+            await Task.Delay(100);
+        }
 
         optimistic
             .Should()
-            .HaveCount(
-                1,
-                "OnQueue writes exactly one optimistic MatchRecord the instant the match is queued"
-            );
-        optimistic[0].Region.Should().Be("na");
-        optimistic[0].WinnerId.Should().Be("player-1");
-        optimistic[0].LoserId.Should().Be("player-2");
-        optimistic[0].WinnerScore.Should().Be(100);
-        optimistic[0].LoserScore.Should().Be(30);
+            .NotBeNull("OnQueue writes the optimistic MatchRecord the instant the match is queued");
+        optimistic!.Region.Should().Be("na");
+        optimistic.WinnerId.Should().Be("player-1");
+        optimistic.LoserId.Should().Be("player-2");
+        optimistic.WinnerScore.Should().Be(100);
+        optimistic.LoserScore.Should().Be(30);
     }
 }

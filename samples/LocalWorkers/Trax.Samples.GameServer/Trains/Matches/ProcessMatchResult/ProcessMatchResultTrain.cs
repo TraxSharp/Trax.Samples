@@ -63,6 +63,14 @@ public class ProcessMatchResultTrain
             return;
 
         await using var db = await GameDbFactory.CreateDbContextAsync(ct);
+
+        // Idempotent: OnQueue can fire again if the mutation is retried/re-queued, and match_id
+        // is unique, so only write the optimistic record when one does not already exist. The
+        // hook MUST be idempotent — the deferred run re-executes the chain, and a real consumer
+        // would reconcile this row rather than blindly insert.
+        if (await db.Matches.AnyAsync(m => m.MatchId == input.MatchId, ct))
+            return;
+
         db.Matches.Add(
             new MatchRecord
             {

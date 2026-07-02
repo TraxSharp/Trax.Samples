@@ -15,9 +15,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="HotChocolate.AspNetCore" Version="15.*" />
-    <PackageReference Include="Trax.Effect" Version="1.*" />
-    <PackageReference Include="Trax.Effect.Data.Sqlite" Version="1.*" />
-    <PackageReference Include="Trax.Mediator" Version="1.*" />
+    <PackageReference Include="HotChocolate.AspNetCore" />
+    <PackageReference Include="Trax.Effect" />
+    <PackageReference Include="Trax.Effect.Data.Sqlite" />
+    <PackageReference Include="Trax.Mediator" />
   </ItemGroup>
 </Project>

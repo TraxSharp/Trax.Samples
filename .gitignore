@@ -156,3 +156,6 @@ tsconfig.tsbuildinfo
 
 # MSBuild static graph restore cache
 *.csproj.lscache
+
+# Local Trax package version override (CPM)
+trax-local.props

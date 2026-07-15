@@ -28,6 +28,16 @@
           "Trax.Scheduler": "1.29.0"
         }
       },
+      "Trax.Effect.Broadcaster.RabbitMQ": {
+        "type": "Direct",
+        "requested": "[1.41.0, )",
+        "resolved": "1.41.0",
+        "contentHash": "YzFe6hxJRKfIyr0HjAWeiPzYb+qM6yKNN5v72Lg4GIvTd8D3nAezSa5ICgtXGHwPdkhkvm9QlcmT1nUlQgRYOA==",
+        "dependencies": {
+          "RabbitMQ.Client": "7.2.1",
+          "Trax.Effect": "1.41.0"
+        }
+      },
       "Trax.Effect.JunctionProvider.Progress": {
         "type": "Direct",
         "requested": "[1.41.0, )",

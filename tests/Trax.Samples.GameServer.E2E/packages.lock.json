@@ -1064,15 +1064,18 @@
           "Trax.Api.Auth.ApiKey": "[1.38.1, )",
           "Trax.Api.Auth.Jwt": "[1.38.1, )",
           "Trax.Api.GraphQL": "[1.38.1, )",
+          "Trax.Effect.Broadcaster.RabbitMQ": "[1.41.0, )",
           "Trax.Effect.Provider.Json": "[1.41.0, )",
           "Trax.Effect.Provider.Parameter": "[1.41.0, )",
-          "Trax.Samples.GameServer": "[1.99.99, )"
+          "Trax.Samples.GameServer": "[1.99.99, )",
+          "Trax.Scheduler": "[1.29.0, )"
         }
       },
       "trax.samples.gameserver.scheduler": {
         "type": "Project",
         "dependencies": {
           "Trax.Dashboard": "[1.14.0, )",
+          "Trax.Effect.Broadcaster.RabbitMQ": "[1.41.0, )",
           "Trax.Effect.JunctionProvider.Progress": "[1.41.0, )",
           "Trax.Effect.Provider.Json": "[1.41.0, )",
           "Trax.Effect.Provider.Parameter": "[1.41.0, )",
@@ -1245,6 +1248,16 @@
           "Microsoft.Extensions.Hosting.Abstractions": "10.0.3",
           "Microsoft.Extensions.Logging.Abstractions": "10.0.3",
           "Trax.Core": "1.6.0"
+        }
+      },
+      "Trax.Effect.Broadcaster.RabbitMQ": {
+        "type": "CentralTransitive",
+        "requested": "[1.41.0, )",
+        "resolved": "1.41.0",
+        "contentHash": "YzFe6hxJRKfIyr0HjAWeiPzYb+qM6yKNN5v72Lg4GIvTd8D3nAezSa5ICgtXGHwPdkhkvm9QlcmT1nUlQgRYOA==",
+        "dependencies": {
+          "RabbitMQ.Client": "7.2.1",
+          "Trax.Effect": "1.41.0"
         }
       },
       "Trax.Effect.Data": {

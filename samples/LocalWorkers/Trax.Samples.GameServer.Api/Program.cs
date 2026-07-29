@@ -251,6 +251,11 @@ builder.Services.AddTraxGraphQL(graphql =>
         // cancel jobs. Both surfaces are off by default; opt in here.
         .ExposeOperationQueries()
         .ExposeOperationMutations()
+        // Per-train [TraxAuthorize] gates individual operations (see the endpoint-mapping
+        // note below); the ops namespace itself is intentionally reachable, and the sample
+        // keeps per-train auth rather than an endpoint-wide gate so anonymous player trains
+        // (leaderboard, player lookup) and the Banana Cake Pop IDE still work.
+        .AllowAnonymousOperations()
 );
 builder.Services.AddHealthChecks().AddTraxHealthCheck();
 

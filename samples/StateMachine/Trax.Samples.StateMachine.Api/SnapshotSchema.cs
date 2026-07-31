@@ -18,8 +18,11 @@ internal static class SnapshotSchema
         var target = new NpgsqlConnectionStringBuilder(connectionString);
         var database = target.Database!;
 
-        // Connect to the always-present `trax` database to create ours if it does not exist yet.
-        var maintenance = new NpgsqlConnectionStringBuilder(connectionString) { Database = "trax" };
+        // Connect to the always-present `postgres` database to create ours if it does not exist yet.
+        var maintenance = new NpgsqlConnectionStringBuilder(connectionString)
+        {
+            Database = "postgres",
+        };
         await using (var admin = new NpgsqlConnection(maintenance.ConnectionString))
         {
             await admin.OpenAsync();

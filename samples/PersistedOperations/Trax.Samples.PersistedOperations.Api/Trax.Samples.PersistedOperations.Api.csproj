@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" VersionOverride="4.14.0" />
     <PackageReference Include="Trax.Api" />
     <PackageReference Include="Trax.Api.GraphQL" />
     <PackageReference Include="Trax.Api.GraphQL.PersistedOperations" />

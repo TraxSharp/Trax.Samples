@@ -51,9 +51,10 @@ API and no NuGet family.
 `tests/Trax.Samples.Tests.Reflection/BookwormArchitectureGuards.cs` is the consumer adoption
 path for the shipped guard packages, and has no test bodies by design.
 
-The census (every guard credited to an ADR or explicitly opted out) is **not** switched on
-here yet. Trax.Docs runs it over its own guards; this repo will once the shared copies carry
-citations of the central ADRs they enforce.
+The census is on: every guard class under that folder is either credited to an ADR or
+carries `Not ADR-enforcing:` with a reason, and the `adr-guard` job checks it. A new guard is
+unclassified until you choose, and the build says so. Opting out is a normal answer; a reason
+that reads as a deferral is not.
 
 ## Running the samples and tests
 

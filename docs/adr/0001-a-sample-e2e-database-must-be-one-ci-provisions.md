@@ -62,5 +62,4 @@ Not covered:
 
 ## Changelog
 
-- **2026-09-11**: Corrected the scope: not every sample uses Postgres, and the guard covers the Postgres factories under Factories/ rather than every factory.
 - **2026-09-11**: Recorded.

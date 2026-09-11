@@ -6,9 +6,11 @@ status: accepted
 
 # A sample's E2E database must be one CI actually provisions
 
-Every sample E2E factory boots a host against PostgreSQL, and CI provisions those databases
-up front: a service container on a fixed host port, plus an explicit create-databases list.
-A factory's default connection string must name a port and a database from that list.
+A sample E2E factory that boots against PostgreSQL must name a port and a database CI
+actually provisions: a service container on a fixed host port, plus an explicit
+create-databases list. Not every sample uses Postgres. ChatService runs on SQLite, the
+Bookworm billing and inventory servers use no database, and PersistedOperations reads its
+connection from configuration.
 
 ## Status
 
@@ -47,12 +49,18 @@ intended friction: the alternative is a suite that looks like coverage and is no
 ## Exemplars
 
 - `E2EDatabaseProvisioningTests` parses `.github/workflows/pull_request.yml` for the
-  provisioned ports and databases and pins every sample factory's default connection string
+  provisioned ports and databases and pins the Postgres factories' default connection strings
   to them, so the two cannot drift apart unnoticed.
 
-Not covered: the guard checks the connection string a factory *defaults* to. A suite that
-overrides it at run time, or reads it from configuration, is outside what the regex sees.
+Not covered:
+
+- The guard checks the connection string a factory *defaults* to. A suite that overrides it
+  at run time, or reads it from configuration, is outside what the regex sees.
+- The scan matches factories by a `/Factories/` path segment, so one placed elsewhere is
+  skipped entirely, and its floor assertion is a fixed number rather than a count of the
+  factories that exist. Several could disappear without failing it.
 
 ## Changelog
 
+- **2026-09-11**: Corrected the scope: not every sample uses Postgres, and the guard covers the Postgres factories under Factories/ rather than every factory.
 - **2026-09-11**: Recorded.

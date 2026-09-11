@@ -7,6 +7,8 @@ namespace Trax.Samples.Tests.Meta.Tests;
 /// a green build while testing nothing (which is exactly how the Bookworm suite once hid a
 /// 0%-coverage gap behind a local-only port 5433). This pins every factory's default connection
 /// string to the CI contract so the two cannot drift apart unnoticed.
+///
+/// <para>Enforces <c>docs/adr/0001-a-sample-e2e-database-must-be-one-ci-provisions.md</c>.</para>
 /// </summary>
 [TestFixture]
 public class E2EDatabaseProvisioningTests
@@ -90,7 +92,9 @@ public class E2EDatabaseProvisioningTests
         offenders
             .Should()
             .BeEmpty(
-                "every E2E factory must target the CI Postgres port and a provisioned database:\n"
+                "every E2E factory must target the CI Postgres port and a provisioned database. A "
+                    + "factory pointing elsewhere skips and reports green while testing nothing. See "
+                    + "docs/adr/0001-a-sample-e2e-database-must-be-one-ci-provisions.md:\n"
                     + string.Join("\n", offenders)
             );
     }

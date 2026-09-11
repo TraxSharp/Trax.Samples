@@ -11,11 +11,20 @@ using Trax.Samples.Bookworm.Lending.Context;
 
 namespace Trax.Samples.Tests.Reflection;
 
-// The architecture guards for the Bookworm flagship are run entirely by subclassing the framework
-// guard fixtures and supplying configuration. There are no test bodies here: the [Test] methods live
-// in the packages (Trax.Effect.Data.Testing / Trax.Api.GraphQL.Testing / Trax.Mediator.Testing) and
-// are discovered through these subclasses. This is exactly how any consumer adopts the guards.
-
+/// <summary>
+/// The architecture guards for the Bookworm flagship, run entirely by subclassing the framework
+/// guard fixtures and supplying configuration.
+///
+/// <para>
+/// There are no test bodies here: the [Test] methods live in the packages
+/// (Trax.Effect.Data.Testing / Trax.Api.GraphQL.Testing / Trax.Mediator.Testing) and are discovered
+/// through these subclasses. This is exactly how any consumer adopts the guards, and it is the only
+/// place that adoption path is exercised. Each package's own self-tests drive its checkers directly
+/// and would stay green if fixture discovery broke.
+/// </para>
+///
+/// <para>Enforces <c>docs/adr/0002-the-samples-adopt-the-guards-as-a-consumer-would.md</c>.</para>
+/// </summary>
 [TestFixture]
 public sealed class BookwormDataLayerGuards : DomainDataLayerGuardFixture
 {

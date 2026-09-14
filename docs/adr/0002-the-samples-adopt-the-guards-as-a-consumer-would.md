@@ -17,13 +17,20 @@ discovered in this assembly. That is exactly the adoption path a consumer follow
 
 ## Why this is written down
 
-Because it is the only place the consumer-facing half of the guard packages is exercised.
-Each package has its own self-tests, which prove the checkers work when driven directly.
-None of them proves the thing a consumer actually does: reference the package, subclass a
-fixture, supply options, and have `dotnet test` discover the inherited tests.
+Because it is the only place the fixtures are adopted across a package boundary.
 
-If fixture discovery broke, or an abstract member changed shape, every self-test would stay
-green and every consumer's build would break. Bookworm is what catches that.
+Each package already subclasses its own fixture in a self-test:
+`DomainDataLayerGuardFixtureSelfTest` in Trax.Effect, `CrossSchemaGuardFixtureSelfTest` in
+Trax.Api, `TrainGuardFixtureSelfTest` in Trax.Mediator. Those cover subclassing, option
+supply, and discovery of the inherited `[Test]` methods, and an abstract member changing shape
+breaks them at compile time. What they cannot cover is the packaging: each one runs inside the
+repo that ships the fixture, against that repo's own `ProjectReference`s, so the compiler
+resolves the fixture, its options type and everything they touch from source whether or not
+any of it reaches the `.nupkg`.
+
+Trax.Samples has no cross-repo `ProjectReference`. It reaches all three fixtures only through
+a `PackageReference` resolved from the feed, so a type left `internal`, a member missing from
+the published assembly, or a file left out of the pack fails here and nowhere else.
 
 ## Consequences
 
@@ -53,4 +60,8 @@ nothing says so.
 
 ## Changelog
 
+- **2026-09-11**: Replaced the justification. All three packages do ship a fixture-subclass
+  self-test, so the claim that nothing else exercises subclassing and discovery was false. What
+  is only exercised here is adoption across a real `PackageReference` rather than the shipping
+  repo's own project references.
 - **2026-09-11**: Recorded.

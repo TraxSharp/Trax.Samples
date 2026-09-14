@@ -11,6 +11,7 @@ namespace Trax.Samples.Tests.Meta.Tests;
 ///
 /// <para>Enforces <c>docs/adr/0001-a-sample-e2e-database-must-be-one-ci-provisions.md</c>.</para>
 /// </summary>
+[Property("adr", "docs/adr/0001-a-sample-e2e-database-must-be-one-ci-provisions.md")]
 [TestFixture]
 public class E2EDatabaseProvisioningTests
 {

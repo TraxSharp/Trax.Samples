@@ -1,6 +1,6 @@
 using HotChocolate;
-using HotChocolate.Authorization;
 using HotChocolate.Types;
+using Trax.Effect.Attributes;
 using Trax.Samples.GameServer.Data.Models;
 
 namespace Trax.Samples.GameServer.Api.TypeExtensions;
@@ -16,13 +16,17 @@ namespace Trax.Samples.GameServer.Api.TypeExtensions;
 /// projection off a public entity is not automatically as public as the entity, and Trax makes
 /// somebody say which it is. Here the answer is genuinely public, because the field is computed
 /// from <c>Wins</c> and <c>Losses</c>, which the same anonymous caller can already read.
-/// Note that <c>[TraxAuthorize]</c> does not compile on a resolver method; HotChocolate's
-/// <c>[Authorize]</c> and <c>[AllowAnonymous]</c> are the ones that work here.
+/// <para>
+/// Use Trax's own attributes here: <c>[TraxAuthorize]</c> and
+/// <c>[TraxAllowAnonymous]</c> both apply to a method, and Trax emits the matching
+/// <c>@authorize</c> directive. HotChocolate's <c>[Authorize]</c> and <c>[AllowAnonymous]</c> are
+/// refused, so a surface declares its posture the same way wherever it lives.
+/// </para>
 /// </remarks>
 [ExtendObjectType(typeof(PlayerRecord))]
 public class PlayerRecordTypeExtension
 {
-    [AllowAnonymous]
+    [TraxAllowAnonymous]
     public double GetWinRate([Parent] PlayerRecord player)
     {
         var total = player.Wins + player.Losses;

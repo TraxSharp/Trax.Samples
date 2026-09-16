@@ -27,7 +27,14 @@ namespace Trax.Samples.GameServer.Api.TypeExtensions;
 public class PlayerRecordTypeExtension
 {
     [TraxAllowAnonymous]
-    public double GetWinRate([Parent] PlayerRecord player)
+    public double GetWinRate(
+        // Projection only selects what the caller asked for, and this reads two columns that
+        // are not the entity key, so it declares them. Trax adds the key automatically; every
+        // other property a resolver touches has to be named or it arrives as 0.
+        [Parent(
+            requires: nameof(PlayerRecord.Wins) + " " + nameof(PlayerRecord.Losses)
+        )] PlayerRecord player
+    )
     {
         var total = player.Wins + player.Losses;
         return total > 0 ? (double)player.Wins / total : 0;

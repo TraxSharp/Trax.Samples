@@ -21,7 +21,7 @@ namespace Trax.Samples.Bookworm.CrossSchema.Edges;
 public sealed class LoanToBookEdge
 {
     public async Task<Book?> GetBook(
-        [Parent] Loan loan,
+        [Parent(requires: nameof(Loan.BookId))] Loan loan,
         CrossSchemaLoader<CatalogDbContext, Book> books,
         CancellationToken cancellationToken
     ) => await books.LoadAsync(loan.BookId, cancellationToken);

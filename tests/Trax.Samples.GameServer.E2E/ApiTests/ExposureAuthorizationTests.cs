@@ -124,6 +124,43 @@ public class ExposureAuthorizationTests : ApiTestFixture
     /// its own. Before that attribute existed the host refused to start; this asserts the
     /// declared posture is the one actually served.
     /// </summary>
+    /// <summary>
+    /// The reason <c>winRate</c> declares <c>[Parent(requires:)]</c>. Projection selects only the
+    /// columns the caller named, so a query that asks for <c>winRate</c> alone gets a parent whose
+    /// Wins and Losses were never fetched. Without the declaration they arrive as 0 and the field
+    /// silently returns 0 rather than failing.
+    /// </summary>
+    [Test]
+    public async Task ExtensionField_SelectedAlone_StillReadsItsParentColumns()
+    {
+        var result = await GraphQL.SendAsync(
+            """
+            {
+                discover {
+                    players {
+                        playerRecords(first: 5) {
+                            nodes { winRate }
+                        }
+                    }
+                }
+            }
+            """
+        );
+
+        result.HasErrors.Should().BeFalse($"GraphQL error: {result.FirstErrorMessage}");
+
+        var rates = result
+            .GetData("discover", "players", "playerRecords", "nodes")
+            .EnumerateArray()
+            .Select(n => n.GetProperty("winRate").GetDouble())
+            .ToList();
+
+        rates.Should().NotBeEmpty();
+        rates
+            .Should()
+            .Contain(r => r > 0, "a parent whose Wins and Losses were not projected returns 0");
+    }
+
     [Test]
     public async Task AnonymousDeclaredExtensionField_IsServedToAnAnonymousCaller()
     {

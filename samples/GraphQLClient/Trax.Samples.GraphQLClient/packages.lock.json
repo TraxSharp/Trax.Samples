@@ -36,9 +36,9 @@
       },
       "Trax.Api.GraphQL.Client": {
         "type": "Direct",
-        "requested": "[1.43.0, )",
-        "resolved": "1.43.0",
-        "contentHash": "RrrtRjI1s0G729PKM/ll6hvUCavbbbuCZggEztlp+aRue5q1i30bisSwC8TFd6ZyVKBE4zTiVB+G4j6BKlqHIA==",
+        "requested": "[1.43.1, )",
+        "resolved": "1.43.1",
+        "contentHash": "5p7/R8w1BMbIEWvR41R4C0VhmAsTTZWUou1tdFJ+dHDOupw+rySosWTuKPBFWFNJ1VjzSUjgxjmnSC7Uj6/xVg==",
         "dependencies": {
           "GraphQL": "8.8.4",
           "GraphQL.Client": "6.1.0",
@@ -47,9 +47,9 @@
       },
       "Trax.Api.GraphQL.Client.Trax": {
         "type": "Direct",
-        "requested": "[1.43.0, )",
-        "resolved": "1.43.0",
-        "contentHash": "iHltWHvC8oeOtcuvPyCTyMzAN1omYZg7t0+PQM4CK9CSuA0Ex6CZfI6mgjwcIltDTP1O2VqxpXAT7taheJqfVg==",
+        "requested": "[1.43.1, )",
+        "resolved": "1.43.1",
+        "contentHash": "dPY4iVVZPUCOUCDvG8OYe1odzMW7sZfRsP3vhBOcVOyrNL1D5E6CZtjwDhCCmq5dyxHE1xcdgl0XAqCEB//opA==",
         "dependencies": {
           "GraphQL": "8.8.4",
           "GraphQL.Client": "6.1.0",
@@ -58,7 +58,7 @@
           "HotChocolate.CostAnalysis": "16.6.2",
           "HotChocolate.Execution.Projections": "16.6.2",
           "Microsoft.EntityFrameworkCore": "10.0.9",
-          "Trax.Api.GraphQL.Client": "1.43.0",
+          "Trax.Api.GraphQL.Client": "1.43.1",
           "Trax.Effect": "1.54.0",
           "Trax.Effect.Data": "1.54.0",
           "Trax.Mediator": "1.22.0"
@@ -66,14 +66,14 @@
       },
       "Trax.Api.GraphQL.Client.Typed": {
         "type": "Direct",
-        "requested": "[1.43.0, )",
-        "resolved": "1.43.0",
-        "contentHash": "tMmT8Ux6rjoaEs+YQsjpZERU2D9piUVTh2FYIanEsUtuGAmSe+ql74G48jfHcTuz5cW3t4lKlOEM0cRnpGqhqg==",
+        "requested": "[1.43.1, )",
+        "resolved": "1.43.1",
+        "contentHash": "+RDrCwK9k0YIcj59QT0CwXdhzOtI5zGghX7wzIfv1I+MZ2hO66eKwXae8bwZMGEYA2VTGBZOED9KgywD4Qt1gQ==",
         "dependencies": {
           "GraphQL": "8.8.4",
           "GraphQL.Client": "6.1.0",
           "GraphQL.Client.Serializer.SystemTextJson": "6.1.0",
-          "Trax.Api.GraphQL.Client": "1.43.0"
+          "Trax.Api.GraphQL.Client": "1.43.1"
         }
       },
       "ChilliCream.Nitro.App": {

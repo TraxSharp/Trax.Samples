@@ -11,17 +11,17 @@
   <Import Project="trax-local.props" Condition="Exists('trax-local.props')" />
 
   <ItemGroup Label="Trax">
-    <PackageVersion Include="Trax.Api" Version="1.42.0" />
-    <PackageVersion Include="Trax.Api.Auth" Version="1.42.0" />
-    <PackageVersion Include="Trax.Api.Auth.ApiKey" Version="1.42.0" />
-    <PackageVersion Include="Trax.Api.Auth.Jwt" Version="1.42.0" />
-    <PackageVersion Include="Trax.Api.GraphQL" Version="1.42.0" />
-    <PackageVersion Include="Trax.Api.GraphQL.Audit" Version="1.42.0" />
-    <PackageVersion Include="Trax.Api.GraphQL.Client" Version="1.42.0" />
-    <PackageVersion Include="Trax.Api.GraphQL.Client.Trax" Version="1.42.0" />
-    <PackageVersion Include="Trax.Api.GraphQL.Client.Typed" Version="1.42.0" />
-    <PackageVersion Include="Trax.Api.GraphQL.PersistedOperations" Version="1.42.0" />
-    <PackageVersion Include="Trax.Api.GraphQL.Testing" Version="1.42.0" />
+    <PackageVersion Include="Trax.Api" Version="1.43.0" />
+    <PackageVersion Include="Trax.Api.Auth" Version="1.43.0" />
+    <PackageVersion Include="Trax.Api.Auth.ApiKey" Version="1.43.0" />
+    <PackageVersion Include="Trax.Api.Auth.Jwt" Version="1.43.0" />
+    <PackageVersion Include="Trax.Api.GraphQL" Version="1.43.0" />
+    <PackageVersion Include="Trax.Api.GraphQL.Audit" Version="1.43.0" />
+    <PackageVersion Include="Trax.Api.GraphQL.Client" Version="1.43.0" />
+    <PackageVersion Include="Trax.Api.GraphQL.Client.Trax" Version="1.43.0" />
+    <PackageVersion Include="Trax.Api.GraphQL.Client.Typed" Version="1.43.0" />
+    <PackageVersion Include="Trax.Api.GraphQL.PersistedOperations" Version="1.43.0" />
+    <PackageVersion Include="Trax.Api.GraphQL.Testing" Version="1.43.0" />
     <PackageVersion Include="Trax.Dashboard" Version="1.15.0" />
     <PackageVersion Include="Trax.Effect" Version="1.54.0" />
     <PackageVersion Include="Trax.Effect.Broadcaster.RabbitMQ" Version="1.54.0" />

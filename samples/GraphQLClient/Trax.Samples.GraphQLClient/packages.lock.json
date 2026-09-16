@@ -36,9 +36,9 @@
       },
       "Trax.Api.GraphQL.Client": {
         "type": "Direct",
-        "requested": "[1.42.0, )",
-        "resolved": "1.42.0",
-        "contentHash": "tqUJSoiEliJMMI/dhqQ9fhhGeU2mUFFBExn54wRB9lFjRTM+IkB/95rr7o3wfqanoD3lq5azlfJyDkViecSPlw==",
+        "requested": "[1.43.0, )",
+        "resolved": "1.43.0",
+        "contentHash": "RrrtRjI1s0G729PKM/ll6hvUCavbbbuCZggEztlp+aRue5q1i30bisSwC8TFd6ZyVKBE4zTiVB+G4j6BKlqHIA==",
         "dependencies": {
           "GraphQL": "8.8.4",
           "GraphQL.Client": "6.1.0",
@@ -47,9 +47,9 @@
       },
       "Trax.Api.GraphQL.Client.Trax": {
         "type": "Direct",
-        "requested": "[1.42.0, )",
-        "resolved": "1.42.0",
-        "contentHash": "BjNLXfi/0tXfykrRzJBcG8H9XkiqqyOPD8pbIzLNczj2gRCchV14TtQnXS+agL3fPTU46amkNkO7dL3erSSkrw==",
+        "requested": "[1.43.0, )",
+        "resolved": "1.43.0",
+        "contentHash": "iHltWHvC8oeOtcuvPyCTyMzAN1omYZg7t0+PQM4CK9CSuA0Ex6CZfI6mgjwcIltDTP1O2VqxpXAT7taheJqfVg==",
         "dependencies": {
           "GraphQL": "8.8.4",
           "GraphQL.Client": "6.1.0",
@@ -58,22 +58,22 @@
           "HotChocolate.CostAnalysis": "16.6.2",
           "HotChocolate.Execution.Projections": "16.6.2",
           "Microsoft.EntityFrameworkCore": "10.0.9",
-          "Trax.Api.GraphQL.Client": "1.42.0",
-          "Trax.Effect": "1.47.0",
-          "Trax.Effect.Data": "1.47.0",
-          "Trax.Mediator": "1.20.0"
+          "Trax.Api.GraphQL.Client": "1.43.0",
+          "Trax.Effect": "1.54.0",
+          "Trax.Effect.Data": "1.54.0",
+          "Trax.Mediator": "1.22.0"
         }
       },
       "Trax.Api.GraphQL.Client.Typed": {
         "type": "Direct",
-        "requested": "[1.42.0, )",
-        "resolved": "1.42.0",
-        "contentHash": "mJlLcKwrmYufcrxtXHdV6UGCKcFjl3AbiQoRKI1kS/K4rFTsUCtT6I60K1UN/hpkD3sOb7FbAMGIT9BqHv/DHQ==",
+        "requested": "[1.43.0, )",
+        "resolved": "1.43.0",
+        "contentHash": "tMmT8Ux6rjoaEs+YQsjpZERU2D9piUVTh2FYIanEsUtuGAmSe+ql74G48jfHcTuz5cW3t4lKlOEM0cRnpGqhqg==",
         "dependencies": {
           "GraphQL": "8.8.4",
           "GraphQL.Client": "6.1.0",
           "GraphQL.Client.Serializer.SystemTextJson": "6.1.0",
-          "Trax.Api.GraphQL.Client": "1.42.0"
+          "Trax.Api.GraphQL.Client": "1.43.0"
         }
       },
       "ChilliCream.Nitro.App": {
@@ -620,8 +620,8 @@
       "Trax.Effect": {
         "type": "CentralTransitive",
         "requested": "[1.54.0, )",
-        "resolved": "1.47.0",
-        "contentHash": "0M+Ydpjse1pLNzsnp5S/PuRKVDXDn+w58x8d/BqocghzjByq/RM1bGQGyneqa++tWPZZoQUjn5fGteZv1L0wOQ==",
+        "resolved": "1.54.0",
+        "contentHash": "cUDGoUzB+SP1M1uiAmN2CEgCo2rmKN90r91UZGwzSPxoTbIdYKJtHil6ZO2gNoSEA/EpnMuMo/pn/E7yOB16Mw==",
         "dependencies": {
           "Trax.Core": "1.6.0"
         }
@@ -629,24 +629,24 @@
       "Trax.Effect.Data": {
         "type": "CentralTransitive",
         "requested": "[1.54.0, )",
-        "resolved": "1.47.0",
-        "contentHash": "wX8lUqPrh3VfQgHHKqDS1pksRwHuSra/5FqTswnonyu1ZYxo9rpk0qHUER1IcXK3A2M8o8ErAGsi5+vY0Q5eFA==",
+        "resolved": "1.54.0",
+        "contentHash": "jViqCeSP6FzluERkybNpdUzgQW2rdD1g66kcwhh/cofB631G9bnHlTHrdw4nF9pDlf8S51NYlOzyM6c93H/H5Q==",
         "dependencies": {
           "Microsoft.EntityFrameworkCore": "10.0.3",
           "Microsoft.EntityFrameworkCore.Relational": "10.0.3",
           "Npgsql": "10.0.3",
           "Trax.Core": "1.6.0",
-          "Trax.Effect": "1.47.0"
+          "Trax.Effect": "1.54.0"
         }
       },
       "Trax.Mediator": {
         "type": "CentralTransitive",
         "requested": "[1.22.0, )",
-        "resolved": "1.20.0",
-        "contentHash": "++o5w7hEaf9SS+qyzvY2++kSECmUg1rvckCraFK+kVZ9eTYcgTJZ4jggtU/njDiZae64Fk34KE7LTS7THed/VA==",
+        "resolved": "1.22.0",
+        "contentHash": "JWi7nDX7iG5IP3bcCgRRtOBGFIhABajO4pfMGd9Vp64ndeyUkMn24znEyX350SwmH+lclpRFE0EGSKTWu+QE9g==",
         "dependencies": {
-          "Trax.Effect": "1.41.0",
-          "Trax.Effect.Data": "1.41.0"
+          "Trax.Effect": "1.49.0",
+          "Trax.Effect.Data": "1.49.0"
         }
       }
     }

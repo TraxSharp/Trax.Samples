@@ -26,14 +26,14 @@
       },
       "Trax.Api.Auth": {
         "type": "Direct",
-        "requested": "[1.42.0, )",
-        "resolved": "1.42.0",
-        "contentHash": "o+nm7zbtlvUZwbyrg8Xr/2dczb/9eiQWHsX792TIar9DykTFmnxxtWn92feo9eDzOa25OMxfQQ9pwXX1RS9J7A==",
+        "requested": "[1.43.0, )",
+        "resolved": "1.43.0",
+        "contentHash": "tvd+tY7XF475j30AjEYb+LDAZHJfcW7PEGqfmP2DvS/5BQXchO3g5P9Xun1p8BXyuuLSSq9mH2oGjtyHGJi1SA==",
         "dependencies": {
           "Microsoft.EntityFrameworkCore": "10.0.9",
-          "Trax.Effect": "1.47.0",
-          "Trax.Effect.Data": "1.47.0",
-          "Trax.Mediator": "1.20.0"
+          "Trax.Effect": "1.54.0",
+          "Trax.Effect.Data": "1.54.0",
+          "Trax.Mediator": "1.22.0"
         }
       },
       "Trax.Effect": {

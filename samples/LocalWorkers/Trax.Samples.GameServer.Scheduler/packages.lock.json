@@ -583,7 +583,7 @@
       },
       "HotChocolate.AspNetCore": {
         "type": "CentralTransitive",
-        "requested": "[16.6.2, )",
+        "requested": "[16.6.6, )",
         "resolved": "15.1.16",
         "contentHash": "oUtDUupYXojHkocNcCbqP5tFD02BNoiVVPOmYaJXp78y9L2lR89OI5+mDK+QCw/qX2ftgR2LUG5/ElnccmmbmA==",
         "dependencies": {

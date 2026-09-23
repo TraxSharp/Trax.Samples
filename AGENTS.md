@@ -22,8 +22,9 @@ index lists them by repo. Fourteen name `samples`: executable guards, exact vers
 dependency direction, the three test conventions, the canonical train name, the documentation
 lints, test frameworks staying out of shipped libraries, exemplars declared by attribute, Trax
 owning its vocabulary, tests owning their timeouts, every `PackageVersion` naming a referenced
-package, and a chain being a declaration (`0016`), which every sample train's `Junctions()`
-must satisfy for its host to start. In a workspace checkout the index is at
+package, and a chain being a declaration (`0016`). Once the samples consume a Trax.Mediator with
+the startup chain check, every sample train's `Junctions()` must satisfy it for its host to
+start; until the pins move to that version, nothing here enforces it. In a workspace checkout the index is at
 `../Trax.Docs/adr/README.md`; that path does not resolve on GitHub, because it crosses a
 repository boundary.
 

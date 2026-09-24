@@ -2,6 +2,8 @@ namespace Trax.Samples.Tests.Meta.Tests;
 
 /// <summary>
 /// A workflow job that reads a file out of the repository has to check the repository out first.
+///
+/// <para>Not ADR-enforcing: it checks how GitHub Actions works, that a job without a checkout has no repository files, rather than a choice between alternatives; the choice it works around, keeping the publish job free of a checkout because it holds the NuGet credential, is the workflow's own and is stated in the remarks.</para>
 /// </summary>
 /// <remarks>
 /// The publish job in <c>nuget_release.yml</c> deliberately has no <c>actions/checkout</c>: it
@@ -9,7 +11,7 @@ namespace Trax.Samples.Tests.Meta.Tests;
 /// NuGet, so keeping repository code off that runner is the point. It still pointed
 /// <c>actions/setup-dotnet</c> at <c>global-json-file: global.json</c>, a file that is therefore
 /// never on disk. The step failed, the push never ran, and Trax.Samples.Templates sat at 1.29.1
-/// while v1.30.0, v1.31.0 and v1.32.0 were tagged and released on GitHub. Nothing was red on the
+/// while v1.30.0 through v1.33.1 were tagged and released on GitHub. Nothing was red on the
 /// PR, because the failure is downstream of the merge.
 /// </remarks>
 [TestFixture]
@@ -54,7 +56,7 @@ public class WorkflowJobFileAccessTests
     }
 
     /// <summary>
-    /// Splits a workflow into its jobs by indentation: a job header is a key at four spaces under
+    /// Splits a workflow into its jobs by indentation: a job header is a key at two spaces under
     /// the top-level <c>jobs:</c>, and the job runs until the next one.
     /// </summary>
     private static List<(string Name, List<string> Lines)> Jobs(string[] lines)

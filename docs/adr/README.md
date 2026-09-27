@@ -39,7 +39,7 @@ The format is `.claude/skills/recording-decisions/ADR-FORMAT.md`.
 | Area | ADRs |
 | --- | --- |
 | `ci` | [0001](./0001-a-sample-e2e-database-must-be-one-ci-provisions.md) |
-| `samples` | [0002](./0002-the-samples-adopt-the-guards-as-a-consumer-would.md) |
+| `samples` | [0002](./0002-the-samples-adopt-the-guards-as-a-consumer-would.md), [0003](./0003-templates-serve-the-dashboard-only-in-development.md) |
 | `testing` | [0001](./0001-a-sample-e2e-database-must-be-one-ci-provisions.md), [0002](./0002-the-samples-adopt-the-guards-as-a-consumer-would.md) |
 
 ## All of them
@@ -48,3 +48,4 @@ The format is `.claude/skills/recording-decisions/ADR-FORMAT.md`.
 | --- | --- | --- |
 | [0001](./0001-a-sample-e2e-database-must-be-one-ci-provisions.md) | A sample's E2E database must be one CI actually provisions | testing, ci |
 | [0002](./0002-the-samples-adopt-the-guards-as-a-consumer-would.md) | The samples adopt the shipped guards the way a consumer would | testing, samples |
+| [0003](./0003-templates-serve-the-dashboard-only-in-development.md) | The templates serve the dashboard and the demo key only in Development | samples |

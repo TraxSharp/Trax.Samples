@@ -66,6 +66,7 @@
     <Project Path="tests/Trax.Samples.Bookworm.E2E/Trax.Samples.Bookworm.E2E.csproj" />
     <Project Path="tests/Trax.Samples.Tests.Reflection/Trax.Samples.Tests.Reflection.csproj" />
     <Project Path="tests/Trax.Samples.ChatService.Tests/Trax.Samples.ChatService.Tests.csproj" />
+    <Project Path="tests/Trax.Samples.Templates.Tests/Trax.Samples.Templates.Tests.csproj" />
     <Project Path="tests/Trax.Samples.TestRunner.Tests/Trax.Samples.TestRunner.Tests.csproj" />
     <Project Path="tests/Trax.Samples.GameServer.E2E/Trax.Samples.GameServer.E2E.csproj" />
     <Project Path="tests/Trax.Samples.ChatService.E2E/Trax.Samples.ChatService.E2E.csproj" />

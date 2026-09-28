@@ -75,7 +75,7 @@ jobs:
             psql -h localhost -U trax -d trax -c "CREATE DATABASE \"$db\";"
           done
       - name: Build
-        run: dotnet build Trax.Samples.slnx --configuration Release --no-restore
+        run: dotnet build Trax.Samples.slnx --configuration Release --no-restore -warnaserror
       - name: Test
         run: dotnet test Trax.Samples.slnx --configuration Release --no-build --collect:"XPlat Code Coverage" --results-directory ./TestResults
       - name: Upload coverage to Codecov

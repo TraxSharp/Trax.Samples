@@ -16,6 +16,8 @@ if your work contradicts one, say so rather than silently overriding it.
 | --- | --- |
 | a new sample, or an E2E factory's connection string | [0001](./docs/adr/0001-a-sample-e2e-database-must-be-one-ci-provisions.md), a factory CI does not provision reports green while testing nothing |
 | a guard fixture, here or upstream | [0002](./docs/adr/0002-the-samples-adopt-the-guards-as-a-consumer-would.md), Bookworm is the only place the fixtures are adopted across a real PackageReference |
+| a template's `Program.cs` or its dashboard | [0003](./docs/adr/0003-templates-serve-the-dashboard-only-in-development.md), the dashboard and the demo key exist only in Development |
+| a template's package versions | [0004](./docs/adr/0004-the-template-package-carries-its-package-versions.md), versions are generated at pack from the central pins |
 | `docker-compose.yml` | [0005](./docs/adr/0005-sample-infrastructure-listens-on-loopback-only.md), every published port binds `127.0.0.1` because the credentials sit beside it |
 
 Decisions binding more than one repo live in the central corpus at `Trax.Docs/adr/`, whose
@@ -50,14 +52,15 @@ not to record. The format is
 
 ## Guards
 
-`tests/Trax.Samples.Tests.Meta/` holds fourteen convention guards. Eleven are shared with other
-repos, and three are this repo's own. `E2EDatabaseProvisioningTests` reads the CI workflow,
+`tests/Trax.Samples.Tests.Meta/` holds fifteen convention guards. Eleven are shared with other
+repos, and four are this repo's own. `E2EDatabaseProvisioningTests` reads the CI workflow,
 checking every sample factory's *default* connection string against the ports and databases
 CI actually creates; a factory that declares none, because its sample runs on SQLite or the
 in-memory provider or reads the connection from configuration, gives it nothing to check.
 `WorkflowJobFileAccessTests` checks that a workflow job reading a repository file checks the
 repository out. `ComposePortsBindLoopbackTests` checks that every port `docker-compose.yml`
-publishes is bound to `127.0.0.1`.
+publishes is bound to `127.0.0.1`. `DemoKeysCarryTheMarkerTests` checks that every demo
+credential a sample registers carries the `do-not-use-in-production` marker.
 
 This repo has no `PublicApiSurfaceTests`, which is right: the samples are applications, and
 the one package it does ship, `Trax.Samples.Templates`, is template content with no API

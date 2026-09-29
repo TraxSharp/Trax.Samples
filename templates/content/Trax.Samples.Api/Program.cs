@@ -46,7 +46,12 @@ builder.Services.AddLogging(logging => logging.AddConsole());
 
 // ── Authentication (NO WARRANTY, demo key only) ─────────────────────────
 // Send the key as the X-Api-Key header. Per-operation gates use [TraxAuthorize].
-builder.Services.AddTraxApiKeyAuth(keys => keys.Add(DemoKeys.DemoKey, id: "demo", "User"));
+// The demo key is registered only in Development, where `dotnet run` starts (see
+// Properties/launchSettings.json). Anywhere else there is no credential until you register
+// real ones, so every [TraxAuthorize] operation is refused.
+if (builder.Environment.IsDevelopment())
+    builder.Services.AddTraxApiKeyAuth(keys => keys.Add(DemoKeys.DemoKey, id: "demo", "User"));
+builder.Services.AddAuthentication();
 builder.Services.AddAuthorization();
 
 // ── Register Trax Effect + Mediator ─────────────────────────────────────

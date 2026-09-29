@@ -19,11 +19,12 @@ if your work contradicts one, say so rather than silently overriding it.
 | `docker-compose.yml` | [0005](./docs/adr/0005-sample-infrastructure-listens-on-loopback-only.md), every published port binds `127.0.0.1` because the credentials sit beside it |
 
 Decisions binding more than one repo live in the central corpus at `Trax.Docs/adr/`, whose
-index lists them by repo. Fourteen name `samples`: executable guards, exact version pinning, the
+index lists them by repo. Fifteen name `samples`: executable guards, exact version pinning, the
 dependency direction, the three test conventions, the canonical train name, the documentation
 lints, test frameworks staying out of shipped libraries, exemplars declared by attribute, Trax
 owning its vocabulary, tests owning their timeouts, every `PackageVersion` naming a referenced
-package, and a chain being a declaration (`0016`). Once the samples consume a Trax.Mediator with
+package, a chain being a declaration (`0016`), and a demo credential carrying the
+`do-not-use-in-production` marker and existing only in Development (`0035`). Once the samples consume a Trax.Mediator with
 the startup chain check, every sample train's `Junctions()` must satisfy it for its host to
 start; until the pins move to that version, nothing here enforces it. In a workspace checkout the index is at
 `../Trax.Docs/adr/README.md`; that path does not resolve on GitHub, because it crosses a

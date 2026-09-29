@@ -59,6 +59,10 @@
     <Project Path="samples/Bookworm/Trax.Samples.Bookworm/Trax.Samples.Bookworm.csproj" />
     <Project Path="samples/Bookworm/Trax.Samples.Bookworm.Api/Trax.Samples.Bookworm.Api.csproj" />
   </Folder>
+  <Folder Name="/samples/StateMachine/">
+    <Project Path="samples/StateMachine/Trax.Samples.StateMachine/Trax.Samples.StateMachine.csproj" />
+    <Project Path="samples/StateMachine/Trax.Samples.StateMachine.Api/Trax.Samples.StateMachine.Api.csproj" />
+  </Folder>
   <Folder Name="/lib/">
     <Project Path="lib/Trax.Samples.Shared.Testing/Trax.Samples.Shared.Testing.csproj" />
   </Folder>
@@ -74,6 +78,7 @@
     <Project Path="tests/Trax.Samples.JobHunt.E2E/Trax.Samples.JobHunt.E2E.csproj" />
     <Project Path="tests/Trax.Samples.PersistedOperations.E2E/Trax.Samples.PersistedOperations.E2E.csproj" />
     <Project Path="tests/Trax.Samples.GraphQLClient.E2E/Trax.Samples.GraphQLClient.E2E.csproj" />
+    <Project Path="tests/Trax.Samples.StateMachine.Tests/Trax.Samples.StateMachine.Tests.csproj" />
     <Project Path="tests/Trax.Samples.Tests.Meta/Trax.Samples.Tests.Meta.csproj" />
   </Folder>
   <Folder Name="/templates/">

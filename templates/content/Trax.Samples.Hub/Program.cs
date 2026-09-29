@@ -13,6 +13,8 @@
 //   Open http://localhost:5000/trax/graphql for the GraphQL IDE
 //   Open http://localhost:5000/trax for the Dashboard (Development only)
 //
+//   Every operation needs the demo key: send the header X-Api-Key: demo-key-do-not-use-in-production
+//
 //   # Query a train directly
 //   query { discover { lookup(input: { id: "42" }) { id name createdAt } } }
 //
@@ -52,10 +54,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddLogging(logging => logging.AddConsole());
 
 // -- Authentication (NO WARRANTY, demo key only) -----------------------------
-// Send the key as the X-Api-Key header. Per-operation gates use [TraxAuthorize].
-// The demo key is registered only in Development, where `dotnet run` starts (see
-// Properties/launchSettings.json). Anywhere else there is no credential until you register
-// real ones, so every [TraxAuthorize] operation is refused.
+// Send the key as the X-Api-Key header. Every train and query model in this template carries
+// [TraxAuthorize(Roles = "User")], and the demo key holds that role. The demo key is registered
+// only in Development, where `dotnet run` starts (see Properties/launchSettings.json). Anywhere
+// else there is no credential until you register real ones, so every operation is refused.
+// Mark an operation [TraxAllowAnonymous] only when anyone on the internet may call it.
 if (builder.Environment.IsDevelopment())
     builder.Services.AddTraxApiKeyAuth(keys => keys.Add(DemoKeys.DemoKey, id: "demo", "User"));
 builder.Services.AddAuthentication();

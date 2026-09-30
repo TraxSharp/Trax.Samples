@@ -14,26 +14,15 @@ last in the stack and uses every other layer; the templates ship as
 [Trax.Samples.Templates](https://www.nuget.org/packages/Trax.Samples.Templates), and `trax generate` in
 [Trax.Cli](https://github.com/TraxSharp/Trax.Cli) builds on the hub template.
 
-## Templates
+## Example
 
 ```bash
 dotnet new install Trax.Samples.Templates
-dotnet new trax-hub -n MyApp
+dotnet new trax-hub -n MyApp      # or trax-api, trax-scheduler
+cd MyApp && dotnet run
 ```
 
-| Short name | What it creates | Port |
-|---|---|---|
-| `trax-api` | A GraphQL API with a query train and a mutation train, behind a demo API key that exists only in Development | 5002 |
-| `trax-scheduler` | A scheduler running a `HelloWorld` train every 20 seconds, with the Trax dashboard | 5001 |
-| `trax-hub` | The API, the scheduler and the dashboard in one process | 5000 |
-
-The templates take no options beyond `-n`. Each one stores runs with the in-memory provider (`UseInMemory()`), so no
-database is needed to try it. To keep runs, replace `UseInMemory()` in `Program.cs` with `UsePostgres(connectionString)`
-and add the `Trax.Effect.Data.Postgres` package (or `UseSqlite` and `Trax.Effect.Data.Sqlite`).
-
-`trax-scheduler` and `trax-hub` mount the dashboard and register the demo key only in Development. Trax.Dashboard 1.16.0
-and later also refuse to start until the host says who may use the dashboard; see
-[dashboard options](https://traxsharp.net/docs/sdk-reference/dashboard-api/dashboard-options).
+Each template stores runs in memory, so it needs no database; swap `UseInMemory()` for `UsePostgres(...)` to keep them.
 
 ## Samples
 
@@ -54,59 +43,6 @@ Each sample is a working app with its own projects under `samples/`. ChatService
 | [JobHunt](https://github.com/TraxSharp/Trax.Samples/tree/main/samples/JobHunt) | The baseline of a job-hunt CRM: GraphQL, API keys, the dashboard and domain migrations, with a React client | Postgres |
 | [TestRunner](https://github.com/TraxSharp/Trax.Samples/tree/main/samples/TestRunner) | NUnit test projects run as queued trains, with results streamed to a React client over subscriptions | Postgres |
 | [DataPipeline](https://github.com/TraxSharp/Trax.Samples/tree/main/samples/DataPipeline) | The scheduler running three [Flowthru](https://github.com/chaoticgoodcomputing/flowthru) data pipelines as a dependency chain | Postgres |
-
-The leaderboard train on [traxsharp.net](https://traxsharp.net) is adapted from the GameServer sample
-(`RecalculateLeaderboardTrain`).
-
-## Running a sample
-
-ChatService needs no database server. From the repository root:
-
-```bash
-dotnet run --project samples/ChatService/Trax.Samples.ChatService.Api
-# GraphQL IDE: http://localhost:5210/trax/graphql, with X-Api-Key: alice-key-do-not-use-in-production
-```
-
-The Postgres samples use the database in `docker-compose.yml`, which also starts RabbitMQ for the samples that
-broadcast lifecycle events between processes:
-
-```bash
-docker compose up -d
-dotnet run --project samples/LocalWorkers/Trax.Samples.GameServer.Scheduler   # dashboard on :5201/trax
-dotnet run --project samples/LocalWorkers/Trax.Samples.GameServer.Api         # GraphQL on :5200/trax/graphql
-```
-
-If port 5432 is taken, start the database elsewhere with `TRAX_PG_PORT=5433 docker compose up -d database` and change
-the port in the sample's `TraxDatabase` connection string in `appsettings.json`.
-
-## Where this fits
-
-Trax is split into layers, one repo each. Take the ones you need; the trains you wrote do not change. **You are here: Trax.Samples.**
-
-| Repo | What it adds |
-|---|---|
-| [Trax.Core](https://github.com/TraxSharp/Trax.Core) | Trains, junctions and the chain, with no database and no DI container |
-| [Trax.Effect](https://github.com/TraxSharp/Trax.Effect) | A recorded run for every execution (Postgres, SQLite or in memory), DI, effect providers, the state-machine engine |
-| [Trax.Mediator](https://github.com/TraxSharp/Trax.Mediator) | The train bus: run a train by handing over its input, with every chain checked at startup |
-| [Trax.Scheduler](https://github.com/TraxSharp/Trax.Scheduler) | Cron and interval schedules, retries, dead letters, and workers on other machines or in Lambda |
-| [Trax.Api](https://github.com/TraxSharp/Trax.Api) | GraphQL generated from your trains, with authentication, audit and typed clients |
-| [Trax.Dashboard](https://github.com/TraxSharp/Trax.Dashboard) | A Blazor Server UI for runs, schedules and dead letters, mounted in your app |
-| [Trax.Cli](https://github.com/TraxSharp/Trax.Cli) | The `trax` tool: scaffold a hub and trains from an OpenAPI or GraphQL schema, and state-machine codegen |
-| **[Trax.Samples](https://github.com/TraxSharp/Trax.Samples)** | **Complete sample apps, and the `trax-api`, `trax-scheduler` and `trax-hub` templates** |
-
-Docs live in [Trax.Docs](https://github.com/TraxSharp/Trax.Docs) and are published at [traxsharp.net/docs](https://traxsharp.net/docs).
-
-## Documentation
-
-- [Samples](https://traxsharp.net/docs/samples)
-- [Project templates](https://traxsharp.net/docs/reference/templates)
-- [Getting started](https://traxsharp.net/docs/getting-started)
-- [Remote execution](https://traxsharp.net/docs/scheduler/remote-execution), the model behind EnergyHub and ContentShield
-
-## Contributing
-
-Read [AGENTS.md](https://github.com/TraxSharp/Trax.Samples/blob/main/AGENTS.md) before changing code. Report vulnerabilities
-privately as described in [SECURITY.md](https://github.com/TraxSharp/Trax.Samples/blob/main/SECURITY.md).
 
 ## License
 

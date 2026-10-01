@@ -747,7 +747,6 @@
           "Microsoft.EntityFrameworkCore": "[10.0.12, )",
           "Npgsql.EntityFrameworkCore.PostgreSQL": "[10.0.3, )",
           "Trax.Effect": "[1.57.4, )",
-          "Trax.Effect.Data": "[1.57.4, )",
           "Trax.Effect.Data.Postgres": "[1.57.4, )",
           "Trax.Mediator": "[1.22.0, )",
           "Trax.Scheduler": "[1.32.1, )"

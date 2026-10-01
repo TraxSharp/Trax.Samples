@@ -14,8 +14,6 @@
     <PackageReference Include="Trax.Api.GraphQL.Client" />
     <PackageReference Include="Trax.Api.GraphQL.Client.Trax" />
     <PackageReference Include="Trax.Api.GraphQL.Client.Typed" />
-    <PackageReference Include="Trax.Effect" />
-    <PackageReference Include="Trax.Effect.Data" />
   </ItemGroup>
 
   <ItemGroup>

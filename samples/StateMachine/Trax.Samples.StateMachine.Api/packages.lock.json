@@ -730,7 +730,6 @@
         "dependencies": {
           "Trax.Api.Auth": "[1.43.1, )",
           "Trax.Effect": "[1.57.4, )",
-          "Trax.Effect.Data": "[1.57.4, )",
           "Trax.Effect.StateMachine": "[1.54.0, )",
           "Trax.Effect.StateMachine.Persistence": "[1.54.0, )"
         }

@@ -14,7 +14,6 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
     <PackageReference Include="Trax.Effect" />
-    <PackageReference Include="Trax.Effect.Data" />
     <PackageReference Include="Trax.Effect.Data.Postgres" />
     <PackageReference Include="Trax.Mediator" />
     <PackageReference Include="Trax.Scheduler" />

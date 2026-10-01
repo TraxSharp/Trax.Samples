@@ -610,7 +610,6 @@
           "Microsoft.EntityFrameworkCore": "[10.0.12, )",
           "Microsoft.EntityFrameworkCore.Sqlite": "[10.0.12, )",
           "SQLitePCLRaw.bundle_e_sqlite3": "[3.0.5, )",
-          "Trax.Effect": "[1.57.4, )",
           "Trax.Effect.Data": "[1.57.4, )"
         }
       },

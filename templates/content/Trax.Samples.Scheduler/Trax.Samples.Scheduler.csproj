@@ -9,7 +9,6 @@
 
   <ItemGroup>
     <PackageReference Include="Trax.Effect" />
-    <PackageReference Include="Trax.Effect.Data" />
     <PackageReference Include="Trax.Effect.Data.InMemory" />
     <PackageReference Include="Trax.Effect.Provider.Json" />
     <PackageReference Include="Trax.Effect.Provider.Parameter" />

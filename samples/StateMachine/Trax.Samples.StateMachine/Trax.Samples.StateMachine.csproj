@@ -7,7 +7,6 @@
 
   <ItemGroup>
     <PackageReference Include="Trax.Effect" />
-    <PackageReference Include="Trax.Effect.Data" />
     <PackageReference Include="Trax.Effect.StateMachine" />
     <PackageReference Include="Trax.Effect.StateMachine.Persistence" />
     <PackageReference Include="Trax.Api.Auth" />

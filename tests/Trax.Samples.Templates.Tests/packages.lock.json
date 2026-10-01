@@ -1135,7 +1135,6 @@
           "Trax.Api.Auth.ApiKey": "[1.43.1, )",
           "Trax.Api.GraphQL": "[1.43.1, )",
           "Trax.Effect": "[1.57.4, )",
-          "Trax.Effect.Data": "[1.57.4, )",
           "Trax.Effect.Data.InMemory": "[1.57.4, )",
           "Trax.Effect.Provider.Json": "[1.57.4, )",
           "Trax.Effect.Provider.Parameter": "[1.57.4, )",
@@ -1150,7 +1149,6 @@
           "Trax.Api.GraphQL": "[1.43.1, )",
           "Trax.Dashboard": "[1.15.0, )",
           "Trax.Effect": "[1.57.4, )",
-          "Trax.Effect.Data": "[1.57.4, )",
           "Trax.Effect.Data.InMemory": "[1.57.4, )",
           "Trax.Effect.JunctionProvider.Progress": "[1.57.4, )",
           "Trax.Effect.Provider.Json": "[1.57.4, )",
@@ -1164,7 +1162,6 @@
         "dependencies": {
           "Trax.Dashboard": "[1.15.0, )",
           "Trax.Effect": "[1.57.4, )",
-          "Trax.Effect.Data": "[1.57.4, )",
           "Trax.Effect.Data.InMemory": "[1.57.4, )",
           "Trax.Effect.JunctionProvider.Progress": "[1.57.4, )",
           "Trax.Effect.Provider.Json": "[1.57.4, )",

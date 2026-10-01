@@ -11,6 +11,7 @@
        rule keeps domain projects from referencing each other; this project is the guarded exception. -->
   <ItemGroup>
     <PackageReference Include="HotChocolate.AspNetCore" />
+    <PackageReference Include="Trax.Api" />
     <PackageReference Include="Trax.Scheduler" />
     <ProjectReference Include="..\Trax.Samples.Bookworm.Catalog\Trax.Samples.Bookworm.Catalog.csproj" />
     <ProjectReference Include="..\Trax.Samples.Bookworm.Lending\Trax.Samples.Bookworm.Lending.csproj" />

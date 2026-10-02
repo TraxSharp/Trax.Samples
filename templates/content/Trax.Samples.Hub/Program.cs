@@ -90,7 +90,7 @@ builder.Services.AddScoped<IAppDbContext>(sp =>
 // template puts no authorization in front of it, so it is served only in Development. Gate it
 // before serving it anywhere else: see https://traxsharp.net/docs/dashboard.
 if (builder.Environment.IsDevelopment())
-    builder.AddTraxDashboard();
+    builder.AddTraxDashboard(dashboard => dashboard.AllowAnonymousDashboard());
 
 // -- GraphQL API -------------------------------------------------------------
 builder.Services.AddTraxGraphQL(graphql => graphql.AddDbContext<AppDbContext>());

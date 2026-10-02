@@ -8,7 +8,7 @@
 //   - executes it locally via AddTraxWorker()
 //   - uses UseBroadcaster(b => b.UseSignalRHub()) to push lifecycle events
 //     to connected SignalR clients
-//   - maps the hub at /hubs/trax-events via MapTraxTrainEventHub()
+//   - maps the hub at /hubs/trax-events via MapTraxTrainEventHub(), open to anonymous callers
 //   - serves a Blazor Server page at /events that subscribes to the hub
 //     and renders a live, rolling list of train lifecycle events
 //
@@ -73,7 +73,9 @@ builder.Services.AddTrax(trax =>
 // The scheduler with Postgres already registers LocalWorkerService for in-process
 // execution by default, so no separate AddTraxWorker() call is needed.
 
-builder.AddTraxDashboard();
+// This sample has no sign-in for a browser, so the dashboard is mapped with no authorization of
+// its own and is meant for a developer machine only. A real host calls RequirePolicy or RequireRoles.
+builder.AddTraxDashboard(dashboard => dashboard.AllowAnonymousDashboard());
 
 var app = builder.Build();
 
@@ -82,7 +84,10 @@ app.UseAntiforgery();
 
 app.UseTraxDashboard();
 
-app.MapTraxTrainEventHub();
+// The hub has to be mapped with an explicit authorization posture. This sample has no
+// authentication at all and runs on a developer's machine, so the hub is open; a host
+// with real users maps it with hub.RequireAuthorization() or hub.RequireRoles(...).
+app.MapTraxTrainEventHub(hub => hub.AllowAnonymous());
 app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
 
 app.Run();

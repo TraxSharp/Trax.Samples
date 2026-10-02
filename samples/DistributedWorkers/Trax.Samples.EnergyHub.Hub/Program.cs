@@ -180,7 +180,9 @@ builder.Services.AddTrax(trax =>
 // ── Register GraphQL API ────────────────────────────────────────────────
 // Trains annotated with [TraxQuery] or [TraxMutation] get typed GraphQL
 // fields auto-generated. [TraxBroadcast] trains emit subscription events.
-builder.AddTraxDashboard();
+// This sample has no sign-in for a browser, so the dashboard is mapped with no authorization of
+// its own and is meant for a developer machine only. A real host calls RequirePolicy or RequireRoles.
+builder.AddTraxDashboard(dashboard => dashboard.AllowAnonymousDashboard());
 
 // Depth 6 accommodates the dispatch → mutation → output → nested type →
 // field → scalar query chain. The Trax default of 4 is the conservative

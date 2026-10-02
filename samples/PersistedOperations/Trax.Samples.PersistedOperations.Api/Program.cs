@@ -83,6 +83,11 @@ builder.Services.AddTraxGraphQL(graphql =>
         {
             opts.UseDatabase(connectionString).RequirePersisted(true).LogNonPersistedRequests(true);
 
+            // One process serves this endpoint and writes the store, so its document cache never
+            // needs a change broadcast to another node. Run more than one and this becomes
+            // UseRabbitMqInvalidation(connectionString).
+            opts.SingleNode();
+
             // Dev-prefixed operations bypass enforcement so developers can iterate on a query
             // without round-tripping through the manifest uploader. The operation name is chosen
             // by the caller, so outside Development this would let anyone run any document by
@@ -101,7 +106,9 @@ builder.Services.AddTraxGraphQL(graphql =>
 // above. This sample puts no authorization in front of it, so it is served only
 // in Development; gate it before serving it anywhere else.
 if (isDevelopment)
-    builder.AddTraxDashboard();
+    // This sample has no sign-in for a browser, so the dashboard is mapped with no authorization of
+    // its own and is meant for a developer machine only. A real host calls RequirePolicy or RequireRoles.
+    builder.AddTraxDashboard(dashboard => dashboard.AllowAnonymousDashboard());
 
 var app = builder.Build();
 

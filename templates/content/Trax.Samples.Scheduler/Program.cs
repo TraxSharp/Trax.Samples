@@ -56,7 +56,7 @@ builder.Services.AddTrax(trax =>
 // `dotnet run` starts (see Properties/launchSettings.json). Gate it before serving it anywhere
 // else: see https://traxsharp.net/docs/dashboard.
 if (builder.Environment.IsDevelopment())
-    builder.AddTraxDashboard();
+    builder.AddTraxDashboard(dashboard => dashboard.AllowAnonymousDashboard());
 
 var app = builder.Build();
 

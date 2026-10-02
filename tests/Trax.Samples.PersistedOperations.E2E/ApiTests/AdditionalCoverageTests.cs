@@ -171,7 +171,12 @@ public class AdditionalCoverageTests : ApiTestBase
         var resp = await Http.PostAsync("/trax/graphql/", content);
         ((int)resp.StatusCode).Should().Be(400);
         var body = await resp.Content.ReadAsStringAsync();
-        body.Should().Contain("PERSISTED_OPERATION_REQUIRED");
+        // Enforcement runs in HotChocolate's execution pipeline, after parsing, and HC refuses a
+        // JSON-array batch (HC0009) before any entry reaches it. Whichever layer refuses it, the
+        // inline entry must not run.
+        body.Should()
+            .NotContain("\"data\"", "no entry of a batch holding an inline query may run");
+        body.Should().ContainAny("HC0009", "PERSISTED_OPERATION_REQUIRED");
     }
 
     // ----- Multiple inputs proves correct execution -----

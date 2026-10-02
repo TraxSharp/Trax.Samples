@@ -85,7 +85,10 @@ builder.Services.AddTrax(trax =>
 // Trains annotated with [TraxQuery] or [TraxMutation] get typed GraphQL
 // fields auto-generated. [TraxBroadcast] trains emit subscription events.
 builder.Services.AddAuthorization();
-builder.AddTraxDashboard();
+
+// This sample has no sign-in for a browser, so the dashboard is mapped with no authorization of
+// its own and is meant for a developer machine only. A real host calls RequirePolicy or RequireRoles.
+builder.AddTraxDashboard(dashboard => dashboard.AllowAnonymousDashboard());
 builder.Services.AddTraxGraphQL();
 builder.Services.AddHealthChecks().AddTraxHealthCheck();
 

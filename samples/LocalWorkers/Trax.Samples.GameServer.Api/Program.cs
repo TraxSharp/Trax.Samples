@@ -107,6 +107,7 @@ using Trax.Samples.GameServer.Data;
 using Trax.Samples.GameServer.Data.Models;
 using Trax.Samples.GameServer.Hooks;
 using Trax.Scheduler.Extensions;
+using Trax.Scheduler.Services.JobSubmitter;
 using Trax.Scheduler.Services.Operations;
 using SampleKeys = Trax.Samples.GameServer.Auth.ApiKeyDefaults;
 
@@ -246,6 +247,10 @@ builder.Services.AddTrax(trax =>
 // background pollers — the separate Scheduler process owns the polling loop.
 builder.Services.AddTraxJobRunner();
 builder.Services.AddScoped<IOperationsService, OperationsService>();
+
+// operations.workQueue.runTrain hands a run straight to a job submitter. The Scheduler
+// process's local workers poll Postgres, so this API writes the job there for them.
+builder.Services.AddScoped<IJobSubmitter, PostgresJobSubmitter>();
 
 // ── Register application DbContext for game data ────────────────────────
 builder.Services.AddDbContextFactory<GameDbContext>(options => options.UseNpgsql(connectionString));

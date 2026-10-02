@@ -254,7 +254,9 @@ builder.Services.AddTrax(trax =>
         )
 );
 
-builder.AddTraxDashboard();
+// This sample has no sign-in for a browser, so the dashboard is mapped with no authorization of
+// its own and is meant for a developer machine only. A real host calls RequirePolicy or RequireRoles.
+builder.AddTraxDashboard(dashboard => dashboard.AllowAnonymousDashboard());
 
 var app = builder.Build();
 

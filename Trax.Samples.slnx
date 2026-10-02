@@ -18,7 +18,9 @@
     <Project Path="samples/GraphQLClient/Trax.Samples.GraphQLClient.BillingServer/Trax.Samples.GraphQLClient.BillingServer.csproj" />
     <Project Path="samples/GraphQLClient/Trax.Samples.GraphQLClient.Gateway/Trax.Samples.GraphQLClient.Gateway.csproj" />
   </Folder>
-  <!-- DataPipeline samples excluded: KedroSpaceflights depends on unpublished Flowthru.* packages -->
+  <!-- DataPipeline samples excluded: the vendored KedroSpaceflights is written against a Flowthru
+       API (Flowthru.Abstractions, FlowthruSchema, SerializedLabel, ICatalogEntry) that no published
+       Flowthru version has, so it does not compile. See .github/unlocked-projects.txt. -->
   <!--
   <Folder Name="/samples/DataPipeline/">
     <Project Path="samples/DataPipeline/Trax.Samples.Flowthru.Spaceflights/Trax.Samples.Flowthru.Spaceflights.csproj" />
@@ -84,5 +86,8 @@
   </Folder>
   <Folder Name="/templates/">
     <Project Path="templates/Trax.Samples.Templates.csproj" />
+    <Project Path="templates/content/Trax.Samples.Api/Trax.Samples.Api.csproj" />
+    <Project Path="templates/content/Trax.Samples.Hub/Trax.Samples.Hub.csproj" />
+    <Project Path="templates/content/Trax.Samples.Scheduler/Trax.Samples.Scheduler.csproj" />
   </Folder>
 </Solution>

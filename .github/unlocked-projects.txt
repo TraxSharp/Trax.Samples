@@ -1,0 +1,10 @@
+# Projects that are deliberately outside the solution and the locked restore.
+# One repository-relative csproj path per line; text after # is ignored.
+#
+# The DataPipeline sample and the KedroSpaceflights library it vendors are written against a
+# Flowthru API (Flowthru.Abstractions, FlowthruSchema, SerializedLabel, ICatalogEntry) that no
+# published Flowthru version has, 0.26.0 through 0.30.0, so they do not compile. They stay out
+# of the solution until the sample is ported to the current Flowthru.
+lib/KedroSpaceflights/KedroSpaceflights.csproj
+samples/DataPipeline/Trax.Samples.Flowthru.Spaceflights.Scheduler/Trax.Samples.Flowthru.Spaceflights.Scheduler.csproj
+samples/DataPipeline/Trax.Samples.Flowthru.Spaceflights/Trax.Samples.Flowthru.Spaceflights.csproj

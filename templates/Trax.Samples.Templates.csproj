@@ -26,8 +26,11 @@
   <!--
     The template projects carry no versions: in this repo they take them from the root
     Directory.Packages.props, which a scaffolded project never sees. At pack time each template
-    gets its own Directory.Packages.props, holding the pin of every package it references and
-    nothing else, so the package ships exactly the versions this repo builds and tests against.
+    gets its own Directory.Packages.props, holding the pin of every package it references and of
+    every Trax package its committed lockfile resolves, with transitive pinning on. Pinning only
+    the direct references let a transitive Trax package float to whatever version a referenced
+    package was built against, which is not the version this repo tests. The package ships
+    exactly the versions this repo builds and tests against, and nothing else.
     It is generated into obj/ rather than kept beside the template, where it would shadow the
     root pins inside the repo. docs/adr/0004-the-template-package-carries-its-package-versions.md
   -->
@@ -57,9 +60,22 @@
       <Output TaskParameter="Result" ItemName="_TemplateReference" />
     </XmlPeek>
 
+    <!-- Every Trax package the template's restore resolves, direct or transitive. Each top-level
+         entry in packages.lock.json is a line of the form `"Id": {`; the ids nested under an
+         entry's dependencies end in a version string instead, so they are not matched. Only the
+         ids are read here: the versions still come from the root pins below. -->
+    <ReadLinesFromFile File="%(_TraxTemplateProject.RootDir)%(_TraxTemplateProject.Directory)packages.lock.json">
+      <Output TaskParameter="Lines" ItemName="_TemplateLockLine" />
+    </ReadLinesFromFile>
+
     <ItemGroup>
-      <_TemplateUnpinned Include="@(_TemplateReference)" Exclude="@(PackageVersion)" />
-      <_TemplateUnreferenced Include="@(PackageVersion)" Exclude="@(_TemplateReference)" />
+      <_TemplateLockedTrax
+        Include="$([System.Text.RegularExpressions.Regex]::Replace('%(_TemplateLockLine.Identity)', '^\s*&quot;([^&quot;]+)&quot;:\s*\{\s*$', '$1'))"
+        Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('%(_TemplateLockLine.Identity)', '^\s*&quot;Trax\.[^&quot;]+&quot;:\s*\{\s*$'))"
+      />
+      <_TemplateNeeded Include="@(_TemplateReference);@(_TemplateLockedTrax)" />
+      <_TemplateUnpinned Include="@(_TemplateNeeded)" Exclude="@(PackageVersion)" />
+      <_TemplateUnreferenced Include="@(PackageVersion)" Exclude="@(_TemplateNeeded)" />
       <_TemplatePin Include="@(PackageVersion)" Exclude="@(_TemplateUnreferenced)" />
     </ItemGroup>
 
@@ -67,6 +83,7 @@
       <_TemplateVersionsText>&lt;Project&gt;
   &lt;PropertyGroup&gt;
     &lt;ManagePackageVersionsCentrally&gt;true&lt;/ManagePackageVersionsCentrally&gt;
+    &lt;CentralPackageTransitivePinningEnabled&gt;true&lt;/CentralPackageTransitivePinningEnabled&gt;
   &lt;/PropertyGroup&gt;
   &lt;ItemGroup&gt;
 @(_TemplatePin->'    &lt;PackageVersion Include=&quot;%(Identity)&quot; Version=&quot;%(Version)&quot; /&gt;', '%0A')
@@ -75,8 +92,13 @@
     </PropertyGroup>
 
     <Error
+      Condition="!Exists('%(_TraxTemplateProject.RootDir)%(_TraxTemplateProject.Directory)packages.lock.json')"
+      Text="$(_TemplateName) has no packages.lock.json, so the Trax packages it resolves transitively cannot be pinned. Restore it and commit the lockfile."
+    />
+
+    <Error
       Condition="'@(_TemplateUnpinned)' != ''"
-      Text="$(_TemplateName) references @(_TemplateUnpinned) with no PackageVersion in Directory.Packages.props, so the packed template could not restore."
+      Text="$(_TemplateName) resolves @(_TemplateUnpinned) with no PackageVersion in Directory.Packages.props, so the packed template could not pin it. Pin it there, and reference it from the template if it is a transitive Trax package."
     />
 
     <WriteLinesToFile
@@ -92,6 +114,9 @@
         TemplateName="$(_TemplateName)"
       />
       <_TemplateReference Remove="@(_TemplateReference)" />
+      <_TemplateLockLine Remove="@(_TemplateLockLine)" />
+      <_TemplateLockedTrax Remove="@(_TemplateLockedTrax)" />
+      <_TemplateNeeded Remove="@(_TemplateNeeded)" />
       <_TemplateUnpinned Remove="@(_TemplateUnpinned)" />
       <_TemplateUnreferenced Remove="@(_TemplateUnreferenced)" />
       <_TemplatePin Remove="@(_TemplatePin)" />

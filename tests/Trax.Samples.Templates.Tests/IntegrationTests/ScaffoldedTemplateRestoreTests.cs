@@ -1,4 +1,6 @@
 using System.Diagnostics;
+using System.Text.Json;
+using System.Xml.Linq;
 using FluentAssertions;
 
 namespace Trax.Samples.Templates.Tests.IntegrationTests;
@@ -69,7 +71,80 @@ public class ScaffoldedTemplateRestoreTests
     [TestCase("trax-api")]
     public async Task A_scaffolded_project_restores_outside_the_repo(string shortName)
     {
-        var output = Path.Combine(_workDir, shortName);
+        var (output, restore) = await ScaffoldAndRestore(shortName, "restores");
+
+        restore
+            .ExitCode.Should()
+            .Be(0, $"a scaffolded {shortName} must restore on its own ({Adr}):\n{restore.Output}");
+    }
+
+    /// <summary>
+    /// Every Trax package a scaffolded project resolves, direct or transitive, is one the
+    /// template pins, at exactly the pinned version. A pin on the direct references alone let
+    /// Trax.Dashboard pull the Trax.Api packages at the version it was built against, which was
+    /// not the version this repo builds and tests the template with.
+    /// </summary>
+    [TestCase("trax-hub")]
+    [TestCase("trax-scheduler")]
+    [TestCase("trax-api")]
+    public async Task A_scaffolded_project_resolves_only_the_pinned_Trax_versions(string shortName)
+    {
+        var (output, restore) = await ScaffoldAndRestore(shortName, "pins");
+        restore.ExitCode.Should().Be(0, restore.Output);
+
+        var props = XDocument.Load(Path.Combine(output, "Directory.Packages.props"));
+        props
+            .Descendants("CentralPackageTransitivePinningEnabled")
+            .Select(e => e.Value.Trim())
+            .Should()
+            .Equal(
+                new[] { "true" },
+                $"without transitive pinning a pin cannot reach a package that arrives transitively ({Adr})"
+            );
+
+        var pins = props
+            .Descendants("PackageVersion")
+            .ToDictionary(
+                e => e.Attribute("Include")!.Value,
+                e => e.Attribute("Version")!.Value,
+                StringComparer.OrdinalIgnoreCase
+            );
+
+        using var assets = JsonDocument.Parse(
+            await File.ReadAllTextAsync(Path.Combine(output, "obj", "project.assets.json"))
+        );
+        var resolvedTrax = assets
+            .RootElement.GetProperty("libraries")
+            .EnumerateObject()
+            .Where(l => l.Value.GetProperty("type").GetString() == "package")
+            .Select(l => l.Name.Split('/'))
+            .Where(parts => parts[0].StartsWith("Trax.", StringComparison.OrdinalIgnoreCase))
+            .Select(parts => (Id: parts[0], Version: parts[1]))
+            .ToList();
+
+        resolvedTrax.Should().NotBeEmpty();
+
+        var unpinned = resolvedTrax
+            .Where(p => !pins.TryGetValue(p.Id, out var pinned) || pinned != p.Version)
+            .Select(p =>
+                $"{p.Id} {p.Version} (pinned: {(pins.TryGetValue(p.Id, out var v) ? v : "none")})"
+            )
+            .ToList();
+
+        unpinned
+            .Should()
+            .BeEmpty(
+                $"a scaffolded {shortName} must resolve every Trax package at the version the "
+                    + $"template pins ({Adr})"
+            );
+    }
+
+    private async Task<(string Output, (int ExitCode, string Output) Restore)> ScaffoldAndRestore(
+        string shortName,
+        string suffix
+    )
+    {
+        var output = Path.Combine(_workDir, $"{shortName}-{suffix}");
         await Run(
             _workDir,
             "new",
@@ -83,10 +158,7 @@ public class ScaffoldedTemplateRestoreTests
         );
 
         var restore = await Run(output, allowFailure: true, "restore");
-
-        restore
-            .ExitCode.Should()
-            .Be(0, $"a scaffolded {shortName} must restore on its own ({Adr}):\n{restore.Output}");
+        return (output, restore);
     }
 
     private static string RepoRoot()

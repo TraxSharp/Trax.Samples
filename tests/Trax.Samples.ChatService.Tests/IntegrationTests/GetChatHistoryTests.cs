@@ -1,4 +1,4 @@
-using FluentAssertions;
+using AwesomeAssertions;
 using Trax.Core.Exceptions;
 using Trax.Samples.ChatService.Data;
 using Trax.Samples.ChatService.Data.Entities;

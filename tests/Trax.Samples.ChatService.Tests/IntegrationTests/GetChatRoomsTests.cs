@@ -1,4 +1,4 @@
-using FluentAssertions;
+using AwesomeAssertions;
 using Trax.Samples.ChatService.Tests.Fixtures;
 using Trax.Samples.ChatService.Trains.GetChatRooms;
 using Trax.Samples.ChatService.Trains.GetChatRooms.Junctions;

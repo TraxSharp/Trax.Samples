@@ -1,4 +1,4 @@
-using FluentAssertions;
+using AwesomeAssertions;
 using static Trax.Samples.Templates.Tests.Utils.Dotnet;
 
 namespace Trax.Samples.Templates.Tests.IntegrationTests;

@@ -1,7 +1,7 @@
 namespace Trax.Samples.Tests.Meta.Tests;
 
 /// <summary>
-/// A FluentAssertions async assertion (<c>ThrowAsync</c>, <c>NotThrowAsync</c>,
+/// A AwesomeAssertions async assertion (<c>ThrowAsync</c>, <c>NotThrowAsync</c>,
 /// <c>CompleteWithinAsync</c>, ...) returns a Task that carries the verdict. Called without
 /// <c>await</c> from a <c>void</c> test, the Task is dropped, the assertion never runs, and the
 /// test passes whatever the code under test does.

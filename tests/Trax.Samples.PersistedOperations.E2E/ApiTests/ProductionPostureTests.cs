@@ -1,5 +1,5 @@
 using System.Net.Http.Json;
-using FluentAssertions;
+using AwesomeAssertions;
 using Microsoft.AspNetCore.Hosting;
 using Trax.Samples.PersistedOperations.E2E.Fixtures;
 

@@ -1,5 +1,5 @@
 global using System.Net.Http.Json;
-global using FluentAssertions;
+global using AwesomeAssertions;
 global using NUnit.Framework;
 
 [assembly: NonParallelizable]

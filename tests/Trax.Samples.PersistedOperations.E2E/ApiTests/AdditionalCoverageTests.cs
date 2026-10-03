@@ -1,6 +1,6 @@
 using System.Net.Http.Json;
 using System.Text;
-using FluentAssertions;
+using AwesomeAssertions;
 using Trax.Api.GraphQL.PersistedOperations.Storage;
 using Trax.Samples.PersistedOperations.E2E.Fixtures;
 

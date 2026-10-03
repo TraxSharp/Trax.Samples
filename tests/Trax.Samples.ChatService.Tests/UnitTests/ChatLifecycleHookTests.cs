@@ -1,5 +1,5 @@
 using System.Text.Json;
-using FluentAssertions;
+using AwesomeAssertions;
 using HotChocolate.Subscriptions;
 using Moq;
 using Trax.Effect.Models.Metadata;

@@ -1,6 +1,6 @@
 using System.Net;
 using System.Net.Sockets;
-using FluentAssertions;
+using AwesomeAssertions;
 using Trax.Samples.Templates.Tests.Utils;
 using static Trax.Samples.Templates.Tests.Utils.Dotnet;
 

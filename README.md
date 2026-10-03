@@ -28,7 +28,8 @@ Each template stores runs in memory, so it needs no database, and ships a README
 
 ## Samples
 
-Each sample is a working app with its own projects under `samples/`. ChatService is the most complete.
+Each sample is a complete app under `samples/` that proves one major Trax feature, with an end-to-end suite under
+`tests/` that runs it against a real host. Each has a page under [traxsharp.net/docs/samples](https://traxsharp.net/docs/samples).
 
 | Sample | What it shows | Storage |
 |---|---|---|

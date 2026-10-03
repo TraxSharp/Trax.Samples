@@ -80,15 +80,29 @@ m.Id("checkout").Version(2).StartsAt(CheckoutState.Cart, Fresh)
     });
 ```
 
-Load a stored v1 draft and the server returns it at v2 with `total` filled in; there is no manual step. That
-migration is guarded by tests in `Trax.Samples.StateMachine.Tests` (a v1 draft loads as v2, and a v2 context
-missing `total` is rejected, which is what makes the migration load-bearing).
+Load a stored v1 draft and the server returns it at v2 with `total` filled in; there is no manual step. A v1
+snapshot an old client saves is stored as v2 the same way. `ForwardMigrationTests` in the E2E suite proves both
+over GraphQL, and that a v2 context missing `total` is refused, which is what makes the migration load-bearing.
 
 ## Web frontend
 
 A React app in [web/](web/) drives both machines through these mutations with a machine-agnostic transport
 and a `useMachine` hook. Start this host, then `cd web && npm install && npm run dev` and open
 http://localhost:5173.
+
+## Tests
+
+```bash
+dotnet test tests/Trax.Samples.StateMachine.Tests                         # the machines, no database
+dotnet test tests/Trax.Samples.StateMachine.E2E                           # the real host over GraphQL
+```
+
+`Trax.Samples.StateMachine.E2E` starts this host with `WebApplicationFactory` against the
+`statemachine_e2e_tests` database (`docker compose up -d` creates it on a fresh volume) and drives everything
+above over `/trax/graphql`: both machines, the refused transitions, the charge running once however often
+`sendSnapshot` is repeated, the v1 to v2 migration, the server-checked total, and auth (anonymous refused, the
+demo keys only in Development). Set `TRAX_TEST_PG_PORT` when your Postgres is not on 5432. Without a database it
+fails; it never skips.
 
 ## Notes
 

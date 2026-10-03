@@ -27,11 +27,11 @@
 //   }) { output { snapshot problem { code } } } } } }
 //
 //   # Charge exactly once (state-gated + idempotent). A second send does not re-charge.
-//
-// Docs: https://traxsharp.net/docs/samples/state-machine
 //   mutation { dispatch { stateMachine { sendSnapshot(input: {
 //     machine: "checkout", id: "11111111-1111-1111-1111-111111111111", requestId: "pay-1"
 //   }) { output { snapshot problem { code } } } } } }
+//
+// Docs: https://traxsharp.net/docs/samples/state-machine
 // ─────────────────────────────────────────────────────────────────────────────
 
 using Trax.Api.Auth.ApiKey;

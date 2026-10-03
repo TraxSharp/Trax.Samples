@@ -15,6 +15,7 @@
     <PackageVersion Include="Trax.Api.Auth" Version="1.43.1" />
     <PackageVersion Include="Trax.Api.Auth.ApiKey" Version="1.43.1" />
     <PackageVersion Include="Trax.Api.Auth.Jwt" Version="1.43.1" />
+    <PackageVersion Include="Trax.Api.Auth.Jwt.Testing" Version="1.43.1" />
     <PackageVersion Include="Trax.Api.GraphQL" Version="1.43.1" />
     <PackageVersion Include="Trax.Api.GraphQL.Audit" Version="1.43.1" />
     <PackageVersion Include="Trax.Api.GraphQL.Client" Version="1.43.1" />
@@ -88,6 +89,7 @@
     <PackageVersion Update="Trax.Api.Auth" Version="$(TraxLocalVersion)" />
     <PackageVersion Update="Trax.Api.Auth.ApiKey" Version="$(TraxLocalVersion)" />
     <PackageVersion Update="Trax.Api.Auth.Jwt" Version="$(TraxLocalVersion)" />
+    <PackageVersion Update="Trax.Api.Auth.Jwt.Testing" Version="$(TraxLocalVersion)" />
     <PackageVersion Update="Trax.Api.GraphQL" Version="$(TraxLocalVersion)" />
     <PackageVersion Update="Trax.Api.GraphQL.Audit" Version="$(TraxLocalVersion)" />
     <PackageVersion Update="Trax.Api.GraphQL.Client" Version="$(TraxLocalVersion)" />

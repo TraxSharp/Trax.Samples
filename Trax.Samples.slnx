@@ -40,8 +40,8 @@
     <Project Path="samples/JobHunt/Trax.Samples.JobHunt/Trax.Samples.JobHunt.csproj" />
     <Project Path="samples/JobHunt/Trax.Samples.JobHunt.Hub/Trax.Samples.JobHunt.Hub.csproj" />
   </Folder>
-  <Folder Name="/samples/ApiAudit/">
-    <Project Path="samples/ApiAudit/Trax.Samples.ApiAudit/Trax.Samples.ApiAudit.csproj" />
+  <Folder Name="/samples/Auth/">
+    <Project Path="samples/Auth/Trax.Samples.Auth/Trax.Samples.Auth.csproj" />
   </Folder>
   <Folder Name="/samples/PersistedOperations/">
     <Project Path="samples/PersistedOperations/Trax.Samples.PersistedOperations/Trax.Samples.PersistedOperations.csproj" />
@@ -80,6 +80,7 @@
     <Project Path="tests/Trax.Samples.PersistedOperations.E2E/Trax.Samples.PersistedOperations.E2E.csproj" />
     <Project Path="tests/Trax.Samples.GraphQLClient.E2E/Trax.Samples.GraphQLClient.E2E.csproj" />
     <Project Path="tests/Trax.Samples.StateMachine.Tests/Trax.Samples.StateMachine.Tests.csproj" />
+    <Project Path="tests/Trax.Samples.Auth.E2E/Trax.Samples.Auth.E2E.csproj" />
     <Project Path="tests/Trax.Samples.Tests.Meta/Trax.Samples.Tests.Meta.csproj" />
   </Folder>
   <Folder Name="/templates/">

@@ -28,9 +28,8 @@ app.MapGraphQL("/graphql");
 var port = 5099;
 app.Urls.Add($"http://localhost:{port}");
 
-_ = app.RunAsync();
-
-await Task.Delay(500);
+// StartAsync returns once Kestrel is listening, so the client below never races the server.
+await app.StartAsync();
 
 // Now build a client pointed at our own /graphql endpoint. AssemblySchemaProvider uses
 // the same PlayerSchemaConfiguration.Configure delegate the server runs, so the client

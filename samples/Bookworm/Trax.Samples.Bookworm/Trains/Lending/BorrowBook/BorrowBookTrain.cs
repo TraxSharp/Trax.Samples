@@ -6,9 +6,12 @@ using Trax.Samples.Bookworm.Trains.Lending.BorrowBook.Junctions;
 
 namespace Trax.Samples.Bookworm.Trains.Lending.BorrowBook;
 
-/// <summary>Records a member borrowing a book. A write operation, gated to authenticated members.</summary>
+/// <summary>Lends a book to the calling member. A write operation, gated to members.</summary>
 [TraxAuthorize(Roles = BookwormRoles.Member)]
-[TraxMutation(Namespace = GraphQLNamespaces.Lending, Description = "Borrows a book for a member")]
+[TraxMutation(
+    Namespace = GraphQLNamespaces.Lending,
+    Description = "Borrows a book for the calling member"
+)]
 public class BorrowBookTrain : ServiceTrain<BorrowBookInput, BorrowBookOutput>, IBorrowBookTrain
 {
     protected override Task<Either<Exception, BorrowBookOutput>> Junctions() =>

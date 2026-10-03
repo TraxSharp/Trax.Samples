@@ -11,14 +11,10 @@ namespace Trax.Samples.Bookworm.E2E.ApiTests;
 [TestFixture]
 public class AuthTests : ApiTestFixture
 {
-    private const string BorrowMutation =
-        "mutation { dispatch { lending { borrowBook(input: { memberId: 1, bookId: 1 }) "
-        + "{ externalId } } } }";
-
     [Test]
     public async Task BorrowBook_Anonymous_IsRejected()
     {
-        var doc = await GraphQL.PostAsync(BorrowMutation);
+        var doc = await GraphQL.PostAsync(Borrow(await NewBookAsync()));
 
         GraphQLClient
             .HasErrors(doc)
@@ -27,19 +23,22 @@ public class AuthTests : ApiTestFixture
     }
 
     [Test]
+    public async Task BorrowBook_Librarian_IsRejected()
+    {
+        // Borrowing is for members: the librarian key holds only the Librarian role.
+        var doc = await GraphQL.PostAsync(
+            Borrow(await NewBookAsync()),
+            ApiKeyDefaults.LibrarianKey
+        );
+
+        GraphQLClient.HasErrors(doc).Should().BeTrue();
+    }
+
+    [Test]
     public async Task BorrowBook_AuthenticatedMember_Succeeds()
     {
-        var doc = await GraphQL.PostAsync(BorrowMutation, ApiKeyDefaults.MemberKey);
+        var loanId = await BorrowAsync(await NewBookAsync(), ApiKeyDefaults.MemberKey);
 
-        GraphQLClient.HasErrors(doc).Should().BeFalse("a member is authorized to borrow a book");
-
-        doc.RootElement.GetProperty("data")
-            .GetProperty("dispatch")
-            .GetProperty("lending")
-            .GetProperty("borrowBook")
-            .GetProperty("externalId")
-            .GetString()
-            .Should()
-            .NotBeNullOrEmpty();
+        loanId.Should().BePositive("a member is authorized to borrow a book");
     }
 }

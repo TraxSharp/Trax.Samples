@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// Trax State Machine sample — a GraphQL host over two fluent machines.
+// Trax State Machine sample: a GraphQL host over two fluent machines.
 //
 // Two machines, authored fluently in Trax.Samples.StateMachine, are discovered with one line
 // (AddStateMachines) and driven through the four generic `stateMachine` mutations:
@@ -10,23 +10,25 @@
 //   alice-key-do-not-use-in-production → user "alice"
 //   bob-key-do-not-use-in-production   → user "bob"
 //
-// Run it:
-//   1. Start Postgres:  cd Trax.Samples && docker compose up -d
-//   2. Pack local:      ./pack-local.sh
-//   3. Start the host:  dotnet run --project samples/StateMachine/Trax.Samples.StateMachine.Api
+// Run it (from Trax.Samples/):
+//   1. docker compose up -d
+//   2. dotnet run --project samples/StateMachine/Trax.Samples.StateMachine.Api
 //
-// Then open http://localhost:5220/trax/graphql (Banana Cake Pop). Send X-Api-Key: alice-key-do-not-use-in-production and try:
+// Then open http://localhost:5220/trax/graphql (Nitro). Send X-Api-Key: alice-key-do-not-use-in-production and try:
 //
 //   # What machines are available?
 //   { discover { stateMachine { listMachines { machines { name hasEffect } } } } }
 //
-//   # Save a fresh checkout draft, then advance it server-side. Use one id (a UUID) throughout.
+//   # Save a checkout draft at Review. Use one id (a UUID) throughout. The total must be 999 cents
+//   # per item: the server owns the price, so a draft with any other total is refused.
 //   mutation { dispatch { stateMachine { saveSnapshot(input: {
 //     machine: "checkout", id: "11111111-1111-1111-1111-111111111111",
-//     snapshot: "{\"machine\":\"checkout\",\"version\":1,\"state\":\"Review\",\"context\":{\"items\":[\"book\"],\"receipt\":null}}"
+//     snapshot: "{\"machine\":\"checkout\",\"version\":2,\"state\":\"Review\",\"context\":{\"items\":[\"book\"],\"receipt\":null,\"total\":999}}"
 //   }) { output { snapshot problem { code } } } } } }
 //
 //   # Charge exactly once (state-gated + idempotent). A second send does not re-charge.
+//
+// Docs: https://traxsharp.net/docs/samples/state-machine
 //   mutation { dispatch { stateMachine { sendSnapshot(input: {
 //     machine: "checkout", id: "11111111-1111-1111-1111-111111111111", requestId: "pay-1"
 //   }) { output { snapshot problem { code } } } } } }

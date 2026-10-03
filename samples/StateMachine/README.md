@@ -2,35 +2,38 @@
 
 A GraphQL host over two portable snapshot state machines, authored with the fluent API and driven through
 the four generic `stateMachine` mutations. It shows the whole feature end to end: fluent authoring,
-one-line discovery, server-side authority, and an exactly-once effect.
+one-line discovery, server-side authority (the server, not the browser, decides what a valid draft is,
+down to the checkout total), and an exactly-once effect.
 
 | Machine | Shape | Notes |
 |---|---|---|
 | `turnstile` | `Locked ⇄ Unlocked` | No effect, no committed state. The structure proof. |
-| `checkout` | `Cart → Review → Paid` (v2) | `Paid` is committed; `Pay` runs one irreversible charge exactly once. v2 adds a `total`, backfilled from v1 drafts by a forward migration (see below). |
+| `checkout` | `Cart → Review → Paid` (v2) | `Paid` is committed; `Pay` runs one irreversible charge exactly once. v2 adds a `total` that every state requires to equal 999 cents per item, backfilled from v1 drafts by a forward migration (see below). |
 
 Both live in `Trax.Samples.StateMachine` as `Machine<TState, TTrigger>` subclasses. The host
 (`Trax.Samples.StateMachine.Api`) wires them with one line:
 
 ```csharp
 builder.Services.AddTrax(trax =>
-    trax.AddEffects(e => e.UsePostgres(cs).AddJson())
-        .AddMediator(typeof(TurnstileMachine).Assembly, StateMachineMutations.Assembly));
-builder.Services.AddTraxStateMachines(typeof(TurnstileMachine).Assembly);
+    trax.AddEffects(effects => effects.UsePostgres(connectionString).AddJson())
+        .AddStateMachines(typeof(TurnstileMachine).Assembly)   // before AddMediator
+        .AddMediator(typeof(TurnstileMachine).Assembly));
 
 builder.Services.AddScoped<ISnapshotPrincipal, TraxCallerSnapshotPrincipal>();
 builder.Services.AddScoped<ICharge, LoggingCharge>();
 ```
 
-`AddTraxStateMachines` discovers the machines and wires the store, the effect-claim ledger, the
-exactly-once runner, and the registry. The host supplies only the two things a machine can't know: how to
-map its auth to a user key (`ISnapshotPrincipal`) and the charge implementation.
+`AddStateMachines` discovers the machines and wires the store, the effect-claim ledger, the
+exactly-once runner, the registry and the four mutations. It must come before `AddMediator`. The host
+supplies only the two things a machine can't know: how to map its auth to a user key
+(`ISnapshotPrincipal`) and the charge implementation.
 
 ## Run it
 
+From `Trax.Samples/`:
+
 ```bash
-cd Trax.Samples && docker compose up -d          # Postgres
-./pack-local.sh                                  # local Trax packages
+docker compose up -d                             # Postgres
 dotnet run --project samples/StateMachine/Trax.Samples.StateMachine.Api
 ```
 
@@ -56,7 +59,10 @@ mutation {
 }
 ```
 
-The second `sendSnapshot` returns the same `Paid` snapshot and does not charge again.
+The second `sendSnapshot` returns the same `Paid` snapshot and does not charge again. Save the same draft
+with `"items":["book","pen"]` and `"total":1` and the answer is `problem { code: "invalid-context" }`:
+the total is the amount a real `ICharge` would take, so the machine refuses a total that is not 999 cents
+per item, and the charge reads the amount from the server's stored copy (`CheckoutMachine.AmountCents`).
 
 ## Schema evolution (v1 → v2)
 
@@ -88,5 +94,7 @@ http://localhost:5173.
 
 - Anonymous requests get a `TRAX_AUTHORIZATION` error at HTTP 200, not a crash. The four mutations carry
   `[TraxAuthorize]`; `listMachines` is anonymous so you can inspect the machines without a key.
-- The host creates its database and the `snapshot_draft` + `effect_claim` tables on startup
-  (see `SnapshotSchema`). A production host ships those as a migration instead.
+- The `snapshot_draft` and `effect_claim` tables are created by the Trax Postgres provider's own
+  migrations when the host starts; the sample writes no schema of its own.
+
+Docs: <https://traxsharp.net/docs/samples/state-machine>

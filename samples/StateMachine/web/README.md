@@ -16,7 +16,6 @@ Start the backend first (it must be on `http://localhost:5220`, which this app e
 
 ```bash
 cd Trax.Samples && docker compose up -d
-./pack-local.sh
 dotnet run --project samples/StateMachine/Trax.Samples.StateMachine.Api
 ```
 

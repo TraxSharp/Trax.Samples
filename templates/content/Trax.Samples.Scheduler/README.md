@@ -55,12 +55,12 @@ public record CleanupInput : IManifestProperties
 ```csharp
 // Trains/Cleanup/Junctions/DeleteOldRowsJunction.cs
 using LanguageExt;
-using Trax.Core.Junction;
+using Trax.Effect.Services.EffectJunction;
 
 namespace Trax.Samples.Scheduler.Trains.Cleanup.Junctions;
 
 public class DeleteOldRowsJunction(ILogger<DeleteOldRowsJunction> logger)
-    : Junction<CleanupInput, Unit>
+    : EffectJunction<CleanupInput, Unit>
 {
     public override Task<Unit> Run(CleanupInput input)
     {

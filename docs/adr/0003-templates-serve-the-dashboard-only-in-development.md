@@ -40,8 +40,9 @@ everywhere else.
 
 **Declare a posture in every environment** (`AllowAnonymousDashboard()` in Development,
 `RequirePolicy` elsewhere), as the getting-started page does. The template would then mount a
-dashboard in Production gated by a policy no scaffold can satisfy, which serves nothing but a
-refusal and invites deleting the gate to make it work.
+dashboard in Production gated by a policy no scaffold can satisfy: with no authentication
+scheme registered, every request to it is a 500, which invites deleting the gate to make it
+work.
 
 **Keep the template operations anonymous, since the demo key already goes away.** Removing
 a credential gates nothing when the operations never asked for one: a scaffold run in

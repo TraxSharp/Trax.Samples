@@ -76,11 +76,11 @@ public record ShoutOutput(string Text);
 
 ```csharp
 // Trains/Shout/Junctions/UppercaseJunction.cs
-using Trax.Core.Junction;
+using Trax.Effect.Services.EffectJunction;
 
 namespace Trax.Samples.Api.Trains.Shout.Junctions;
 
-public class UppercaseJunction : Junction<ShoutInput, ShoutOutput>
+public class UppercaseJunction : EffectJunction<ShoutInput, ShoutOutput>
 {
     public override Task<ShoutOutput> Run(ShoutInput input) =>
         Task.FromResult(new ShoutOutput(input.Text.ToUpperInvariant()));

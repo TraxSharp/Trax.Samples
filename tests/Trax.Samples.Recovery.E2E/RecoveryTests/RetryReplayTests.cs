@@ -1,4 +1,5 @@
 using Trax.Samples.Recovery.E2E.Fixtures;
+using Trax.Samples.Shared.Testing;
 
 namespace Trax.Samples.Recovery.E2E.RecoveryTests;
 
@@ -125,8 +126,20 @@ public class RetryReplayTests : RecoveryTestFixture
         var first = await Run.FollowAttemptAsync(1);
         (await Run.WaitForEndAsync(first)).Should().Be("COMPLETED");
 
-        // Give the scheduler a couple of cycles to show it queues nothing more.
-        await Task.Delay(TimeSpan.FromSeconds(3));
+        // A one-off manifest disables itself after a success, so nothing more can be queued for it.
+        var disabled = await Polling.WaitUntilAsync(
+            async () =>
+            {
+                var response = await GraphQL.SendAsync(
+                    $$"""{ operations { manifest(id: {{Run.ManifestId}}) { isEnabled } } }""",
+                    OperatorKey
+                );
+                return !response.GetData("operations", "manifest", "isEnabled").GetBoolean();
+            },
+            TimeSpan.FromSeconds(30),
+            TimeSpan.FromMilliseconds(100)
+        );
+        disabled.Should().BeTrue("a once manifest disables itself after its run succeeds");
         (await Run.ExecutionIdsAsync()).Should().Equal(first);
 
         Decider.Asked(Run.RunId, "ApproveRefund").Should().Be(1);

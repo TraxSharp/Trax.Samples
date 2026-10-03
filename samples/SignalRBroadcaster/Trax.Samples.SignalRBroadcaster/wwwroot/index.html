@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Trax SignalR broadcaster</title>
+  <!-- The SignalR JavaScript client. Pinned and checked with Subresource Integrity. -->
+  <script src="https://cdn.jsdelivr.net/npm/@microsoft/signalr@8.0.7/dist/browser/signalr.min.js"
+          integrity="sha384-mU1xC5yC2LldSW74Rj1Ax8wPiLw/28V5eh51uKJMlBbRVsOtUYd4xyzNsgIAJARB"
+          crossorigin="anonymous"></script>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 960px; margin: 2rem auto; padding: 0 1rem; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    th, td { text-align: left; padding: 0.25rem 0.5rem; border-bottom: 1px solid #ddd; }
+    td.reason { color: #b00; }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <h1>Trax SignalR broadcaster</h1>
+
+  <section id="signed-out" class="hidden">
+    <p>The event hub admits signed-in operators only.</p>
+    <form method="post" action="/demo/sign-in"><button>Sign in as the demo operator</button></form>
+    <p><small>The demo sign-in exists only in Development.</small></p>
+  </section>
+
+  <section id="signed-in" class="hidden">
+    <p>Signed in as <strong id="who"></strong>. Hub: <strong id="status">connecting</strong>.
+      <form method="post" action="/sign-out" style="display:inline"><button>Sign out</button></form></p>
+    <p>
+      <button data-outcome="Succeed">Run a ping</button>
+      <button data-outcome="FailForClients">Run a ping that fails (TrainException)</button>
+      <button data-outcome="FailUnexpectedly">Run a ping that fails (other exception)</button>
+    </p>
+    <table>
+      <thead><tr><th>Time (UTC)</th><th>Event</th><th>Train</th><th>External id</th><th>Failure reason</th></tr></thead>
+      <tbody id="events"></tbody>
+    </table>
+  </section>
+
+  <script>
+    async function main() {
+      const me = await fetch("/me");
+      if (!me.ok) {
+        document.getElementById("signed-out").classList.remove("hidden");
+        return;
+      }
+      document.getElementById("who").textContent = (await me.json()).name;
+      document.getElementById("signed-in").classList.remove("hidden");
+
+      // Same origin, so the browser sends the sign-in cookie on negotiate and on the WebSocket.
+      const hub = new signalR.HubConnectionBuilder()
+        .withUrl("/hubs/trax-events")
+        .withAutomaticReconnect()
+        .build();
+
+      // The payload is this sample's projection, LiveTrainEvent, in camelCase.
+      hub.on("TrainEvent", (evt) => {
+        const row = document.createElement("tr");
+        for (const value of [evt.timestamp.substring(11, 23), evt.eventType, evt.trainName, evt.externalId]) {
+          const cell = document.createElement("td");
+          cell.textContent = value;
+          row.appendChild(cell);
+        }
+        const reason = document.createElement("td");
+        reason.className = "reason";
+        reason.textContent = evt.failureReason ?? "";
+        row.appendChild(reason);
+        const body = document.getElementById("events");
+        body.prepend(row);
+        while (body.rows.length > 50) body.deleteRow(-1);
+      });
+
+      const status = document.getElementById("status");
+      hub.onreconnecting(() => (status.textContent = "reconnecting"));
+      hub.onreconnected(() => (status.textContent = "connected"));
+      hub.onclose(() => (status.textContent = "disconnected"));
+      await hub.start();
+      status.textContent = "connected";
+
+      for (const button of document.querySelectorAll("button[data-outcome]")) {
+        button.addEventListener("click", () =>
+          fetch("/pings", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ outcome: button.dataset.outcome }),
+          })
+        );
+      }
+    }
+    main();
+  </script>
+</body>
+</html>

@@ -1,8 +1,8 @@
 using LanguageExt;
 using Trax.Effect.Services.ServiceTrain;
-using Trax.Samples.SignalRDashboard.Trains.Ping.Junctions;
+using Trax.Samples.SignalRBroadcaster.Trains.Ping.Junctions;
 
-namespace Trax.Samples.SignalRDashboard.Trains.Ping;
+namespace Trax.Samples.SignalRBroadcaster.Trains.Ping;
 
 public class PingTrain : ServiceTrain<PingInput, PingOutput>, IPingTrain
 {

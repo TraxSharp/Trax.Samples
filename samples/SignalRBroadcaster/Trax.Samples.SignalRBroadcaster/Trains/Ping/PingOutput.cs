@@ -1,4 +1,4 @@
-namespace Trax.Samples.SignalRDashboard.Trains.Ping;
+namespace Trax.Samples.SignalRBroadcaster.Trains.Ping;
 
 public record PingOutput
 {

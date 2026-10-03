@@ -20,7 +20,9 @@ export function createApolloClient(apiKey: string): ApolloClient<unknown> {
   const wsLink = new GraphQLWsLink(
     createClient({
       url: WS_URL,
-      connectionParams: { "X-Api-Key": apiKey },
+      // Browsers cannot set headers on a WebSocket upgrade, so the key travels in the
+      // connection_init payload. Trax reads it from "apiKey" (or "authToken").
+      connectionParams: { apiKey },
     }),
   );
 

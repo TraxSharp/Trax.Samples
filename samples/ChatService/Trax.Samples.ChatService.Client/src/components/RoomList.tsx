@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useQuery, useMutation } from "@apollo/client";
 import { GET_CHAT_ROOMS } from "../graphql/queries";
 import { JOIN_CHAT_ROOM } from "../graphql/mutations";
-import { useUser } from "../context/UserContext";
 import { CreateRoomDialog } from "./CreateRoomDialog";
 import type { ChatRoomSummary } from "../types";
 
@@ -12,12 +11,11 @@ interface RoomListProps {
 }
 
 export function RoomList({ selectedRoomId, onSelectRoom }: RoomListProps) {
-  const { user } = useUser();
   const [showCreate, setShowCreate] = useState(false);
   const [joinRoomId, setJoinRoomId] = useState<string | null>(null);
 
+  // The server lists the caller's own rooms: the query takes no input.
   const { data, loading } = useQuery(GET_CHAT_ROOMS, {
-    variables: { input: { userId: user.userId } },
     pollInterval: 5000,
   });
 
@@ -32,11 +30,7 @@ export function RoomList({ selectedRoomId, onSelectRoom }: RoomListProps) {
     setJoinRoomId(roomId);
     await joinRoom({
       variables: {
-        input: {
-          chatRoomId: roomId,
-          userId: user.userId,
-          displayName: user.displayName,
-        },
+        input: { chatRoomId: roomId },
       },
     });
     setJoinRoomId(null);
@@ -63,9 +57,6 @@ export function RoomList({ selectedRoomId, onSelectRoom }: RoomListProps) {
           <div className="room-item-name">{room.name}</div>
           <div className="room-item-meta">
             {room.participantCount} member{room.participantCount !== 1 && "s"}
-            {room.unreadCount > 0 && (
-              <span className="room-item-unread">{room.unreadCount}</span>
-            )}
           </div>
         </div>
       ))}

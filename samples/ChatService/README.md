@@ -1,130 +1,98 @@
 # Trax Chat Service Sample
 
-A single-server chat application demonstrating how Trax lifecycle hooks drive domain-specific real-time GraphQL subscriptions. When a chat mutation train completes, a custom `ITrainLifecycleHook` publishes the result to a room-scoped HotChocolate topic, and any client subscribed to that room receives the event via WebSocket.
+A chat server whose messages arrive over GraphQL subscriptions. Chat mutations are Trax trains;
+when one completes, a lifecycle hook publishes its output to a room-scoped topic, and every
+participant subscribed with `onChatEvent(chatRoomId:)` receives it over a WebSocket.
 
-## Architecture
+## What it proves
 
-```
-ChatService/
-├── Trax.Samples.ChatService.Data/       EF Core entities, DbContext, migrations (chat schema)
-├── Trax.Samples.ChatService/            Trains, lifecycle hook, subscription types, auth
-├── Trax.Samples.ChatService.Api/        Single-server ASP.NET Core host
-└── Trax.Samples.ChatService.Client/     React + TypeScript frontend (Apollo Client)
-```
+- A custom subscription field on Trax's subscription root, `LifecycleSubscriptions`, fed by an
+  `ITrainLifecycleHook` that sends to a HotChocolate topic when a `[TraxBroadcast]` train completes.
+- Subscription authentication: the API key travels in the `connection_init` payload, and a socket
+  without one is closed with `4403`.
+- Per-subscriber authorization: `[TraxAuthorize]` on the field, plus a subscribe resolver that
+  admits only the room's participants.
+- Caller identity: every train is `[TraxAuthorize(Roles = "User")]` and reads the caller from
+  `TraxPrincipal`. No input names a user, so nobody can act as somebody else.
 
-Everything runs in one process — no scheduler, no workers. The data layer uses a separate `chat` schema that coexists with Trax's `trax` schema in the same Postgres database.
+## Run
 
-## Requirements
-
-- [.NET 10 SDK](https://dotnet.microsoft.com/download)
-- [Node.js 20+](https://nodejs.org/) (for the React client)
-- Docker (for PostgreSQL)
-
-## Running
+No Docker: Trax metadata and chat data are both SQLite files next to the API.
 
 ```bash
-# 1. Start PostgreSQL
-cd Trax.Samples && docker compose up -d
-
-# 2. Pack local Trax packages (if not already done)
-./pack-local.sh
-
-# 3. Start the API
+# The API, in Development, on http://localhost:5210
 dotnet run --project samples/ChatService/Trax.Samples.ChatService.Api
 
-# 4. Start the React client (separate terminal)
+# Optional: the React client on http://localhost:5173
 cd samples/ChatService/Trax.Samples.ChatService.Client
-npm install
+npm ci
 npm run dev
 ```
 
-- GraphQL IDE (Banana Cake Pop): http://localhost:5210/trax/graphql
-- React client: http://localhost:5173
+Open two browser tabs on the client, pick Alice in one and Bob in the other, and chat.
 
-## Authentication
+## Try it
 
-Fake API key authentication via `X-Api-Key` header (for demonstration only):
+The demo keys exist only in Development: `alice-key-do-not-use-in-production`,
+`bob-key-do-not-use-in-production`, `charlie-key-do-not-use-in-production`.
 
-| API Key       | User ID   | Display Name |
-|---------------|-----------|--------------|
-| `alice-key-do-not-use-in-production`   | `alice`   | Alice        |
-| `bob-key-do-not-use-in-production`     | `bob`     | Bob          |
-| `charlie-key-do-not-use-in-production` | `charlie` | Charlie      |
+```bash
+G=http://localhost:5210/trax/graphql
 
-The React client provides a dropdown to switch between users. Open multiple browser tabs to simulate different users chatting in real time.
+# 1. Alice creates a room (note the chatRoomId)
+curl -s $G -H 'Content-Type: application/json' -H 'X-Api-Key: alice-key-do-not-use-in-production' \
+  -d '{"query":"mutation { dispatch { createChatRoom(input: { name: \"General\" }) { output { chatRoomId name } } } }"}'
 
-## Quick Walkthrough (GraphQL IDE)
+ROOM=<chatRoomId>
 
-```graphql
-# 1. Create a room (as Alice — set X-Api-Key: alice-key-do-not-use-in-production)
-mutation {
-  dispatch {
-    createChatRoom(input: { name: "General", userId: "alice", displayName: "Alice" }) {
-      externalId
-      output { chatRoomId name }
-    }
-  }
-}
-
-# 2. Join the room (as Bob — set X-Api-Key: bob-key-do-not-use-in-production)
-mutation {
-  dispatch {
-    joinChatRoom(input: { chatRoomId: "<id>", userId: "bob", displayName: "Bob" }) {
-      externalId
-      output { joinedAt }
-    }
-  }
-}
-
-# 3. Subscribe to real-time events (in a second tab)
-subscription {
-  onChatEvent(chatRoomId: "<id>") {
-    eventType
-    payload
-    timestamp
-  }
-}
-
-# 4. Send a message — the subscription tab receives it
-mutation {
-  dispatch {
-    sendMessage(input: { chatRoomId: "<id>", senderUserId: "alice", content: "Hello!" }) {
-      externalId
-      output { messageId content sentAt }
-    }
-  }
-}
-
-# 5. Query chat history
-{
-  discover {
-    getChatHistory(input: { chatRoomId: "<id>" }) {
-      messages { senderDisplayName content sentAt }
-    }
-  }
-}
+# 2. Bob joins it
+curl -s $G -H 'Content-Type: application/json' -H 'X-Api-Key: bob-key-do-not-use-in-production' \
+  -d "{\"query\":\"mutation { dispatch { joinChatRoom(input: { chatRoomId: \\\"$ROOM\\\" }) { output { userId displayName } } } }\"}"
+# {"data":{"dispatch":{"joinChatRoom":{"output":{"userId":"TraxApiKey:bob","displayName":"Bob"}}}}}
 ```
 
-## How the Lifecycle Hook Works
+3. Subscribe as Bob with any `graphql-ws` client, sending the key in the `connection_init`
+   payload as `apiKey`. From Node, with the `graphql-ws` package the React client installs, save
+   this as `subscribe.mjs` in the client folder and run `node subscribe.mjs $ROOM`:
 
-1. Chat mutation trains (`CreateChatRoom`, `JoinChatRoom`, `SendMessage`) are decorated with `[TraxBroadcast]`, which causes lifecycle hooks to fire on completion.
-2. `ChatLifecycleHook` implements `ITrainLifecycleHook` and checks `metadata.Name` against a map of chat train interfaces.
-3. On match, it parses `metadata.Output` (serialized JSON) to extract the `chatRoomId`.
-4. It publishes a `ChatSubscriptionEvent` to the HotChocolate topic `"ChatRoom:{chatRoomId}"`.
-5. Clients subscribed via `onChatEvent(chatRoomId: "...")` receive the event in real time.
+   ```js
+   import { createClient } from "graphql-ws";
+   const client = createClient({
+     url: "ws://localhost:5210/trax/graphql",
+     connectionParams: { apiKey: "bob-key-do-not-use-in-production" },
+   });
+   client.subscribe(
+     { query: `subscription { onChatEvent(chatRoomId: "${process.argv[2]}") { eventType payload } }` },
+     { next: (m) => console.log(JSON.stringify(m)), error: console.error, complete: () => {} },
+   );
+   ```
 
-This coexists with the built-in `GraphQLSubscriptionHook` — both hooks fire for `[TraxBroadcast]` trains.
+```bash
+# 4. Alice sends a message: Bob's subscription receives a MessageSent event
+curl -s $G -H 'Content-Type: application/json' -H 'X-Api-Key: alice-key-do-not-use-in-production' \
+  -d "{\"query\":\"mutation { dispatch { sendMessage(input: { chatRoomId: \\\"$ROOM\\\", content: \\\"Hello!\\\" }) { output { messageId senderUserId content } } } }\"}"
+
+# 5. Charlie never joined: his history read is refused, and so is his subscription
+curl -s $G -H 'Content-Type: application/json' -H 'X-Api-Key: charlie-key-do-not-use-in-production' \
+  -d "{\"query\":\"{ discover { getChatHistory(input: { chatRoomId: \\\"$ROOM\\\" }) { messages { content } } } }\"}"
+# "You are not a participant in room ..."
+
+# 6. Bob's rooms
+curl -s $G -H 'Content-Type: application/json' -H 'X-Api-Key: bob-key-do-not-use-in-production' \
+  -d '{"query":"{ discover { getChatRooms { rooms { id name participantCount lastMessageAt } } } }"}'
+```
 
 ## Tests
 
 ```bash
-dotnet test tests/Trax.Samples.ChatService.Tests
+dotnet test tests/Trax.Samples.ChatService.Tests   # junctions and the hook, in-memory
+dotnet test tests/Trax.Samples.ChatService.E2E     # the real host over HTTP and WebSocket, SQLite
 ```
 
-31 tests covering lifecycle hook behavior (10 unit) and all train steps (21 integration using EF Core in-memory provider).
+## Docs
 
-## Security
+[Chat Service sample](https://traxsharp.net/docs/samples/chat-service) and
+[Subscriptions](https://traxsharp.net/docs/sdk-reference/graphql-api/subscriptions).
 
-> NO WARRANTY. Trax auth is plumbing, not a security product. You are solely responsible for securing systems that use it. See [SECURITY-DISCLAIMER.md](../../../Trax.Api/SECURITY-DISCLAIMER.md).
-
-The sample keys (`alice-key-do-not-use-in-production`, `bob-key-do-not-use-in-production`, `charlie-key-do-not-use-in-production`) are plaintext constants for demonstration only. Never ship them in production.
+> NO WARRANTY. The demo keys are plaintext constants for demonstration only; they are registered
+> only in Development, and Trax refuses to start with them anywhere else.

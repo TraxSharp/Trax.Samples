@@ -1,15 +1,14 @@
 import { gql } from "@apollo/client";
 
 export const GET_CHAT_ROOMS = gql`
-  query GetChatRooms($input: GetChatRoomsInput!) {
+  query GetChatRooms {
     discover {
-      getChatRooms(input: $input) {
+      getChatRooms {
         rooms {
           id
           name
           participantCount
           lastMessageAt
-          unreadCount
         }
       }
     }

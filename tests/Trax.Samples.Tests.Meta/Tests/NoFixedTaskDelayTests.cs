@@ -45,7 +45,6 @@ public class NoFixedTaskDelayTests
         ["tests/Trax.Samples.GameServer.E2E/ApiTests/AllowAnonymousTests.cs"] = 1,
         ["tests/Trax.Samples.EnergyHub.E2E/Fixtures/SharedHubSetup.cs"] = 1,
         ["tests/Trax.Samples.ChatService.E2E/E2ETests/ChatServiceE2ETests.cs"] = 1,
-        ["tests/Trax.Samples.ChatService.E2E/ChatApiTests/SubscriptionTests.cs"] = 1,
         ["tests/Trax.Samples.ChatService.E2E/ChatApiTests/SendMessageTests.cs"] = 1,
         ["tests/Trax.Samples.ChatService.E2E/ChatApiTests/JoinChatRoomTests.cs"] = 1,
         ["tests/Trax.Samples.ChatService.E2E/ChatApiTests/CreateChatRoomTests.cs"] = 1,

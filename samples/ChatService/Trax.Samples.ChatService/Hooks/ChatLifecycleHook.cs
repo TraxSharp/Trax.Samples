@@ -2,6 +2,7 @@ using System.Text.Json;
 using HotChocolate.Subscriptions;
 using Trax.Effect.Models.Metadata;
 using Trax.Effect.Services.TrainLifecycleHook;
+using Trax.Samples.ChatService.Subscriptions;
 using Trax.Samples.ChatService.Trains.CreateChatRoom;
 using Trax.Samples.ChatService.Trains.JoinChatRoom;
 using Trax.Samples.ChatService.Trains.SendMessage;
@@ -52,7 +53,7 @@ public class ChatLifecycleHook(ITopicEventSender eventSender) : ITrainLifecycleH
             return;
         }
 
-        var chatEvent = new Subscriptions.ChatSubscriptionEvent(
+        var chatEvent = new ChatSubscriptionEvent(
             ChatRoomId: chatRoomId,
             EventType: eventType,
             Payload: metadata.Output,
@@ -60,6 +61,6 @@ public class ChatLifecycleHook(ITopicEventSender eventSender) : ITrainLifecycleH
             TrainExternalId: metadata.ExternalId
         );
 
-        await eventSender.SendAsync($"ChatRoom:{chatRoomId}", chatEvent, ct);
+        await eventSender.SendAsync(ChatSubscriptions.Topic(chatRoomId), chatEvent, ct);
     }
 }

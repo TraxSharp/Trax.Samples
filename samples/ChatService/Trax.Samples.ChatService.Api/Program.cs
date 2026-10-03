@@ -1,43 +1,31 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// Trax Chat Service — GraphQL API with Real-Time Subscriptions
+// Trax Chat Service: GraphQL subscriptions over WebSocket
 //
-// A single-server chat application powered by HotChocolate GraphQL.
-// Demonstrates how Trax lifecycle hooks can drive domain-specific real-time
-// subscriptions: when a SendMessage train completes, the ChatLifecycleHook
-// publishes the message to a room-scoped topic, and any client subscribed
-// to that room receives the event via WebSocket.
+// A single-process chat server. Chat mutations are Trax trains; when one
+// completes, ChatLifecycleHook publishes its output to a room-scoped topic, and
+// every participant subscribed with onChatEvent(chatRoomId:) receives it over
+// the socket.
 //
-// Authentication: fake API key via X-Api-Key header (for demonstration only)
-//   alice-key-do-not-use-in-production   → user "alice"
-//   bob-key-do-not-use-in-production     → user "bob"
-//   charlie-key-do-not-use-in-production → user "charlie"
+// Every operation acts as the authenticated caller. The trains are
+// [TraxAuthorize(Roles = "User")] and read the caller from TraxPrincipal; no
+// input names a user. Room history, sending and onChatEvent are for a room's
+// participants only.
 //
-// Prerequisites:
-//   1. Pack local:      ./pack-local.sh
-//   2. Start API:       dotnet run --project samples/ChatService/Trax.Samples.ChatService.Api
+// Authentication: fake API keys, registered only in Development (NO WARRANTY)
+//   X-Api-Key: alice-key-do-not-use-in-production   -> TraxApiKey:alice
+//   X-Api-Key: bob-key-do-not-use-in-production     -> TraxApiKey:bob
+//   X-Api-Key: charlie-key-do-not-use-in-production -> TraxApiKey:charlie
+// A WebSocket client sends the key in connection_init: { "apiKey": "<key>" }.
 //
-// No Docker or Postgres required — uses SQLite for both Trax metadata and chat data.
+// Run (no Docker: Trax metadata and chat data are both SQLite files):
+//   dotnet run --project samples/ChatService/Trax.Samples.ChatService.Api
+//   Nitro IDE: http://localhost:5210/trax/graphql
 //
-// Try it:
-//   Open http://localhost:5210/trax/graphql in a browser for Banana Cake Pop IDE
-//
-//   # Create a chat room (as Alice)
-//   mutation { dispatch { createChatRoom(input: { name: "General", userId: "alice", displayName: "Alice" }) { externalId output { chatRoomId name } } } }
-//
-//   # Join the room (as Bob)
-//   mutation { dispatch { joinChatRoom(input: { chatRoomId: "<id>", userId: "bob", displayName: "Bob" }) { externalId output { joinedAt } } } }
-//
-//   # Send a message
-//   mutation { dispatch { sendMessage(input: { chatRoomId: "<id>", senderUserId: "alice", content: "Hello!" }) { externalId output { messageId content sentAt } } } }
-//
-//   # Subscribe to real-time chat events (in Banana Cake Pop):
-//   subscription { onChatEvent(chatRoomId: "<id>") { eventType payload timestamp } }
-//
-//   # Query chat history
-//   { discover { getChatHistory(input: { chatRoomId: "<id>" }) { messages { senderDisplayName content sentAt } } } }
+// Try it: see samples/ChatService/README.md.
 // ─────────────────────────────────────────────────────────────────────────────
 
 using Microsoft.EntityFrameworkCore;
+using Trax.Api.Auth;
 using Trax.Api.Auth.ApiKey;
 using Trax.Api.Extensions;
 using Trax.Api.GraphQL.Extensions;
@@ -71,9 +59,9 @@ builder.Services.AddDbContext<ChatDbContext>(options => options.UseSqlite(chatCo
 // until you register real ones, and every [TraxAuthorize] operation is refused.
 if (builder.Environment.IsDevelopment())
     builder.Services.AddTraxApiKeyAuth(keys =>
-        keys.Add(SampleKeys.AliceKey, id: "alice", nameof(ChatRole.User))
-            .Add(SampleKeys.BobKey, id: "bob", nameof(ChatRole.User))
-            .Add(SampleKeys.CharlieKey, id: "charlie", nameof(ChatRole.User))
+        keys.Add(SampleKeys.AliceKey, () => ChatUser("alice", "Alice"))
+            .Add(SampleKeys.BobKey, () => ChatUser("bob", "Bob"))
+            .Add(SampleKeys.CharlieKey, () => ChatUser("charlie", "Charlie"))
     );
 builder.Services.AddAuthentication();
 builder.Services.AddAuthorization();
@@ -95,7 +83,9 @@ builder.Services.AddTraxGraphQL(graphql => graphql.AddTypeExtension<ChatSubscrip
 
 builder.Services.AddHealthChecks().AddTraxHealthCheck();
 
-// ── CORS — allow React dev server ────────────────────────────────────────
+// ── CORS: allow the React dev server ────────────────────────────────────
+// The default policy's origins are also the origins a browser WebSocket upgrade is accepted
+// from, so the React client's subscriptions connect without AllowSocketOrigins(...).
 builder.Services.AddCors(options =>
     options.AddDefaultPolicy(policy =>
         policy
@@ -123,6 +113,10 @@ app.UseTraxGraphQL();
 app.MapHealthChecks("/trax/health");
 
 app.Run();
+
+// The display name is what other participants see beside a message.
+static TraxPrincipal ChatUser(string id, string displayName) =>
+    new(id, displayName, [nameof(ChatRole.User)]);
 
 namespace Trax.Samples.ChatService.Api
 {

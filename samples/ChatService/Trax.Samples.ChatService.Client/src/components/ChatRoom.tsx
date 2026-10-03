@@ -98,11 +98,7 @@ export function ChatRoom({ roomId }: ChatRoomProps) {
 
     await sendMessage({
       variables: {
-        input: {
-          chatRoomId: roomId,
-          senderUserId: user.userId,
-          content,
-        },
+        input: { chatRoomId: roomId, content },
       },
     });
   };

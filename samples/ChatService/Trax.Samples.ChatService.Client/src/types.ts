@@ -3,7 +3,6 @@ export interface ChatRoomSummary {
   name: string;
   participantCount: number;
   lastMessageAt: string | null;
-  unreadCount: number;
 }
 
 export interface ChatMessageDto {
@@ -25,12 +24,14 @@ export interface ChatSubscriptionEvent {
 
 export interface User {
   key: string;
+  // The id the server stores for this caller: Trax qualifies it with the scheme that
+  // authenticated the key, so "alice" arrives as "TraxApiKey:alice".
   userId: string;
   displayName: string;
 }
 
 export const USERS: User[] = [
-  { key: "alice-key-do-not-use-in-production", userId: "alice", displayName: "Alice" },
-  { key: "bob-key-do-not-use-in-production", userId: "bob", displayName: "Bob" },
-  { key: "charlie-key-do-not-use-in-production", userId: "charlie", displayName: "Charlie" },
+  { key: "alice-key-do-not-use-in-production", userId: "TraxApiKey:alice", displayName: "Alice" },
+  { key: "bob-key-do-not-use-in-production", userId: "TraxApiKey:bob", displayName: "Bob" },
+  { key: "charlie-key-do-not-use-in-production", userId: "TraxApiKey:charlie", displayName: "Charlie" },
 ];

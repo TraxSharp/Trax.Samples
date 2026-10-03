@@ -9,7 +9,7 @@
 //     ├── reprice-catalog    dependent: after each successful refresh
 //     └── alert-rate-spike   dormant dependent: only when a refresh activates it
 //   send-daily-digest        cron, 07:00 UTC every day
-//   send-launch-announcement once, 10 seconds after the first start, then disabled
+//   send-launch-announcement once, 10 seconds after startup, then disabled for good
 //   import-supplier-feed     every 15 seconds, fails while the supplier is down:
 //                            2 retries with backoff, then a dead letter
 //
@@ -111,7 +111,9 @@ builder.Services.AddTrax(trax =>
                     Cron.Daily(hour: 7)
                 )
                 // ── One-off ─────────────────────────────────────────────────────
-                // Runs once, ten seconds after it is first seeded, then disables itself.
+                // Runs once, ten seconds after startup, then disables itself. Every start
+                // re-seeds it and moves a one-off that has not run yet to ten seconds after
+                // that start; one that already succeeded stays disabled and never runs again.
                 .ScheduleOnce<ISendLaunchAnnouncementTrain>(
                     ManifestNames.SendLaunchAnnouncement,
                     new SendLaunchAnnouncementInput(),

@@ -40,7 +40,8 @@ Open the dashboard at http://localhost:5230/trax (Development only). Within abou
 **Data > Executions**.
 
 The same, over GraphQL. Every `operations` field needs the demo operator key, which exists
-only in Development:
+only in Development. The dead letter's id is `1` on a fresh database; use the id the first
+query returns:
 
 ```bash
 KEY='X-Api-Key: operator-key-do-not-use-in-production'

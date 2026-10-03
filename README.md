@@ -19,10 +19,12 @@ last in the stack and uses every other layer; the templates ship as
 ```bash
 dotnet new install Trax.Samples.Templates
 dotnet new trax-hub -n MyApp      # or trax-api, trax-scheduler
-cd MyApp && dotnet run
+cd MyApp && dotnet run            # http://localhost:5400/trax/graphql and /trax
+dotnet test tests/MyApp.Tests
 ```
 
-Each template stores runs in memory, so it needs no database; swap `UseInMemory()` for `UsePostgres(...)` to keep them.
+Each template stores runs in memory, so it needs no database, and ships a README and a test project; swap
+`UseInMemory()` for `UsePostgres(...)` to keep runs.
 
 ## Samples
 

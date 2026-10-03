@@ -1,18 +1,18 @@
 using System.Text.RegularExpressions;
-using Trax.Samples.EnergyHub.E2E.Fixtures;
+using Trax.Samples.ContentShield.E2E.Fixtures;
 
-namespace Trax.Samples.EnergyHub.E2E.HubTests;
+namespace Trax.Samples.ContentShield.E2E.ApiTests;
 
 /// <summary>
-/// Every "Try it" curl command in the hub's Program.cs header works as written: the test reads the
+/// Every "Try it" curl command in the API Program.cs header works as written: the test reads the
 /// commands out of the source file, sends each body and key exactly as curl would, and expects an
 /// answer with no errors. Edit an example and this test checks the edit.
 /// </summary>
 [TestFixture]
-public partial class DocumentedExamplesTests : HubTestFixture
+public partial class DocumentedExamplesTests : ApiTestFixture
 {
     [Test]
-    public async Task Every_try_it_example_in_the_hub_header_succeeds()
+    public async Task Every_try_it_example_in_the_api_header_succeeds()
     {
         var examples = TryItExamples();
         examples.Should().HaveCountGreaterThanOrEqualTo(3, "the header documents three examples");
@@ -32,7 +32,7 @@ public partial class DocumentedExamplesTests : HubTestFixture
 
     private static List<(string Body, string? ApiKey)> TryItExamples()
     {
-        var source = File.ReadAllText(HubProgramPath());
+        var source = File.ReadAllText(ApiProgramPath());
         var header = source[..source.IndexOf("\nusing ", StringComparison.Ordinal)];
 
         // Each example is one curl command continued over comment lines ending in a backslash.
@@ -67,7 +67,7 @@ public partial class DocumentedExamplesTests : HubTestFixture
             .ToList();
     }
 
-    private static string HubProgramPath()
+    private static string ApiProgramPath()
     {
         var dir = new DirectoryInfo(TestContext.CurrentContext.TestDirectory);
         while (dir is not null && !File.Exists(Path.Combine(dir.FullName, "Trax.Samples.slnx")))
@@ -77,8 +77,8 @@ public partial class DocumentedExamplesTests : HubTestFixture
         return Path.Combine(
             dir!.FullName,
             "samples",
-            "DistributedWorkers",
-            "Trax.Samples.EnergyHub.Hub",
+            "EphemeralWorkers",
+            "Trax.Samples.ContentShield.Api",
             "Program.cs"
         );
     }

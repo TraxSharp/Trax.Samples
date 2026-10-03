@@ -10,7 +10,7 @@ namespace Trax.Samples.ContentShield.Trains.Reports.GenerateModerationReport;
 /// Scheduled daily at midnight. Can also be run on-demand via GraphQL.
 /// </summary>
 [TraxConcurrencyLimit(5)]
-[TraxAllowAnonymous]
+[TraxAuthorize(Roles = ContentShieldRoles.Moderator)]
 [TraxMutation(Namespace = "reports", Description = "Generates a moderation activity report")]
 [TraxBroadcast]
 public class GenerateModerationReportTrain

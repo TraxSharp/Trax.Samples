@@ -1,9 +1,4 @@
 <Solution>
-  <Folder Name="/samples/LocalWorkers/">
-    <Project Path="samples/LocalWorkers/Trax.Samples.GameServer/Trax.Samples.GameServer.csproj" />
-    <Project Path="samples/LocalWorkers/Trax.Samples.GameServer.Api/Trax.Samples.GameServer.Api.csproj" />
-    <Project Path="samples/LocalWorkers/Trax.Samples.GameServer.Scheduler/Trax.Samples.GameServer.Scheduler.csproj" />
-  </Folder>
   <Folder Name="/samples/DistributedWorkers/">
     <Project Path="samples/DistributedWorkers/Trax.Samples.EnergyHub/Trax.Samples.EnergyHub.csproj" />
     <Project Path="samples/DistributedWorkers/Trax.Samples.EnergyHub.Hub/Trax.Samples.EnergyHub.Hub.csproj" />
@@ -18,13 +13,6 @@
     <Project Path="samples/GraphQLClient/Trax.Samples.GraphQLClient.BillingServer/Trax.Samples.GraphQLClient.BillingServer.csproj" />
     <Project Path="samples/GraphQLClient/Trax.Samples.GraphQLClient.Gateway/Trax.Samples.GraphQLClient.Gateway.csproj" />
   </Folder>
-  <!-- DataPipeline samples excluded: KedroSpaceflights depends on unpublished Flowthru.* packages -->
-  <!--
-  <Folder Name="/samples/DataPipeline/">
-    <Project Path="samples/DataPipeline/Trax.Samples.Flowthru.Spaceflights/Trax.Samples.Flowthru.Spaceflights.csproj" />
-    <Project Path="samples/DataPipeline/Trax.Samples.Flowthru.Spaceflights.Scheduler/Trax.Samples.Flowthru.Spaceflights.Scheduler.csproj" />
-  </Folder>
-  -->
   <Folder Name="/samples/EphemeralWorkers/">
     <Project Path="samples/EphemeralWorkers/Trax.Samples.ContentShield/Trax.Samples.ContentShield.csproj" />
     <Project Path="samples/EphemeralWorkers/Trax.Samples.ContentShield.Api/Trax.Samples.ContentShield.Api.csproj" />
@@ -35,11 +23,6 @@
     <Project Path="samples/ChatService/Trax.Samples.ChatService/Trax.Samples.ChatService.csproj" />
     <Project Path="samples/ChatService/Trax.Samples.ChatService.Api/Trax.Samples.ChatService.Api.csproj" />
   </Folder>
-  <Folder Name="/samples/JobHunt/">
-    <Project Path="samples/JobHunt/Trax.Samples.JobHunt.Data/Trax.Samples.JobHunt.Data.csproj" />
-    <Project Path="samples/JobHunt/Trax.Samples.JobHunt/Trax.Samples.JobHunt.csproj" />
-    <Project Path="samples/JobHunt/Trax.Samples.JobHunt.Hub/Trax.Samples.JobHunt.Hub.csproj" />
-  </Folder>
   <Folder Name="/samples/Auth/">
     <Project Path="samples/Auth/Trax.Samples.Auth/Trax.Samples.Auth.csproj" />
   </Folder>
@@ -47,10 +30,6 @@
     <Project Path="samples/PersistedOperations/Trax.Samples.PersistedOperations/Trax.Samples.PersistedOperations.csproj" />
     <Project Path="samples/PersistedOperations/Trax.Samples.PersistedOperations.Api/Trax.Samples.PersistedOperations.Api.csproj" />
     <Project Path="samples/PersistedOperations/Trax.Samples.PersistedOperations.Client/Trax.Samples.PersistedOperations.Client.csproj" />
-  </Folder>
-  <Folder Name="/samples/TestRunner/">
-    <Project Path="samples/TestRunner/Trax.Samples.TestRunner/Trax.Samples.TestRunner.csproj" />
-    <Project Path="samples/TestRunner/Trax.Samples.TestRunner.Hub/Trax.Samples.TestRunner.Hub.csproj" />
   </Folder>
   <Folder Name="/samples/Bookworm/">
     <Project Path="samples/Bookworm/Trax.Samples.Bookworm.Catalog/Trax.Samples.Bookworm.Catalog.csproj" />
@@ -79,12 +58,8 @@
     <Project Path="tests/Trax.Samples.Tests.Reflection/Trax.Samples.Tests.Reflection.csproj" />
     <Project Path="tests/Trax.Samples.ChatService.Tests/Trax.Samples.ChatService.Tests.csproj" />
     <Project Path="tests/Trax.Samples.Templates.Tests/Trax.Samples.Templates.Tests.csproj" />
-    <Project Path="tests/Trax.Samples.TestRunner.Tests/Trax.Samples.TestRunner.Tests.csproj" />
-    <Project Path="tests/Trax.Samples.GameServer.E2E/Trax.Samples.GameServer.E2E.csproj" />
     <Project Path="tests/Trax.Samples.ChatService.E2E/Trax.Samples.ChatService.E2E.csproj" />
     <Project Path="tests/Trax.Samples.EnergyHub.E2E/Trax.Samples.EnergyHub.E2E.csproj" />
-    <Project Path="tests/Trax.Samples.JobHunt.Tests/Trax.Samples.JobHunt.Tests.csproj" />
-    <Project Path="tests/Trax.Samples.JobHunt.E2E/Trax.Samples.JobHunt.E2E.csproj" />
     <Project Path="tests/Trax.Samples.PersistedOperations.E2E/Trax.Samples.PersistedOperations.E2E.csproj" />
     <Project Path="tests/Trax.Samples.GraphQLClient.E2E/Trax.Samples.GraphQLClient.E2E.csproj" />
     <Project Path="tests/Trax.Samples.StateMachine.Tests/Trax.Samples.StateMachine.Tests.csproj" />

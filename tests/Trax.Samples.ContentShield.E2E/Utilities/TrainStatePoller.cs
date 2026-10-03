@@ -38,6 +38,7 @@ public static class TrainStatePoller
             if (metadata != null)
                 return metadata;
 
+            // determinism: polling interval while waiting, bounded by the deadline above.
             await Task.Delay(PollInterval);
         }
 
@@ -73,6 +74,7 @@ public static class TrainStatePoller
             if (metadata != null)
                 return metadata;
 
+            // determinism: polling interval while waiting, bounded by the deadline above.
             await Task.Delay(PollInterval);
         }
 

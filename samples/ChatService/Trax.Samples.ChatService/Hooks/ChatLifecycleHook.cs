@@ -17,6 +17,11 @@ namespace Trax.Samples.ChatService.Hooks;
 /// this hook extracts the chatRoomId from the serialized output and publishes
 /// a ChatSubscriptionEvent to the "ChatRoom:{chatRoomId}" topic. Any client
 /// subscribed to that room receives the event in real time.
+///
+/// A lifecycle hook runs for every train, so the hook filters by the train's
+/// canonical name (its service interface's FullName). It does not depend on
+/// [TraxBroadcast]; that marker only opts the trains into Trax's own
+/// onTrainCompleted field.
 /// </summary>
 public class ChatLifecycleHook(ITopicEventSender eventSender) : ITrainLifecycleHook
 {
@@ -27,14 +32,13 @@ public class ChatLifecycleHook(ITopicEventSender eventSender) : ITrainLifecycleH
         [typeof(IJoinChatRoomTrain).FullName!] = "UserJoined",
     };
 
-    private static readonly HashSet<string> ChatTrains = TrainEventTypes.Keys.ToHashSet();
-
     public async Task OnCompleted(Metadata metadata, CancellationToken ct)
     {
-        if (!ChatTrains.Contains(metadata.Name) || metadata.Output is null)
+        if (
+            !TrainEventTypes.TryGetValue(metadata.Name, out var eventType)
+            || metadata.Output is null
+        )
             return;
-
-        var eventType = TrainEventTypes[metadata.Name];
 
         Guid chatRoomId;
         try

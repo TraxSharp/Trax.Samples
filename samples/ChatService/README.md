@@ -7,7 +7,7 @@ participant subscribed with `onChatEvent(chatRoomId:)` receives it over a WebSoc
 ## What it proves
 
 - A custom subscription field on Trax's subscription root, `LifecycleSubscriptions`, fed by an
-  `ITrainLifecycleHook` that sends to a HotChocolate topic when a `[TraxBroadcast]` train completes.
+  `ITrainLifecycleHook` that sends to a HotChocolate topic when a chat train completes.
 - Subscription authentication: the API key travels in the `connection_init` payload, and a socket
   without one is closed with `4403`.
 - Per-subscriber authorization: `[TraxAuthorize]` on the field, plus a subscribe resolver that

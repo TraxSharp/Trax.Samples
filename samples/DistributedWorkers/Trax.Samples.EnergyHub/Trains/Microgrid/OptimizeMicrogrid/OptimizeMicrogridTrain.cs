@@ -11,7 +11,7 @@ namespace Trax.Samples.EnergyHub.Trains.Microgrid.OptimizeMicrogrid;
 /// data centers, and EV charging stations.
 /// Scheduled every 15 minutes.
 /// </summary>
-[TraxAllowAnonymous]
+[TraxAuthorize(Roles = EnergyHubRoles.Operator)]
 [TraxMutation(
     GraphQLOperation.Queue,
     Description = "Optimizes energy distribution across the microgrid"

@@ -37,7 +37,7 @@ demo speed in `Program.cs`, each with its production default beside it.
 
 Open the dashboard at http://localhost:5230/trax (Development only). Within about ten seconds
 **Data > Dead Letters** shows `import-supplier-feed`, and its three failed runs are under
-**Data > Executions**.
+**Data > Metadata**.
 
 The same, over GraphQL. Every `operations` field needs the demo operator key, which exists
 only in Development. The dead letter's id is `1` on a fresh database; use the id the first

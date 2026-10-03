@@ -1,10 +1,11 @@
 {
   "$schema": "https://json.schemastore.org/launchsettings.json",
   "profiles": {
-    "Trax.Samples.ApiAudit": {
+    "Trax.Samples.Auth": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": false,
+      "applicationUrl": "http://localhost:5220",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

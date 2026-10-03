@@ -118,8 +118,9 @@ builder.Services.AddAuthentication();
 builder.Services.AddTraxPrincipalAccessor();
 
 // ── Authorization policies ───────────────────────────────────────────────────
-// Roles need no registration. A policy does, and a [TraxAuthorize] naming an unregistered policy
-// stops the host at startup.
+// Roles need no registration. A policy does. A query model naming an unregistered policy stops
+// the host at startup; a train or GateOperations naming one fails every call at request time, so
+// register every policy you name.
 builder.Services.AddAuthorization(options =>
     options.AddPolicy(
         AuthPolicies.VerifiedEmail,

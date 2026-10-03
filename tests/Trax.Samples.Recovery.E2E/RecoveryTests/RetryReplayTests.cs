@@ -1,0 +1,137 @@
+using Trax.Samples.Recovery.E2E.Fixtures;
+
+namespace Trax.Samples.Recovery.E2E.RecoveryTests;
+
+/// <summary>
+/// A run whose tool step crashes once recovers on the manifest's automatic retry, and the retry
+/// replays the first attempt's decisions instead of asking the model again.
+/// </summary>
+[TestFixture]
+public class RetryReplayTests : RecoveryTestFixture
+{
+    [Test]
+    public async Task ResearchRun_CrashedOnce_CompletesOnAttempt2_WithoutAskingTheModelAgain()
+    {
+        await Run.StartAsync("RESEARCH", crashOnce: true);
+
+        var first = await Run.FollowAttemptAsync(1);
+        (await Run.WaitForEndAsync(first)).Should().Be("FAILED");
+        var second = await Run.FollowAttemptAsync(2);
+        (await Run.WaitForEndAsync(second)).Should().Be("COMPLETED");
+
+        // The model was asked each question once, across both attempts.
+        Decider.Asked(Run.RunId, "Source").Should().Be(1);
+        Decider.Asked(Run.RunId, "Depth").Should().Be(1);
+
+        var attempt1 = await Run.TimelineAsync(first);
+        var attempt2 = await Run.TimelineAsync(second);
+
+        attempt1.Should().OnlyContain(s => Attempt(s) == 1);
+        attempt2.Should().OnlyContain(s => Attempt(s) == 2);
+
+        // Attempt 1 asked both questions and failed on the second tool call.
+        Questions(attempt1).Should().OnlyContain(q => !q.GetProperty("replayed").GetBoolean());
+        attempt1
+            .Last()
+            .GetProperty("state")
+            .GetString()
+            .Should()
+            .Be("FAILED", "the armed crash fires in the second tool call");
+
+        // Attempt 2 replayed both answers, took the same tracks, and ran to the end.
+        Questions(attempt2).Should().HaveCount(2);
+        Questions(attempt2).Should().OnlyContain(q => q.GetProperty("replayed").GetBoolean());
+        Names(attempt2)
+            .Should()
+            .Equal(
+                "PlanResearch",
+                "Source",
+                "Source",
+                "SearchPapers",
+                "Depth",
+                "Depth",
+                "FetchFullTexts",
+                "Summarize"
+            );
+
+        // The subscription itself carried the replayed decisions, with their answers.
+        Questions(Run.LiveSteps(second))
+            .Should()
+            .Contain(q =>
+                q.GetProperty("replayed").GetBoolean()
+                && q.GetProperty("questionKey").GetString() == "Source"
+                && q.GetProperty("answer").GetString() == "Papers"
+            );
+
+        var journal = await Run.JournalAsync(second);
+        journal.GetProperty("replayDecisionsOf").GetInt64().Should().Be(first);
+        journal
+            .GetProperty("decisions")
+            .EnumerateArray()
+            .Should()
+            .OnlyContain(d => d.GetProperty("replayed").GetBoolean());
+        Stream.Errors.Should().BeEmpty();
+    }
+
+    [Test]
+    public async Task RefundRun_PaymentTimedOutOnce_RetryTakesTheSameTrackWithoutAskingAgain()
+    {
+        await Run.StartAsync("REFUND", crashOnce: true, orderId: "A-1001");
+
+        var first = await Run.FollowAttemptAsync(1);
+        (await Run.WaitForEndAsync(first)).Should().Be("FAILED");
+        var second = await Run.FollowAttemptAsync(2);
+        (await Run.WaitForEndAsync(second)).Should().Be("COMPLETED");
+
+        Decider.Asked(Run.RunId, "ApproveRefund").Should().Be(1);
+
+        var attempt1 = await Run.TimelineAsync(first);
+        attempt1.Last().GetProperty("name").GetString().Should().Be("IssuePayment");
+        attempt1.Last().GetProperty("state").GetString().Should().Be("FAILED");
+
+        var attempt2 = await Run.TimelineAsync(second);
+        Questions(attempt2)
+            .Should()
+            .ContainSingle()
+            .Which.GetProperty("replayed")
+            .GetBoolean()
+            .Should()
+            .BeTrue();
+        Names(attempt2)
+            .Should()
+            .Equal(
+                "LoadRefundCase",
+                "ApproveRefund",
+                "ApproveRefund",
+                "IssuePayment",
+                "NotifyCustomer"
+            );
+
+        // The state holds a [TraxSensitive] member, so the hash is keyed (k1:) by the dev key.
+        var journal = await Run.JournalAsync(second);
+        journal
+            .GetProperty("decisions")[0]
+            .GetProperty("stateHash")
+            .GetString()
+            .Should()
+            .StartWith("k1:");
+    }
+
+    [Test]
+    public async Task RunWithNoCrashArmed_CompletesInOneAttempt()
+    {
+        await Run.StartAsync("REFUND", crashOnce: false, orderId: "A-1001");
+
+        var first = await Run.FollowAttemptAsync(1);
+        (await Run.WaitForEndAsync(first)).Should().Be("COMPLETED");
+
+        // Give the scheduler a couple of cycles to show it queues nothing more.
+        await Task.Delay(TimeSpan.FromSeconds(3));
+        (await Run.ExecutionIdsAsync()).Should().Equal(first);
+
+        Decider.Asked(Run.RunId, "ApproveRefund").Should().Be(1);
+        var timeline = await Run.TimelineAsync(first);
+        timeline.Should().OnlyContain(s => Attempt(s) == 1);
+        Questions(timeline).Should().OnlyContain(q => !q.GetProperty("replayed").GetBoolean());
+    }
+}

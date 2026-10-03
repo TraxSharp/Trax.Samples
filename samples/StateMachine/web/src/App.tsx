@@ -6,7 +6,7 @@ import {
 } from "./traxTransport";
 import { useMachine } from "./useMachine";
 
-const ENDPOINT = "http://localhost:5220/trax/graphql";
+const ENDPOINT = "http://localhost:5280/trax/graphql";
 
 // Stable ids: both users drive the same instance ids, and the server scopes each draft to the caller, so
 // switching user shows a different draft for the same id.

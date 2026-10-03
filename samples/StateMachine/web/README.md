@@ -12,7 +12,7 @@ and machine-specific UI on top.
 
 ## Run it
 
-Start the backend first (it must be on `http://localhost:5220`, which this app expects):
+Start the backend first (it must be on `http://localhost:5280`, which this app expects):
 
 ```bash
 cd Trax.Samples && docker compose up -d

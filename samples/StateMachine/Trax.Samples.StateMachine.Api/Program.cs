@@ -14,7 +14,7 @@
 //   1. docker compose up -d
 //   2. dotnet run --project samples/StateMachine/Trax.Samples.StateMachine.Api
 //
-// Then open http://localhost:5220/trax/graphql (Nitro). Send X-Api-Key: alice-key-do-not-use-in-production and try:
+// Then open http://localhost:5280/trax/graphql (Nitro). Send X-Api-Key: alice-key-do-not-use-in-production and try:
 //
 //   # What machines are available?
 //   { discover { stateMachine { listMachines { machines { name hasEffect } } } } }

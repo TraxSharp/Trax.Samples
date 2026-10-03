@@ -59,6 +59,23 @@ public class AuthenticationTests : AuthTestFixture
     }
 
     [Test]
+    public async Task BothCredentials_TheFirstRegisteredSchemeWins()
+    {
+        // No scheme is the default, so Trax tries each registered scheme in registration order
+        // and keeps the first that authenticates. Program.cs registers the API key first.
+        var both = new Caller(
+            "alice's key and oscar's token",
+            ApiKey: DemoCredentials.AliceKey,
+            BearerToken: OscarToken.BearerToken
+        );
+
+        var result = await GraphQL.SendAsync(WhoAmI, both);
+
+        result.HasErrors.Should().BeFalse(result.Raw);
+        result.GetData("discover", "whoAmI", "id").GetString().Should().Be("TraxApiKey:alice");
+    }
+
+    [Test]
     public async Task UnknownApiKey_IsRefused()
     {
         var result = await GraphQL.SendAsync(

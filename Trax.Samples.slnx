@@ -9,8 +9,8 @@
     <Project Path="samples/DistributedWorkers/Trax.Samples.EnergyHub.Hub/Trax.Samples.EnergyHub.Hub.csproj" />
     <Project Path="samples/DistributedWorkers/Trax.Samples.EnergyHub.Worker/Trax.Samples.EnergyHub.Worker.csproj" />
   </Folder>
-  <Folder Name="/samples/SignalRDashboard/">
-    <Project Path="samples/SignalRDashboard/Trax.Samples.SignalRDashboard/Trax.Samples.SignalRDashboard.csproj" />
+  <Folder Name="/samples/SignalRBroadcaster/">
+    <Project Path="samples/SignalRBroadcaster/Trax.Samples.SignalRBroadcaster/Trax.Samples.SignalRBroadcaster.csproj" />
   </Folder>
   <Folder Name="/samples/GraphQLClient/">
     <Project Path="samples/GraphQLClient/Trax.Samples.GraphQLClient/Trax.Samples.GraphQLClient.csproj" />
@@ -91,6 +91,8 @@
     <Project Path="tests/Trax.Samples.Auth.E2E/Trax.Samples.Auth.E2E.csproj" />
     <Project Path="tests/Trax.Samples.Recovery.E2E/Trax.Samples.Recovery.E2E.csproj" />
     <Project Path="tests/Trax.Samples.Scheduling.E2E/Trax.Samples.Scheduling.E2E.csproj" />
+    <Project Path="tests/Trax.Samples.ContentShield.E2E/Trax.Samples.ContentShield.E2E.csproj" />
+    <Project Path="tests/Trax.Samples.SignalRBroadcaster.E2E/Trax.Samples.SignalRBroadcaster.E2E.csproj" />
     <Project Path="tests/Trax.Samples.Tests.Meta/Trax.Samples.Tests.Meta.csproj" />
   </Folder>
   <Folder Name="/templates/">

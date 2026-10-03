@@ -32,7 +32,7 @@ From `Trax.Samples/`:
 dotnet run --project samples/SignalRBroadcaster/Trax.Samples.SignalRBroadcaster
 ```
 
-Open <http://localhost:5230>.
+Open <http://localhost:5270>.
 
 ## Try it
 
@@ -43,8 +43,8 @@ Open <http://localhost:5230>.
 4. Press **Run a ping that fails (other exception)**: the `Failed` row reads
    `The run failed. The reason is in the server log.`, and the console shows the real message.
 
-Without signing in, `curl -i -X POST http://localhost:5230/pings` and
-`curl -i -X POST "http://localhost:5230/hubs/trax-events/negotiate?negotiateVersion=1"` both answer `401`.
+Without signing in, `curl -i -X POST http://localhost:5270/pings` and
+`curl -i -X POST "http://localhost:5270/hubs/trax-events/negotiate?negotiateVersion=1"` both answer `401`.
 
 ## Tests
 

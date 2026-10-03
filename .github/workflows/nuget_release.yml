@@ -48,8 +48,8 @@ jobs:
       rabbitmq:
         image: rabbitmq:4-management@sha256:dbaf95088210b885b305e338e846d8d2ce7a2659d4b4005da8da02b885a71671
         env:
-          RABBITMQ_DEFAULT_USER: guest
-          RABBITMQ_DEFAULT_PASS: guest
+          RABBITMQ_DEFAULT_USER: trax
+          RABBITMQ_DEFAULT_PASS: trax123
         ports:
           - 5672:5672
         options: >-
@@ -86,7 +86,7 @@ jobs:
         env:
           PGPASSWORD: trax123
         run: |
-          for db in trax_e2e_tests chat_e2e_tests energyhub_e2e_tests jobhunt_e2e_tests bookworm_e2e_tests auth_e2e_tests persisted_operations_e2e_tests recovery_e2e_tests scheduling_e2e_tests; do
+          for db in trax_e2e_tests chat_e2e_tests energyhub_e2e_tests jobhunt_e2e_tests bookworm_e2e_tests auth_e2e_tests persisted_operations_e2e_tests recovery_e2e_tests scheduling_e2e_tests contentshield_e2e_tests; do
             psql -h localhost -U trax -d trax -c "CREATE DATABASE \"$db\";"
           done
       - name: Test

@@ -18,11 +18,11 @@
 // Run it (from Trax.Samples/; no database needed, effects are in memory):
 //   dotnet run --project samples/SignalRBroadcaster/Trax.Samples.SignalRBroadcaster
 //
-// Then open http://localhost:5230, sign in, and press the buttons.
+// Then open http://localhost:5270, sign in, and press the buttons.
 //
 // Try it without a browser:
-//   curl -i -X POST http://localhost:5230/pings          # 401: not signed in
-//   curl -i http://localhost:5230/hubs/trax-events/negotiate?negotiateVersion=1 -X POST   # 401
+//   curl -i -X POST http://localhost:5270/pings          # 401: not signed in
+//   curl -i http://localhost:5270/hubs/trax-events/negotiate?negotiateVersion=1 -X POST   # 401
 //
 // Docs: https://traxsharp.net/docs/samples/signalr-broadcaster
 // ─────────────────────────────────────────────────────────────────────────────

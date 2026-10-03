@@ -10,7 +10,7 @@
 //   docker compose up -d database
 //   dotnet run --project samples/Recovery/Trax.Samples.Recovery.Api
 //   cd samples/Recovery/Trax.Samples.Recovery.Client && npm ci && npm run dev
-// Then open http://localhost:5173. The dashboard is at http://localhost:5230/trax (Development only).
+// Then open http://localhost:5173. The dashboard is at http://localhost:5260/trax (Development only).
 //
 // Auth: two demo keys, Development only:
 //   X-Api-Key: recovery-operator-key-do-not-use-in-production   (role Operator: what the page uses)

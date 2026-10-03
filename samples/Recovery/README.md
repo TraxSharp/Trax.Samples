@@ -34,8 +34,8 @@ npm ci
 npm run dev
 ```
 
-Open http://localhost:5173. The host listens on http://localhost:5230; the dashboard is at
-http://localhost:5230/trax and the GraphQL IDE at http://localhost:5230/trax/graphql, both in
+Open http://localhost:5173. The host listens on http://localhost:5260; the dashboard is at
+http://localhost:5260/trax and the GraphQL IDE at http://localhost:5260/trax/graphql, both in
 Development only. When your Postgres is not on 5432, start the host with
 `ConnectionStrings__TraxDatabase="Host=localhost;Port=<port>;Database=trax;Username=trax;Password=trax123"`.
 

@@ -3,8 +3,8 @@ import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
 import { getMainDefinition } from "@apollo/client/utilities";
 import { createClient } from "graphql-ws";
 
-const API_URL = "http://localhost:5230/trax/graphql";
-const WS_URL = "ws://localhost:5230/trax/graphql";
+const API_URL = "http://localhost:5260/trax/graphql";
+const WS_URL = "ws://localhost:5260/trax/graphql";
 
 // The operator demo key, registered by the host in Development only. The page needs each
 // question's answer and the names of the junctions on a track, which only the operations view of

@@ -30,7 +30,7 @@ export function App() {
             manifest's retry replays the recorded decisions instead of paying for them twice.
           </p>
         </div>
-        <a className="dashboard-link" href="http://localhost:5230/trax" target="_blank" rel="noreferrer">
+        <a className="dashboard-link" href="http://localhost:5260/trax" target="_blank" rel="noreferrer">
           Dashboard
         </a>
       </header>

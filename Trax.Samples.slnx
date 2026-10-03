@@ -67,6 +67,10 @@
     <Project Path="samples/Recovery/Trax.Samples.Recovery/Trax.Samples.Recovery.csproj" />
     <Project Path="samples/Recovery/Trax.Samples.Recovery.Api/Trax.Samples.Recovery.Api.csproj" />
   </Folder>
+  <Folder Name="/samples/Scheduling/">
+    <Project Path="samples/Scheduling/Trax.Samples.Scheduling/Trax.Samples.Scheduling.csproj" />
+    <Project Path="samples/Scheduling/Trax.Samples.Scheduling.Host/Trax.Samples.Scheduling.Host.csproj" />
+  </Folder>
   <Folder Name="/lib/">
     <Project Path="lib/Trax.Samples.Shared.Testing/Trax.Samples.Shared.Testing.csproj" />
   </Folder>
@@ -86,6 +90,7 @@
     <Project Path="tests/Trax.Samples.StateMachine.Tests/Trax.Samples.StateMachine.Tests.csproj" />
     <Project Path="tests/Trax.Samples.Auth.E2E/Trax.Samples.Auth.E2E.csproj" />
     <Project Path="tests/Trax.Samples.Recovery.E2E/Trax.Samples.Recovery.E2E.csproj" />
+    <Project Path="tests/Trax.Samples.Scheduling.E2E/Trax.Samples.Scheduling.E2E.csproj" />
     <Project Path="tests/Trax.Samples.Tests.Meta/Trax.Samples.Tests.Meta.csproj" />
   </Folder>
   <Folder Name="/templates/">

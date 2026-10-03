@@ -63,6 +63,7 @@
     <Project Path="tests/Trax.Samples.PersistedOperations.E2E/Trax.Samples.PersistedOperations.E2E.csproj" />
     <Project Path="tests/Trax.Samples.GraphQLClient.E2E/Trax.Samples.GraphQLClient.E2E.csproj" />
     <Project Path="tests/Trax.Samples.StateMachine.Tests/Trax.Samples.StateMachine.Tests.csproj" />
+    <Project Path="tests/Trax.Samples.StateMachine.E2E/Trax.Samples.StateMachine.E2E.csproj" />
     <Project Path="tests/Trax.Samples.Auth.E2E/Trax.Samples.Auth.E2E.csproj" />
     <Project Path="tests/Trax.Samples.Recovery.E2E/Trax.Samples.Recovery.E2E.csproj" />
     <Project Path="tests/Trax.Samples.Scheduling.E2E/Trax.Samples.Scheduling.E2E.csproj" />

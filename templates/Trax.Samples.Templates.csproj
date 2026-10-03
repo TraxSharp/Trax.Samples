@@ -26,13 +26,20 @@
   <!--
     The template projects carry no versions: in this repo they take them from the root
     Directory.Packages.props, which a scaffolded project never sees. At pack time each template
-    gets its own Directory.Packages.props, holding the pin of every package it references and
-    nothing else, so the package ships exactly the versions this repo builds and tests against.
+    gets its own Directory.Packages.props, holding the pin of every package its projects (the
+    application and its tests/ project) reference and nothing else, so the package ships exactly
+    the versions this repo builds and tests against.
     It is generated into obj/ rather than kept beside the template, where it would shadow the
     root pins inside the repo. docs/adr/0004-the-template-package-carries-its-package-versions.md
   -->
   <ItemGroup>
-    <_TraxTemplateProject Include="content/*/*.csproj" />
+    <_TraxTemplateProject
+      Include="content/**/*.csproj"
+      Exclude="content/**/bin/**;content/**/obj/**"
+    >
+      <!-- content/<template>/..., so the first directory under content/ names the template. -->
+      <TemplateName>$([System.String]::Copy('%(RecursiveDir)').Replace('\', '/').Split('/')[0])</TemplateName>
+    </_TraxTemplateProject>
   </ItemGroup>
 
   <Target Name="PackTemplatePackageVersions" DependsOnTargets="_WriteTemplatePackageVersions">
@@ -44,9 +51,9 @@
     </ItemGroup>
   </Target>
 
-  <Target Name="_WriteTemplatePackageVersions" Outputs="%(_TraxTemplateProject.Identity)">
+  <Target Name="_WriteTemplatePackageVersions" Outputs="%(_TraxTemplateProject.TemplateName)">
     <PropertyGroup>
-      <_TemplateName>%(_TraxTemplateProject.Filename)</_TemplateName>
+      <_TemplateName>%(_TraxTemplateProject.TemplateName)</_TemplateName>
       <_TemplateVersionsFile>$(IntermediateOutputPath)template-versions/$(_TemplateName)/Directory.Packages.props</_TemplateVersionsFile>
     </PropertyGroup>
 
@@ -54,10 +61,11 @@
       XmlInputPath="%(_TraxTemplateProject.FullPath)"
       Query="/Project/ItemGroup/PackageReference/@Include"
     >
-      <Output TaskParameter="Result" ItemName="_TemplateReference" />
+      <Output TaskParameter="Result" ItemName="_TemplateReferenceRaw" />
     </XmlPeek>
 
     <ItemGroup>
+      <_TemplateReference Include="@(_TemplateReferenceRaw->Distinct())" />
       <_TemplateUnpinned Include="@(_TemplateReference)" Exclude="@(PackageVersion)" />
       <_TemplateUnreferenced Include="@(PackageVersion)" Exclude="@(_TemplateReference)" />
       <_TemplatePin Include="@(PackageVersion)" Exclude="@(_TemplateUnreferenced)" />
@@ -91,6 +99,7 @@
         Include="$(_TemplateVersionsFile)"
         TemplateName="$(_TemplateName)"
       />
+      <_TemplateReferenceRaw Remove="@(_TemplateReferenceRaw)" />
       <_TemplateReference Remove="@(_TemplateReference)" />
       <_TemplateUnpinned Remove="@(_TemplateUnpinned)" />
       <_TemplateUnreferenced Remove="@(_TemplateUnreferenced)" />

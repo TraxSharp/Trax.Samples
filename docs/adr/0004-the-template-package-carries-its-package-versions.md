@@ -11,8 +11,8 @@ in this repo Central Package Management supplies them from the root `Directory.P
 A project scaffolded from the published `Trax.Samples.Templates` never sees that file, so it
 failed to restore with `NU1015`, and `trax generate`, which scaffolds from `trax-hub`, failed
 with it. At pack time each template now gets its own `Directory.Packages.props`, holding the
-central pin of every package that template references and nothing else. The root file stays
-the only place a version is written.
+central pin of every package that template's projects (the application and its `tests/`
+project) reference and nothing else. The root file stays the only place a version is written.
 
 ## Status
 
@@ -55,9 +55,13 @@ local version in. Pass `-p:TraxLocalVersion=` to pack the committed pins, as the
 - The `PackTemplatePackageVersions` target in `templates/Trax.Samples.Templates.csproj` fails
   the pack when a template references a package with no central pin.
 
-Not covered: the test restores the scaffolds but does not build or run them; building the same
-template projects inside the repo is what the environment tests of samples/0003 do.
+Not covered here: the test restores the committed pins but does not build or run the scaffolds.
+The scaffold tests of samples/0003 build, test and start them, packed with the versions
+the repo builds with, which in a workspace checkout is the local feed.
 
 ## Changelog
+
+- **2026-10-03**: Amended: each template ships a test project under `tests/`, and the generated
+  `Directory.Packages.props` pins its packages too.
 
 - **2026-09-27**: Recorded.

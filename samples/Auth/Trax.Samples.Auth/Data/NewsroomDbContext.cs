@@ -3,15 +3,6 @@ using Trax.Effect.Data.Services.DomainContext;
 
 namespace Trax.Samples.Auth.Data;
 
-public interface INewsroomDbContext : IDomainDataContext
-{
-    DbSet<Article> Articles { get; }
-
-    DbSet<EditorNote> EditorNotes { get; }
-
-    DbSet<AuditRecord> AuditRecords { get; }
-}
-
 /// <summary>
 /// The sample's own data: articles, their editor notes and the audit trail, in the
 /// <c>newsroom</c> schema next to Trax's own tables.
